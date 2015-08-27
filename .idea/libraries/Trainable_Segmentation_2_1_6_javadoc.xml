@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Trainable_Segmentation-2.1.6-javadoc">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/.idea/libraries/Trainable_Segmentation-2.1.6-tests.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/.idea/libraries/Trainable_Segmentation-2.1.6-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/.idea/libraries/Trainable_Segmentation-2.1.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
