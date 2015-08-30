@@ -11,11 +11,13 @@ import net.imglib2.algorithm.morphology.MorphologyUtils;
 import org.scijava.command.Command;
 import ij.blob.*;
 import org.junit.*;
+import static org.junit.Assert.assertEquals;
+
+
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import ij.*;
 import ij.plugin.*;
-import ij.plugin.filter.RGBStackSplitter;
 import ij.process.*;
 import ij.plugin.PlugIn;
 import net.imagej.ImageJ;
@@ -23,6 +25,8 @@ import net.imagej.Main;
 import trainableSegmentation.*;
 
 import ij.gui.*;
+import weka.filters.Filter;
+
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.image.CropImageFilter;
@@ -53,7 +57,9 @@ public class Activity_Analysis implements PlugIn {
     private double THRESH_P1 = -80;
 
     // Parameters for blob filtering
-    private int RADIUSFILTER = 50;
+    private int ELLIPSE_a = 100; // pixel
+    private int ELLIPSE_b = 55; // pixel
+    private int RADIUSFILTER = 200;
     private ManyBlobs allBlobs;
     private ImageStack stack; // the stack that we work on
     private ImagePlus imp;
@@ -63,96 +69,97 @@ public class Activity_Analysis implements PlugIn {
 
     /*Run method for full Activity Analysis*/
     public void run(String arg) {
-      /*  // 4 Debugging - load stack
-        ImagePlus imp = IJ.openImage("C:\\Users\\noambox\\Desktop\\FLASH_20msON_10Hz_SLITE_1.tif");
+//        // 4 Debugging - load stack
+//        ImagePlus imp = IJ.openImage("C:\\Users\\noambox\\Desktop\\FLASH_20msON_10Hz_SLITE_1.tif");
+//
+//        // Validate data type (Stacks)
+//        //ImagePlus imp = IJ.getImage();
+//        if (imp.getStackSize()==1)
+//        {IJ.error("Stack required"); return;}
+//
+//        // Get Average image for further Segmentation
+//        ImagePlus avr_img = getAverageIm();
+//
+//        // Segment data with classifier
+//        WekaSegmentation segmentator = new WekaSegmentation( avr_img );
+//        segmentator.loadClassifier("C:\\Users\\noambox\\Documents\\NielFiji-repo\\Fiji" +
+//                "\\Self Customized Parameters\\Classifiers\\classifier1.model");
+//        ImagePlus prob = segmentator.applyClassifier(avr_img, 0, true); // get probabilities image
 
-        // Validate data type (Stacks)
-        //ImagePlus imp = IJ.getImage();
-        if (imp.getStackSize()==1)
-        {IJ.error("Stack required"); return;}
-
-        // Get Average image for further Segmentation
-        ZProjector stackimp = new ZProjector(imp);
-        stackimp.setMethod(0); // 0 for average method
-        stackimp.doProjection(true);
-        ImagePlus avr_img = stackimp.getProjection();
-
-        // Segment data with classifier
-        WekaSegmentation segmentator = new WekaSegmentation( avr_img );
-        segmentator.loadClassifier("C:\\Users\\noambox\\Documents\\NielFiji-repo\\Fiji" +
-                "\\Self Customized Parameters\\Classifiers\\classifier1.model");
-        ImagePlus prob = segmentator.applyClassifier(avr_img, 0, true); // get probabilities image
-*/
-
-        // Binary, Erode
-        imp = IJ.openImage("C:\\Users\\noambox\\Desktop\\Test Images - ImageJ\\ProbImage.tif"); // DEBUG
-        ImageStack probStack = imp.getStack();
+        // Threshold ,Binary & Erode
+        this.imp = IJ.openImage("C:\\Users\\noambox\\Desktop\\Test Images - ImageJ\\ProbImage.tif"); // DEBUG
+        ImageStack probStack = this.imp.getStack();
         probStack.deleteLastSlice();
-        imp.setStack(probStack);
-        ImageConverter converter = new ImageConverter(imp);
+        this.imp.setStack(probStack);
+        ImageConverter converter = new ImageConverter(this.imp);
         converter.convertToGray8();
         Auto_Local_Threshold thresholder = new Auto_Local_Threshold();
-        Object[] result = thresholder.exec(imp, THRESH_METHOD, THRESH_RADIUS, THRESH_P1, 0, false);
-        IJ.run(imp, "Options...", "iterations=" + MORPH_ITER + "count=" + MORPH_COUNT + "black do=" + MORPH_PROC);
-        IJ.run(imp, "Watershed", "");
+        Object[] result = thresholder.exec(this.imp, THRESH_METHOD, THRESH_RADIUS, THRESH_P1, 0, false);
+        IJ.run(this.imp, "Options...", "iterations=" + MORPH_ITER + "count=" + MORPH_COUNT + "black do=" + MORPH_PROC);
+        IJ.run(this.imp, "Watershed", "");
 
         // Add features and detect blobs
-        ManyBlobs allBlobs = new ManyBlobs(imp); // Extended ArrayList
+        ManyBlobs cellLocation =  FilterAndGetCells(this.imp);
+
+        ImagePlus imp = IJ.openImage("C:\\Users\\noambox\\Desktop\\FLASH_20msON_10Hz_SLITE_1.tif");  // Debug
+        // for evey Blob take the trace form the stack
+        int size = this.stack.getSize();
+
+        for (int k=1; k<=size;){
+            getBlobTimeProfile(cellLocation.get(k));
+        }
+//        prob_image.show();
+
+        /*Tests*/
+//        try {
+//            test_Thorsten();
+//        } catch (NoSuchMethodException e) {
+//            e.printStackTrace();
+//        }
+        return;
+    }
+
+    /* method for complete calcium signal analysis */
+    public void SingleCellActivityAnalysis(Blob cell){
+        float[] trace = getBlobTimeProfile(cell);
+    }
+
+     /* method for extracting cells data with ij_blob plugin */
+    private ManyBlobs FilterAndGetCells(ImagePlus imp){
+        allBlobs = new ManyBlobs(imp); // Extended ArrayList
         allBlobs.setBackground(1);
         allBlobs.findConnectedComponents(); // Start the Connected Component Algorithm
         MyBlobFeature myOwnFeature = new MyBlobFeature();
         Blob.addCustomFeature(myOwnFeature);
-
-        //ManyBlobs filteredBlobs = allBlobs.filterBlobs(0,RADIUSFILTER,"LocationFeature",);
-        ManyBlobs filterArea = allBlobs.filterBlobs(0.003,1, Blob.GETENCLOSEDAREA);
-        ManyBlobs filterAspRatio = filterArea.filterBlobs(0.5, 2.5, Blob.GETASPECTRATIO);
-        ImagePlus label_imp = filterAspRatio.getLabeledImage();
-        label_imp.show();
-
-
-       /* blobfeature();*/
-/*        ImagePlus imp = IJ.openImage("C:\\Users\\noambox\\Desktop\\FLASH_20msON_10Hz_SLITE_1.tif");
-        // for evey Blob take the trace form the stack
-        int size = stack.getSize();
-
-        for (int k=1; k<=size; k++){
-            getBlobTimeProfile(filterAspRatio.get(k));
+        ManyBlobs filteredBlobs = new ManyBlobs();
+        try {
+            ManyBlobs filterArea = allBlobs.filterBlobs(0.003, 1, Blob.GETENCLOSEDAREA);
+            ManyBlobs filterAspRatio = filterArea.filterBlobs(0.5, 2.5, Blob.GETASPECTRATIO);
+            filteredBlobs = filterAspRatio.filterBlobs(0, 1, "LocationFeature", imp.getWidth(), imp.getHeight(), ELLIPSE_a, ELLIPSE_b);
+            ImagePlus label_imp = filteredBlobs.getLabeledImage();
+//            label_imp.show();
+            }
+        catch (NoSuchMethodException e) {
+            e.printStackTrace();
         }
-//        prob_image.show();*/
-        return;
+        return filteredBlobs;
     }
 
-
-/*    public void blobfeature(){
-        //URL url = this.getClass().getClassLoader().getResource("3blobs.tif");
-       // ImagePlus ip = new ImagePlus(url.getPath());
-        ManyBlobs mb = new ManyBlobs(imp);
-        mb.findConnectedComponents();
-        MyBlobFeature test = new MyBlobFeature();
-        Blob.addCustomFeature(test);
-        int a = 10;
-        float c = 1.5f;
-        ManyBlobs filtered = mb.filterBlobs(0,10, "LocationFeature",imp.getWidth(),imp.getHeight());
-    }*/
-
-    private void Delete(){
-    }
-
-    /*get signal values for specific blob*/
+    /* get signal values for specific blob */
     private float[] getBlobTimeProfile(Blob cell) {
         ImageProcessor ip = imp.getProcessor();
         double minThreshold = ip.getMinThreshold();
         double maxThreshold = ip.getMaxThreshold();
         Polygon blobContour = cell.getOuterContour();
         PolygonRoi roi =  new PolygonRoi(blobContour.xpoints,blobContour.ypoints,blobContour.npoints, Roi.FREELINE) ;
-        int size = stack.getSize();
+        int size = this.stack.getSize();
         float[] values = new float[size];
         Calibration cal = imp.getCalibration();
         Analyzer analyzer = new Analyzer(imp);
         int measurements = Analyzer.getMeasurements();
         int current = imp.getCurrentSlice();
         for (int i=1; i<=size; i++) {
-            ip = stack.getProcessor(i);
+            ip = this.stack.getProcessor(i);
             if (minThreshold!=ImageProcessor.NO_THRESHOLD)
                 ip.setThreshold(minThreshold,maxThreshold,ImageProcessor.NO_LUT_UPDATE);
             ip.setRoi(roi);
@@ -162,6 +169,45 @@ public class Activity_Analysis implements PlugIn {
         }
         return values;
     }
+
+    /* Get Average image for processing */
+    private ImagePlus getAverageIm(){
+        ZProjector stackimp = new ZProjector(imp);
+        stackimp.setMethod(0); // 0 for average method
+        stackimp.doProjection(true);
+        ImagePlus avr_img = stackimp.getProjection();
+        return avr_img;
+    }
+
+    private void Delete(){
+    }
+
+    @Test
+    public void test_Thorsten() throws NoSuchMethodException {
+        Activity_Analysis activity_an = new Activity_Analysis();
+        ImagePlus ip =  IJ.openImage("C:\\Users\\noambox\\Desktop\\Test Images - ImageJ\\3blobs.tif");
+        ManyBlobs mb = new ManyBlobs(ip);
+        mb.findConnectedComponents();
+        MyBlobFeature test = new MyBlobFeature();
+        Blob.addCustomFeature(test);
+        int a = 10;
+        float c = 1.5f;
+        ManyBlobs filtered = mb.filterBlobs(0, 50, "LocationFeature", ip.getWidth(), ip.getHeight());
+        ImagePlus label_imp = filtered.getLabeledImage();
+        label_imp.show();
+        assertEquals(2, filtered.size()); //1 blobs have a greater distance. So it should be 2
+    }
+
+    // TODO - Iterative watershed algorithm with minimum segment size
+    private Blob iterativeBlobSplit(Blob blob){
+        return blob;
+    }
+
+    // TODO - remove stimulus artifact
+    private float[] removeStimulusArtifact(float[] trace){
+        return trace;
+    }
+
 /*
         if (imp.getStackSize()==1)
         {IJ.error("Stack required"); return;}
@@ -300,11 +346,6 @@ public class Activity_Analysis implements PlugIn {
     }
     */
 
-    // Iterative watershed for further dev
-    // IMPLEMENT
-    private Blob iterativeBlobSplit(Blob blob){
-        return blob;
-    }
 
     // Duplicate image method from Auto_Local_Threshold
     private ImagePlus duplicateImage(ImageProcessor iProcessor) {
