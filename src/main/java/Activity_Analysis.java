@@ -10,6 +10,7 @@ import net.imagej.ops.crop.CropImgPlus;
 import net.imglib2.algorithm.morphology.MorphologyUtils;
 import org.scijava.command.Command;
 import ij.blob.*;
+import org.junit.*;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import ij.*;
@@ -108,6 +109,8 @@ public class Activity_Analysis implements PlugIn {
         ImagePlus label_imp = filterAspRatio.getLabeledImage();
         label_imp.show();
 
+
+       /* blobfeature();*/
 /*        ImagePlus imp = IJ.openImage("C:\\Users\\noambox\\Desktop\\FLASH_20msON_10Hz_SLITE_1.tif");
         // for evey Blob take the trace form the stack
         int size = stack.getSize();
@@ -118,6 +121,19 @@ public class Activity_Analysis implements PlugIn {
 //        prob_image.show();*/
         return;
     }
+
+
+/*    public void blobfeature(){
+        //URL url = this.getClass().getClassLoader().getResource("3blobs.tif");
+       // ImagePlus ip = new ImagePlus(url.getPath());
+        ManyBlobs mb = new ManyBlobs(imp);
+        mb.findConnectedComponents();
+        MyBlobFeature test = new MyBlobFeature();
+        Blob.addCustomFeature(test);
+        int a = 10;
+        float c = 1.5f;
+        ManyBlobs filtered = mb.filterBlobs(0,10, "LocationFeature",imp.getWidth(),imp.getHeight());
+    }*/
 
     private void Delete(){
     }
