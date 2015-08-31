@@ -8,6 +8,12 @@ import imagescience.transform.Crop;
 import net.imagej.ops.Ops;
 import net.imagej.ops.crop.CropImgPlus;
 import net.imglib2.algorithm.morphology.MorphologyUtils;
+import org.apache.commons.math3.geometry.Vector;
+import org.apache.commons.math3.geometry.euclidean.oned.Vector1D;
+import org.apache.commons.math3.geometry.euclidean.oned.Vector1DFormat;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.jfree.data.xy.VectorDataItem;
+import org.jfree.data.xy.VectorXYDataset;
 import org.scijava.command.Command;
 import ij.blob.*;
 import org.junit.*;
@@ -22,9 +28,12 @@ import ij.process.*;
 import ij.plugin.PlugIn;
 import net.imagej.ImageJ;
 import net.imagej.Main;
+import sun.misc.Signal;
 import trainableSegmentation.*;
 
 import ij.gui.*;
+import weka.core.AlgVector;
+import weka.core.matrix.Matrix;
 import weka.filters.Filter;
 
 import java.awt.*;
