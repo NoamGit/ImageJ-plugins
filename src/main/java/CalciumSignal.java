@@ -1,6 +1,7 @@
-import biz.source_code.dsp.filter.*;
+import biz.source_code.dsp.filter.IirFilter;
+import biz.source_code.dsp.filter.IirFilterCoefficients;
+import biz.source_code.dsp.util.ArrayUtils;
 import ij.gui.Plot;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -19,24 +20,48 @@ import java.util.Iterator;
  */
 public class CalciumSignal {
 
-    /* Properties */
+/* Properties */
+
     protected AlgVector signalRaw;
     protected double activityStatus = 0;
     protected ArrayList<Double> SignalProcessed = new ArrayList<Double>();
     private IirFilterCoefficients filterCoefficients;
 
-    /* Methods */
+/* Methods */
 
     // Default constructer with filter's coeff initialization
-    /* Filters details are - Chebychev 1 :: Fs = 100Hz :: Fpass = 0.2 Hz :: Fstop = 0.3 Hz :: minimum order */
-    // Designed with Matlab
+    /* Filters details are - Chebychev 1 :: ripple dB = -0.1 :: filterCutoffFreq = frequencyInHz/samplingRateInHz = 0.0007 :: order ~ 5 */
     public CalciumSignal(){
         filterCoefficients = new IirFilterCoefficients();
-        filterCoefficients.b = new double[]{0.028,  0.053, 0.071,  0.053, 0.028}; // default LPF coefficients
-        filterCoefficients.a = new double[]{1.000, -2.026, 2.148, -1.159, 0.279};
+        filterCoefficients.b = new double[]{2.094852E-14,  1.047426E-13, 2.094852E-13,  2.094852E-13, 1.047426E-13, 2.094852E-14}; // default LPF coefficients
+        filterCoefficients.a = new double[]{1.000, -4.9923054980901425, 9.96927569026119, -9.95399387801544, 4.9693826781446955, -0.9923589922996323};
     }
 
-    // Plot signal methods
+            // SIMPLE HELPER FUNCTIONS
+
+    private static float[] DoubletoFloat(Double[] array){
+        float[] out = new float[array.length];
+        int i = 0;
+        for (Double f : array) {
+            out[i++] = (float)(f != null ? f : Float.NaN);
+        }
+        return out;
+    }
+
+    public static double[] getDoubleFromArrayList(ArrayList list) {
+        double[] targ = new double[list.size()];
+        for (int i = 0; i < list.size(); i++)
+            targ[i] = ((Double) list.get(i)).doubleValue();
+        return targ;
+    }
+
+    protected void setSignal(double[] values) {
+        this.signalRaw = new AlgVector(values.length);
+        this.signalRaw.setElements(values);
+    }
+
+            // PLOT METHODS
+
     public void showSignal(ArrayList<Double> Signal) {
         double[] x = new double[Signal.size()];
         double values[] = new double[Signal.size()];
@@ -62,6 +87,21 @@ public class CalciumSignal {
         plot.show();
     }
 
+    static public void compareSignal(ArrayList<Double> sig1, ArrayList<Double> sig2, ArrayList<Double> sig2Indx){
+        double[] x = new double[sig1.size()];
+        double values[] = new double[sig1.size()];
+        for (int i = 0; i < x.length; i++) {
+            x[i] = i;
+            values[i] = sig1.get(i);
+        }
+        Plot plot = new Plot("Plot window","x","values",x,values);
+        double[] sig2Double = getDoubleFromArrayList(sig2);
+        plot.setColor(Color.RED);
+        plot.draw();
+        plot.addPoints(sig2Indx, sig2, Plot.LINE);
+        plot.show();
+    }
+
     public void showSignal() {
         double[] x = new double[this.signalRaw.numElements()];
         for (int i = 0; i < x.length; i++)
@@ -70,29 +110,86 @@ public class CalciumSignal {
         plot.show();
     }
 
-    // detrend signal by LPF and linear fitting to the 5% precentile
-    // Source - http://www.source-code.biz/dsp/java/
-    // TODO - fix the filtering issue
+                // SIGNAL ANALYSIS METHODS
+
+     /* detrend signal by LPF ; Source - http://www.source-code.biz/dsp/java/ */
      public void DetrendSignal(){
-         double frequencyInHz = 0.2;
-         double samplingRateInHz = 31.25;
-         double filterCutoffFreq = frequencyInHz/samplingRateInHz;
-         IirFilterCoefficients filterCoefficients = IirFilterDesignFisher.design(FilterPassType.lowpass, FilterCharacteristicsType.chebyshev, 10, -50, 0.018, 1);
-         IirFilter LPF = new IirFilter(filterCoefficients);
-         //IirFilter LPF = new IirFilter(this.filterCoefficients);
-         ArrayList<Double> temp = new ArrayList<Double>();
+         //int order = 5;
+         // IirFilterCoefficients filterCoefficients = IirFilterDesignFisher.design(FilterPassType.lowpass, FilterCharacteristicsType.chebyshev, order, -0.1, 0.0008, 1);
+        // ArrayList<Double> trend = filtfiltwithLPF(this.signalRaw, filterCoefficients);
+         // TODO - find right coefficients
+         ArrayList<Double> trend = filtfiltwithLPF(this.signalRaw, this.filterCoefficients);
          for (int i = 0; i < this.signalSize(); i++ ) {
-             this.SignalProcessed.add(i,this.signalRaw.getElement(i) - LPF.step(this.signalRaw.getElement(i)));
-             temp.add(LPF.step(this.signalRaw.getElement(i)));
+             this.SignalProcessed.add(i, this.signalRaw.getElement(i) - trend.get(i));
          }
-         compareSignal(temp, this.signalRaw);
+         // TEST
+         // compareSignal(this.SignalProcessed, this.signalRaw);
+         //compareSignal(temp, this.signalRaw);
      }
 
-    protected void setSignal(double[] values) {
-        this.signalRaw = new AlgVector(values.length);
-        this.signalRaw.setElements(values);
+    /* Estimate baseline by linear regression to perecntile*/
+    protected void EstimateBaseline() {
+        Double val1[] = new Double[this.SignalProcessed.size()];
+        val1 = this.SignalProcessed.toArray(val1);
+        float[] val3 = DoubletoFloat(val1);
+        int numbin = 100;
+        edu.mines.jtk.dsp.Histogram hist = new edu.mines.jtk.dsp.Histogram(val3, numbin);
+
+        // create cumulative distribution function
+        // TODO - find right threshold
+        float precentile = (float) 0.30; //30% percentile
+        float[] histcdf = new float[numbin];
+        histcdf = hist.getDensities();
+        double thresValue = 0;
+        for (int i = 1; i < histcdf.length; i++) {
+            histcdf[i] = histcdf[i] + histcdf[i - 1];
+            if (histcdf[i - 1] <= precentile && precentile <= histcdf[i]) {
+                thresValue = hist.getMinValue() + hist.getBinDelta() * i;
+                break;
+            }
+        }
+
+        // find baseline values
+        ArrayList<Double> baselineValues = new ArrayList<Double>();
+        Double thresValueCast = (Double) thresValue;
+        ArrayList<Double> baselineValues_index = new ArrayList<Double>();
+        for (int i = 0; i < this.SignalProcessed.size(); i++) {
+            if (this.SignalProcessed.get(i) <= thresValueCast) {
+                baselineValues.add(this.SignalProcessed.get(i));
+                baselineValues_index.add((double) i);
+            }
+        }
+        // test
+        //compareSignal(this.SignalProcessed, baselineValues, baselineValues_index);
+
+        // TODO - fit values by linear regression and estimate baseline vector
     }
 
+    /* filtfilt - Zero phase filtering with specified LPF */
+    protected ArrayList<Double> filtfiltwithLPF(AlgVector sig, IirFilterCoefficients filterCoefficients){
+        IirFilter LPF = new IirFilter(filterCoefficients);
+        int size = this.signalRaw.numElements();
+        double[] forwardfilt = new double[size];
+        double[] backfilt = new double[size];
+        ArrayList<Double> finalSignal = new ArrayList<Double>(size);
+        // forward filtering
+        for (int i = 0; i < size; i++ ) {
+            forwardfilt[i] = LPF.step(this.signalRaw.getElement(i));
+        }
+        // backward filtering
+        for (int i = 0; i < size; i++ ) {
+            backfilt[i] = LPF.step(forwardfilt[size-1 - i]);
+        }
+        // reverse signal
+        for (int i = 0; i < size; i++ ) {
+            finalSignal.add(backfilt[size-1 - i]);
+        }
+        // showSignal(finalSignal);
+        // compareSignal(finalSignal, this.signalRaw);
+        return finalSignal;
+    }
+
+    /* return signal size*/
     public int signalSize() {
         return this.signalRaw.numElements();
     }
@@ -122,9 +219,8 @@ public class CalciumSignal {
                     idx++;
                 }
                 sig.setSignal(values);
-                //sig.showSignal();
                 sig.DetrendSignal();
-                //sig.showSignal(sig.SignalProcessed);
+                sig.EstimateBaseline();
             }
             catch (FileNotFoundException e) {
                 e.printStackTrace();

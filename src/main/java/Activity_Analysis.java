@@ -7,7 +7,6 @@ import ij.plugin.filter.Binary;
 import imagescience.transform.Crop;
 import net.imagej.ops.Ops;
 import net.imagej.ops.crop.CropImgPlus;
-import net.imglib2.algorithm.morphology.MorphologyUtils;
 import org.apache.commons.math3.geometry.Vector;
 import org.apache.commons.math3.geometry.euclidean.oned.Vector1D;
 import org.apache.commons.math3.geometry.euclidean.oned.Vector1DFormat;
