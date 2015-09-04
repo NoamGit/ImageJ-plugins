@@ -33,7 +33,7 @@ import java.awt.image.CropImageFilter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.function.BinaryOperator;
+// import java.util.function.BinaryOperator;
 
 /*
 author: Noam Cohen
