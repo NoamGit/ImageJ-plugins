@@ -1,12 +1,15 @@
 import biz.source_code.dsp.filter.IirFilter;
 import biz.source_code.dsp.filter.IirFilterCoefficients;
 import biz.source_code.dsp.util.ArrayUtils;
+import ij.IJ;
 import ij.gui.Plot;
+import ij.plugin.frame.Fitter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import weka.core.AlgVector;
+import ij.measure.CurveFitter;
 
 import java.awt.*;
 import java.io.File;
@@ -16,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 /**
+ * Class for storing processing and detecting neural activity in calcium 1D signals
  * Created by noambox on 8/30/2015.
  */
 public class CalciumSignal {
@@ -24,17 +28,29 @@ public class CalciumSignal {
 
     protected AlgVector signalRaw;
     protected double activityStatus = 0;
-    protected ArrayList<Double> SignalProcessed = new ArrayList<Double>();
+    protected ArrayList<Double> SignalProcessed = new ArrayList<Double>(); // gives finally the values for DF/F
     private IirFilterCoefficients filterCoefficients;
+    private float noisePrecentile; //30% percentile
+    public int isactiveFlag = 0;
 
 /* Methods */
 
     // Default constructer with filter's coeff initialization
     /* Filters details are - Chebychev 1 :: ripple dB = -0.1 :: filterCutoffFreq = frequencyInHz/samplingRateInHz = 0.0007 :: order ~ 5 */
     public CalciumSignal(){
+        initilaize();
+    }
+
+    public CalciumSignal(float[] initSig){
+        this.signalRaw = new AlgVector(FloatToDouble(initSig));
+        initilaize();
+    }
+
+    private void initilaize(){
         filterCoefficients = new IirFilterCoefficients();
         filterCoefficients.b = new double[]{2.094852E-14,  1.047426E-13, 2.094852E-13,  2.094852E-13, 1.047426E-13, 2.094852E-14}; // default LPF coefficients
         filterCoefficients.a = new double[]{1.000, -4.9923054980901425, 9.96927569026119, -9.95399387801544, 4.9693826781446955, -0.9923589922996323};
+        this.noisePrecentile = (float)0.30;
     }
 
             // SIMPLE HELPER FUNCTIONS
@@ -44,6 +60,14 @@ public class CalciumSignal {
         int i = 0;
         for (Double f : array) {
             out[i++] = (float)(f != null ? f : Float.NaN);
+        }
+        return out;
+    }
+    private static double[] FloatToDouble(float[] array){
+        double[] out = new double[array.length];
+        int i = 0;
+        for (float f : array) {
+            out[i++] = (double)(f);
         }
         return out;
     }
@@ -58,6 +82,10 @@ public class CalciumSignal {
     protected void setSignal(double[] values) {
         this.signalRaw = new AlgVector(values.length);
         this.signalRaw.setElements(values);
+    }
+
+    public ArrayList<Double> getSignalProcessed(){
+        return this.SignalProcessed;
     }
 
             // PLOT METHODS
@@ -110,6 +138,17 @@ public class CalciumSignal {
         plot.show();
     }
 
+    public void showSignalProccesed() {
+        double[] x = new double[this.SignalProcessed.size()];
+        double[] y = new double[this.SignalProcessed.size()];
+        for (int i = 0; i < x.length; i++) {
+            x[i] = i;
+            y[i] = this.SignalProcessed.get(i);
+        }
+        Plot plot = new Plot("Plot window", "x", "values", x, y);
+        plot.show();
+    }
+
                 // SIGNAL ANALYSIS METHODS
 
      /* detrend signal by LPF ; Source - http://www.source-code.biz/dsp/java/ */
@@ -137,13 +176,12 @@ public class CalciumSignal {
 
         // create cumulative distribution function
         // TODO - find right threshold
-        float precentile = (float) 0.30; //30% percentile
         float[] histcdf = new float[numbin];
         histcdf = hist.getDensities();
         double thresValue = 0;
         for (int i = 1; i < histcdf.length; i++) {
             histcdf[i] = histcdf[i] + histcdf[i - 1];
-            if (histcdf[i - 1] <= precentile && precentile <= histcdf[i]) {
+            if (histcdf[i - 1] <= this.noisePrecentile && this.noisePrecentile <= histcdf[i]) {
                 thresValue = hist.getMinValue() + hist.getBinDelta() * i;
                 break;
             }
@@ -159,10 +197,29 @@ public class CalciumSignal {
                 baselineValues_index.add((double) i);
             }
         }
-        // test
-        //compareSignal(this.SignalProcessed, baselineValues, baselineValues_index);
 
-        // TODO - fit values by linear regression and estimate baseline vector
+        // TODO - fix show Message
+        CurveFitter fitter = new CurveFitter(getDoubleFromArrayList(baselineValues_index),getDoubleFromArrayList(baselineValues));
+        fitter.doFit(CurveFitter.POLY3);
+
+        if (fitter.getRSquared() < 0.7){
+//            IJ.error("");
+            IJ.showMessage("Detrending issue", "Goodness of fit of Linear regression is low = ( " +
+                    String.valueOf(fitter.getRSquared())+" )\n You might consider choosing a different noise percentile in histogram\n" +
+                    "(current noise percentile )" + String.valueOf(this.noisePrecentile));
+        }
+        double[] paramLinearRegress = fitter.getParams();
+        double[] fullBaseLineY = new double[this.SignalProcessed.size()];
+        for (int i = 0; i < fullBaseLineY.length; i++) {
+            fullBaseLineY[i] = paramLinearRegress[0] + paramLinearRegress[1]*i + paramLinearRegress[2]*i*i + paramLinearRegress[3]*Math.pow(i,3);
+            this.SignalProcessed.set(i, this.SignalProcessed.get(i) - fullBaseLineY[i]);
+        }
+
+        // test
+//        Fitter.plot(fitter);
+//        AlgVector temp = new AlgVector(fullBaseLineY);
+//        compareSignal(this.SignalProcessed, temp);
+//        showSignal(this.SignalProcessed);
     }
 
     /* filtfilt - Zero phase filtering with specified LPF */
