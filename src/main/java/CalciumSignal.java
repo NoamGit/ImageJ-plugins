@@ -1,27 +1,18 @@
 import biz.source_code.dsp.filter.*;
 import biz.source_code.dsp.util.ArrayUtils;
-<<<<<<< HEAD
-import ij.IJ;
-import ij.gui.Plot;
-import ij.plugin.frame.Fitter;
-=======
 import com.sun.org.glassfish.external.statistics.Statistic;
 import ij.IJ;
 import ij.gui.Plot;
 import ij.plugin.frame.Fitter;
 import org.apache.commons.math3.stat.descriptive.StatisticalSummary;
 import org.apache.commons.math3.stat.descriptive.StatisticalSummaryValues;
->>>>>>> origin/master
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import weka.core.AlgVector;
 import ij.measure.CurveFitter;
-<<<<<<< HEAD
-=======
 import weka.core.Statistics;
->>>>>>> origin/master
 
 import java.awt.*;
 import java.io.File;
@@ -39,13 +30,6 @@ public class CalciumSignal {
 /* Properties */
 
     protected AlgVector signalRaw;
-<<<<<<< HEAD
-    protected double activityStatus = 0;
-    protected ArrayList<Double> SignalProcessed = new ArrayList<Double>(); // gives finally the values for DF/F
-    private IirFilterCoefficients filterCoefficients;
-    private float noisePrecentile; //30% percentile
-    public int isactiveFlag = 0;
-=======
     protected ArrayList<Double> SignalProcessed = new ArrayList<Double>(); // gives finally the values for DF/F
     private float[] sig2Detrend;
     private float mean;
@@ -53,7 +37,6 @@ public class CalciumSignal {
     private float noisePrecentile; //30% percentile
     private float detectionVariance; // over this threshold there is a good chance for cell's activity
     public boolean isactiveFlag = false;
->>>>>>> origin/master
 
 /* Methods */
 
@@ -65,15 +48,12 @@ public class CalciumSignal {
 
     public CalciumSignal(float[] initSig){
         this.signalRaw = new AlgVector(FloatToDouble(initSig));
-<<<<<<< HEAD
-=======
         // subtract mean
         this.mean = average(initSig);
         this.sig2Detrend = initSig;
         for (int i = 0; i < this.sig2Detrend.length; i++){
             this.sig2Detrend[i] = this.sig2Detrend[i] - this.mean;
         }
->>>>>>> origin/master
         initilaize();
     }
 
@@ -81,12 +61,8 @@ public class CalciumSignal {
         filterCoefficients = new IirFilterCoefficients();
         filterCoefficients.b = new double[]{2.094852E-14,  1.047426E-13, 2.094852E-13,  2.094852E-13, 1.047426E-13, 2.094852E-14}; // default LPF coefficients
         filterCoefficients.a = new double[]{1.000, -4.9923054980901425, 9.96927569026119, -9.95399387801544, 4.9693826781446955, -0.9923589922996323};
-<<<<<<< HEAD
-        this.noisePrecentile = (float)0.30;
-=======
         this.noisePrecentile = (float)0.7;
         detectionVariance = (float)2;
->>>>>>> origin/master
     }
 
     protected void setSignal(double[] values) {
@@ -106,14 +82,6 @@ public class CalciumSignal {
         int i = 0;
         for (Double f : array) {
             out[i++] = (float)(f != null ? f : Float.NaN);
-        }
-        return out;
-    }
-    private static double[] FloatToDouble(float[] array){
-        double[] out = new double[array.length];
-        int i = 0;
-        for (float f : array) {
-            out[i++] = (double)(f);
         }
         return out;
     }
@@ -138,20 +106,12 @@ public class CalciumSignal {
         return this.SignalProcessed;
     }
 
-<<<<<<< HEAD
-    public ArrayList<Double> getSignalProcessed(){
-        return this.SignalProcessed;
-    }
-
-            // PLOT METHODS
-=======
     public static double sum(ArrayList<Double> list) {
 
         double sum = 0;
         for (int i = 0; i < list.size(); i++){
             sum = sum + list.get(i);
         }
->>>>>>> origin/master
 
         return sum;
     }
@@ -283,20 +243,6 @@ public class CalciumSignal {
         plot.show();
     }
 
-<<<<<<< HEAD
-    public void showSignalProccesed() {
-        double[] x = new double[this.SignalProcessed.size()];
-        double[] y = new double[this.SignalProcessed.size()];
-        for (int i = 0; i < x.length; i++) {
-            x[i] = i;
-            y[i] = this.SignalProcessed.get(i);
-        }
-        Plot plot = new Plot("Plot window", "x", "values", x, y);
-        plot.show();
-    }
-
-                // SIGNAL ANALYSIS METHODS
-=======
     // SIGNAL ANALYSIS METHODS
 
     /* detrend signal by LPF ; Source - http://www.source-code.biz/dsp/java/ */
@@ -314,7 +260,6 @@ public class CalciumSignal {
 //        showSignal();
 //        compareSignal(trend, this.signalRaw);
 //        compareSignal(this.SignalProcessed, this.signalRaw);
->>>>>>> origin/master
 
         return trend;
     }
@@ -351,30 +296,6 @@ public class CalciumSignal {
             }
         }
 
-<<<<<<< HEAD
-        // TODO - fix show Message
-        CurveFitter fitter = new CurveFitter(getDoubleFromArrayList(baselineValues_index),getDoubleFromArrayList(baselineValues));
-        fitter.doFit(CurveFitter.POLY3);
-
-        if (fitter.getRSquared() < 0.7){
-//            IJ.error("");
-            IJ.showMessage("Detrending issue", "Goodness of fit of Linear regression is low = ( " +
-                    String.valueOf(fitter.getRSquared())+" )\n You might consider choosing a different noise percentile in histogram\n" +
-                    "(current noise percentile )" + String.valueOf(this.noisePrecentile));
-        }
-        double[] paramLinearRegress = fitter.getParams();
-        double[] fullBaseLineY = new double[this.SignalProcessed.size()];
-        for (int i = 0; i < fullBaseLineY.length; i++) {
-            fullBaseLineY[i] = paramLinearRegress[0] + paramLinearRegress[1]*i + paramLinearRegress[2]*i*i + paramLinearRegress[3]*Math.pow(i,3);
-            this.SignalProcessed.set(i, this.SignalProcessed.get(i) - fullBaseLineY[i]);
-        }
-
-        // test
-//        Fitter.plot(fitter);
-//        AlgVector temp = new AlgVector(fullBaseLineY);
-//        compareSignal(this.SignalProcessed, temp);
-//        showSignal(this.SignalProcessed);
-=======
         // TODO - fix show Message of goddness of fit
         CurveFitter fitter = new CurveFitter(getDoubleFromArrayList(baselineValues_index),getDoubleFromArrayList(baselineValues));
         fitter.doFit(CurveFitter.POLY3);
@@ -432,7 +353,6 @@ public class CalciumSignal {
         if(variance(this.SignalProcessed) > this.detectionVariance){
             this.isactiveFlag = true;
         }
->>>>>>> origin/master
     }
 
     /* filtfilt - Zero phase filtering with specified LPF */
@@ -468,7 +388,8 @@ public class CalciumSignal {
     public static void main(String arg[]) throws IOException {
 
         // test class
-        String path = "C:\\Users\\Noam\\Dropbox\\# graduate studies m.sc\\# SLITE\\ij - plugin data\\";
+        String path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\";
+//        String path = "C:\\Users\\Noam\\Dropbox\\# graduate studies m.sc\\# SLITE\\ij - plugin data\\";
         CalciumSignal sig = new CalciumSignal();
         File traceSample = new File(path+"trace sample\\cell8.xlsx");
         FileInputStream fis = null;

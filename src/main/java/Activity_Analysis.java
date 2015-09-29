@@ -58,12 +58,9 @@ public class Activity_Analysis implements PlugIn {
     /*Run method for full Activity Analysis*/
     public void run(String arg) {
 //        // 4 Debugging - load stack
-<<<<<<< HEAD
-        this.imp = IJ.openImage("C:\\Users\\noambox\\Desktop\\Test Images - ImageJ\\FLASH_20msON_10Hz_SLITE_1.tif"); // DEBUG
-=======
-        String path = "C:\\Users\\Noam\\Dropbox\\# graduate studies m.sc\\# SLITE\\ij - plugin data\\";
+        String path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\";
+//        String path = "C:\\Users\\Noam\\Dropbox\\# graduate studies m.sc\\# SLITE\\ij - plugin data\\";
         this.imp = IJ.openImage(path+"FLASH_20msON_10Hz_SLITE_1.tif"); // DEBUG
->>>>>>> origin/master
         this.stack = imp.getStack();
 
 //        // Validate data type (Stacks)
@@ -81,14 +78,9 @@ public class Activity_Analysis implements PlugIn {
 //        ImagePlus imp_prob = segmentator.applyClassifier(avr_img, 0, true); // get probabilities image
 
         // Threshold ,Binary & Erode
-<<<<<<< HEAD
-        ImagePlus imp_prob = IJ.openImage("C:\\Users\\noambox\\Desktop\\Test Images - ImageJ\\ProbImage.tif"); // DEBUG
-        ImageStack probStack = imp_prob.getStack();
-=======
         ImagePlus imp_prob = IJ.openImage(path+"ProbImage.tif"); // DEBUG
         ImageStack probStack = imp_prob.getStack();
         imp_prob.show();
->>>>>>> origin/master
         probStack.deleteLastSlice();
         imp_prob.setStack(probStack);
         ImageConverter converter = new ImageConverter(imp_prob);
@@ -118,19 +110,7 @@ public class Activity_Analysis implements PlugIn {
             ca_sig.showSignalProccesed();
             IJ.showMessage("activity variance - " + ca_sig.variance(ca_sig.SignalProcessed));
 
-<<<<<<< HEAD
-//        for (int k=1; k<=size;){
-//            CalciumSignal ca_sig = new CalciumSignal(getBlobTimeProfile(cellLocation.get(k)));
-//            ca_sig.DetrendSignal();
-//            ca_sig.EstimateBaseline();
-//
-////            ArrayList<> = cellLocation.get(k).evaluateCustomFeature("DeltaFoverF_Blob", ca_sig);
-//            // TODO  - test by plotting the signals
-//            // ca_sig.showSignalProccesed();
-//        }
-=======
         }
->>>>>>> origin/master
 
         /*Tests*/
 
@@ -142,11 +122,7 @@ public class Activity_Analysis implements PlugIn {
         float[] trace = getBlobTimeProfile(cell);
     }
 
-<<<<<<< HEAD
-     /* method for extracting cells data with ij_blob plugin */
-=======
     /* method for extracting cells data with ij_blob plugin */
->>>>>>> origin/master
     private ManyBlobs FilterAndGetCells(ImagePlus imp) {
         allBlobs = new ManyBlobs(imp); // Extended ArrayList
         allBlobs.setBackground(1);
@@ -184,7 +160,7 @@ public class Activity_Analysis implements PlugIn {
             analyzer.saveResults(stats, roi);
             values[i-1] = (float)stats.mean;
         }
-          return values;
+        return values;
     }
 
     /* Get Average image for processing */
