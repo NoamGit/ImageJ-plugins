@@ -1,52 +1,32 @@
 import fiji.threshold.Auto_Local_Threshold;
-import fiji.threshold.Auto_Threshold;
+import ij.IJ;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.blob.Blob;
+import ij.blob.ManyBlobs;
+import ij.gui.NewImage;
+import ij.gui.PolygonRoi;
+import ij.gui.Roi;
 import ij.measure.Calibration;
-import ij.measure.ResultsTable;
-import ij.plugin.filter.Analyzer;
-import ij.plugin.filter.Binary;
-import imagescience.transform.Crop;
-import net.imagej.ops.Ops;
-import net.imagej.ops.crop.CropImgPlus;
-import org.apache.commons.math3.geometry.Vector;
-import org.apache.commons.math3.geometry.euclidean.oned.Vector1D;
-import org.apache.commons.math3.geometry.euclidean.oned.Vector1DFormat;
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.jfree.data.xy.VectorDataItem;
-import org.jfree.data.xy.VectorXYDataset;
-import org.scijava.command.Command;
-import ij.blob.*;
-import org.junit.*;
-import static org.junit.Assert.assertEquals;
-
-
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
-import ij.*;
-import ij.plugin.*;
-import ij.process.*;
 import ij.plugin.PlugIn;
-import net.imagej.ImageJ;
-import net.imagej.Main;
-import sun.misc.Signal;
-import trainableSegmentation.*;
-
-import ij.gui.*;
-import weka.core.AlgVector;
-import weka.core.matrix.Matrix;
-import weka.filters.Filter;
+import ij.plugin.ZProjector;
+import ij.plugin.filter.Analyzer;
+import ij.process.Blitter;
+import ij.process.ImageConverter;
+import ij.process.ImageProcessor;
+import ij.process.ImageStatistics;
+import org.junit.Test;
+import org.scijava.command.Command;
+import org.scijava.plugin.Plugin;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
-import java.awt.image.CropImageFilter;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Objects;
-// import java.util.function.BinaryOperator;
+
+import static org.junit.Assert.assertEquals;
 
 /*
 author: Noam Cohen
 */
-/* This plugin is tended for the use of Calcium activity Analysis.
+/* This plugin is for the use of Calcium activity Analysis.
 It detects cells, Calculates their activity trace and returns the dF/F of the interesting ones
 */
 
@@ -78,8 +58,10 @@ public class Activity_Analysis implements PlugIn {
     /*Run method for full Activity Analysis*/
     public void run(String arg) {
 //        // 4 Debugging - load stack
-//        ImagePlus imp = IJ.openImage("C:\\Users\\noambox\\Desktop\\FLASH_20msON_10Hz_SLITE_1.tif");
-//
+        String path = "C:\\Users\\Noam\\Dropbox\\# graduate studies m.sc\\# SLITE\\ij - plugin data\\";
+        this.imp = IJ.openImage(path+"FLASH_20msON_10Hz_SLITE_1.tif"); // DEBUG
+        this.stack = imp.getStack();
+
 //        // Validate data type (Stacks)
 //        //ImagePlus imp = IJ.getImage();
 //        if (imp.getStackSize()==1)
@@ -92,38 +74,45 @@ public class Activity_Analysis implements PlugIn {
 //        WekaSegmentation segmentator = new WekaSegmentation( avr_img );
 //        segmentator.loadClassifier("C:\\Users\\noambox\\Documents\\NielFiji-repo\\Fiji" +
 //                "\\Self Customized Parameters\\Classifiers\\classifier1.model");
-//        ImagePlus prob = segmentator.applyClassifier(avr_img, 0, true); // get probabilities image
+//        ImagePlus imp_prob = segmentator.applyClassifier(avr_img, 0, true); // get probabilities image
 
         // Threshold ,Binary & Erode
-        this.imp = IJ.openImage("C:\\Users\\noambox\\Desktop\\Test Images - ImageJ\\ProbImage.tif"); // DEBUG
-        ImageStack probStack = this.imp.getStack();
+        ImagePlus imp_prob = IJ.openImage(path+"ProbImage.tif"); // DEBUG
+        ImageStack probStack = imp_prob.getStack();
+        imp_prob.show();
         probStack.deleteLastSlice();
-        this.imp.setStack(probStack);
-        ImageConverter converter = new ImageConverter(this.imp);
+        imp_prob.setStack(probStack);
+        ImageConverter converter = new ImageConverter(imp_prob);
         converter.convertToGray8();
         Auto_Local_Threshold thresholder = new Auto_Local_Threshold();
-        Object[] result = thresholder.exec(this.imp, THRESH_METHOD, THRESH_RADIUS, THRESH_P1, 0, false);
+        Object[] result = thresholder.exec(imp_prob, THRESH_METHOD, THRESH_RADIUS, THRESH_P1, 0, false);
+        this.imp = imp_prob;
         IJ.run(this.imp, "Options...", "iterations=" + MORPH_ITER + "count=" + MORPH_COUNT + "black do=" + MORPH_PROC);
         IJ.run(this.imp, "Watershed", "");
 
-        // Add features and detect blobs
-        ManyBlobs cellLocation =  FilterAndGetCells(this.imp);
+        // Add location features and detect blobs
+        ManyBlobs cellLocation = FilterAndGetCells(this.imp);
 
-        ImagePlus imp = IJ.openImage("C:\\Users\\noambox\\Desktop\\FLASH_20msON_10Hz_SLITE_1.tif");  // Debug
+        // Add Cs Signal as blob feature
+        MyBlobFeature myOwnFeature = new MyBlobFeature();
+
+        Blob.addCustomFeature(myOwnFeature);
         // for evey Blob take the trace form the stack
-        int size = this.stack.getSize();
+        int size = cellLocation.size();
 
-        for (int k=1; k<=size;){
-            getBlobTimeProfile(cellLocation.get(k));
+        for (int k=size-7; k<size;k++){
+            CalciumSignal ca_sig = new CalciumSignal(getBlobTimeProfile(cellLocation.get(k)));
+            ca_sig.DeltaF();
+
+//            ArrayList<> = cellLocation.get(k).evaluateCustomFeature("DeltaFoverF_Blob", ca_sig);
+            // test by plotting the signals
+            ca_sig.showSignalProccesed();
+            IJ.showMessage("activity variance - " + ca_sig.variance(ca_sig.SignalProcessed));
+
         }
-//        prob_image.show();
 
         /*Tests*/
-//        try {
-//            test_Thorsten();
-//        } catch (NoSuchMethodException e) {
-//            e.printStackTrace();
-//        }
+
         return;
     }
 
@@ -132,24 +121,19 @@ public class Activity_Analysis implements PlugIn {
         float[] trace = getBlobTimeProfile(cell);
     }
 
-     /* method for extracting cells data with ij_blob plugin */
-    private ManyBlobs FilterAndGetCells(ImagePlus imp){
+    /* method for extracting cells data with ij_blob plugin */
+    private ManyBlobs FilterAndGetCells(ImagePlus imp) {
         allBlobs = new ManyBlobs(imp); // Extended ArrayList
         allBlobs.setBackground(1);
         allBlobs.findConnectedComponents(); // Start the Connected Component Algorithm
         MyBlobFeature myOwnFeature = new MyBlobFeature();
         Blob.addCustomFeature(myOwnFeature);
         ManyBlobs filteredBlobs = new ManyBlobs();
-        try {
-            ManyBlobs filterArea = allBlobs.filterBlobs(0.003, 1, Blob.GETENCLOSEDAREA);
-            ManyBlobs filterAspRatio = filterArea.filterBlobs(0.5, 2.5, Blob.GETASPECTRATIO);
-            filteredBlobs = filterAspRatio.filterBlobs(0, 1, "LocationFeature", imp.getWidth(), imp.getHeight(), ELLIPSE_a, ELLIPSE_b);
-            ImagePlus label_imp = filteredBlobs.getLabeledImage();
-//            label_imp.show();
-            }
-        catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
+        ManyBlobs filterArea = allBlobs.filterBlobs(0.003, 1, Blob.GETENCLOSEDAREA);
+        ManyBlobs filterAspRatio = filterArea.filterBlobs(0.5, 2.5, Blob.GETASPECTRATIO);
+        filteredBlobs = filterAspRatio.filterBlobs(0, 1, "LocationFeature", imp.getWidth(), imp.getHeight(), ELLIPSE_a, ELLIPSE_b);
+//        ImagePlus label_imp = filteredBlobs.getLabeledImage();
+//        label_imp.show();
         return filteredBlobs;
     }
 
