@@ -1,3 +1,5 @@
+package sliteanalysis;
+
 import biz.source_code.dsp.filter.*;
 import biz.source_code.dsp.util.ArrayUtils;
 import com.sun.org.glassfish.external.statistics.Statistic;
@@ -36,6 +38,7 @@ public class CalciumSignal {
     private IirFilterCoefficients filterCoefficients;
     private float noisePrecentile; //30% percentile
     private float detectionVariance; // over this threshold there is a good chance for cell's activity
+    public double activityVariance = 0;
     public boolean isactiveFlag = false;
 
 /* Methods */
@@ -65,7 +68,7 @@ public class CalciumSignal {
         detectionVariance = (float)2;
     }
 
-    protected void setSignal(double[] values) {
+    public void setSignal(double[] values) {
         // subtract mean
         this.mean = (float) average(values);
         this.signalRaw = new AlgVector(values);
@@ -350,7 +353,8 @@ public class CalciumSignal {
             this.SignalProcessed.set(i, (this.signalRaw.getElement(i) - f0)/f0);
         }
         // Flag activity
-        if(variance(this.SignalProcessed) > this.detectionVariance){
+        this.activityVariance = variance(this.SignalProcessed);
+        if( this.activityVariance > this.detectionVariance){
             this.isactiveFlag = true;
         }
     }

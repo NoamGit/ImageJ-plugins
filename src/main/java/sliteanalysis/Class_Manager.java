@@ -1,3 +1,5 @@
+package sliteanalysis;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.PlugIn;

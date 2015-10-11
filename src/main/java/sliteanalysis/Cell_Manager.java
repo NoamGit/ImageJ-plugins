@@ -1,13 +1,13 @@
+package sliteanalysis;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import java.awt.List;
 import java.util.zip.*;
+import javax.swing.*;
 import javax.swing.table.*;
-import javax.swing.JTable;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import ij.*;
@@ -19,10 +19,14 @@ import ij.plugin.PlugIn;
 import ij.plugin.filter.PlugInFilter;
 import ij.plugin.filter.Analyzer;
 import ij.plugin.frame.PlugInFrame;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import java.awt.datatransfer.*;
 
-/**
- */
+/* Cell manager class */
 class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         ClipboardOwner, KeyListener, Runnable {
 
@@ -38,7 +42,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     boolean done = false;
     Canvas previousCanvas = null;
     Thread thread;
-
+    JFileChooser fc;
 
     public CellManager(ImagePlus imp) {
         super("Cell Manager");
@@ -63,14 +67,20 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         table.setShowGrid(false);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
 
-        // create status colum for activity display
+    /*    // create status colum for activity display
         TableColumn statusCol = new TableColumn();
         statusCol.setHeaderValue("Status");
-        table.addColumn(statusCol);
+        table.addColumn(statusCol);*/
 
         // Set the width of the first and last column
         table.getColumnModel().getColumn(0).setPreferredWidth(25);
-        table.getColumnModel().getColumn(2).setPreferredWidth(25);
+        table.getColumnModel().getColumn(2).setMinWidth(0);
+        table.getColumnModel().getColumn(2).setMaxWidth(0);
+        table.getColumnModel().getColumn(2).setPreferredWidth(0);
+        table.getColumnModel().getColumn(3).setMinWidth(0);
+        table.getColumnModel().getColumn(3).setMaxWidth(0);
+        table.getColumnModel().getColumn(3).setPreferredWidth(0);
+        table.getColumnModel().getColumn(4).setPreferredWidth(25);
 
 
         JScrollPane scrollPane = new JScrollPane(table);
@@ -94,16 +104,16 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
 //        addButton("Add+Draw<CR>");
 //        addButton("Add Particles");
 //        addButton("Update");
+//        addButton("Measure");
+//        addButton("Draw");
+//        addButton("Fill");
         addButton("Delete");
         addButton("Open");
         addButton("Open All");
         addButton("Save");
         addButton("Toggle Select All");// was 'Select All'
-//        addButton("Measure");
         addButton("DF/F");
         addButton("Multi");
-//        addButton("Draw");
-//        addButton("Fill");
         addButton("Label All ROIs");
         addButton("Copy List");
 
@@ -160,8 +170,6 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         super.windowClosing(e);
         done = true;
     }
-
-
 
     void addButton(String label) {
         Button b = new Button(label);
@@ -234,8 +242,9 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         tmodel.addRoi(label, roi.clone(), cas);
 
         // TODO: fix status plot by setValue or any other method
-        table.getValueAt(tmodel.numRows-1, 2);
-        table.setValueAt(6,tmodel.numRows-1,2);
+//        table.setValueAt(Double.toString(cas.activityVariance), tmodel.numRows - 1, 4);
+//        table.setValueAt("test", tmodel.numRows - 1,4);
+
     }
 
     boolean add() {
@@ -625,19 +634,23 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         return name2;
     }
 
-    // TODO - save data as a xml file
+    // TODO - enable single trace saving and raw data saving
     boolean save() {
         if (table.getRowCount() == 0) // was if (list.getItemCount()==0)
             return error("The list is empty."); // was "The selection list is empty"
         int indexes[] = table.getSelectedRows();//list.getSelectedIndexes();
+        JFileChooser fc = new JFileChooser();
         // I dont get this - first we say: if nothing is selected, say so and then we select all items.
         // what is the point in that?
         // if (indexes.length==0)
         //	indexes = getAllIndexes();
         if(indexes.length==0){ error("At least one ROI must be selected from the list."); }
-        if (indexes.length>1)
-            return saveMultiple(indexes, null);
-        String name = (String)tmodel.getValueAt(indexes[0],1); // was list.getItem(indexes[0]);
+        if (indexes.length>1){
+            //Create a file chooser
+            int returnVal = fc.showSaveDialog(CellManager.this);
+            return saveMultiple(indexes, fc.getSelectedFile().getPath());
+        }
+        String name = (String) tmodel.getValueAt(indexes[0],1); // was list.getItem(indexes[0]);
         Macro.setOptions(null);
         SaveDialog sd = new SaveDialog("Save Selection...", name, ".roi");
         String name2 = sd.getFileName();
@@ -654,6 +667,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         if(rownum == -1){ return error("No entry matching " + name + " was found."); }
 
         // OK - we're all good! Update the entry
+        // TODO change 3 to 4
         tmodel.updateRoi(rownum, newName, tmodel.getValueAt(rownum, 2), (Boolean) tmodel.getValueAt(rownum,3));
 
         // Before I changed things is looked like this
@@ -680,11 +694,15 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             path = dir+name;
         }
         try {
+            // save ROI to ZIP
             ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(path));
             DataOutputStream out = new DataOutputStream(new BufferedOutputStream(zos));
             RoiEncoder re = new RoiEncoder(out);
             String name = "";
+            CalciumSignal cas = new CalciumSignal();
             Roi roi = null;
+
+            // Save Roi
             for (int i=0; i<indexes.length; i++) {
                 //String label = list.getItem(indexes[i]);
                 //Roi roi = (Roi)rois.get(label);
@@ -698,6 +716,28 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
                 out.flush();
             }
             out.close();
+
+            // Save signals
+            File myFile = new File(path +".xlsx");
+            XSSFWorkbook myWorkBook = new XSSFWorkbook(); // Return first sheet from the XLSX workbook
+            XSSFSheet mySheet = myWorkBook.createSheet(); // Get iterator to all the rows in current sheet
+
+            int rownum = 0;
+            for (int i=0; i<indexes.length; i++) {
+                Row row = mySheet.createRow(rownum++); // create row
+                cas = (CalciumSignal) tmodel.getValueAt(indexes[i],3);
+                int cellnum = 0;
+                Cell cell = row.createCell(cellnum++);
+                cell.setCellValue((String)tmodel.getValueAt(indexes[i],1));
+                for (int j=1; j<cas.signalSize(); j++) {
+                    cell = row.createCell(cellnum++);
+                    cell.setCellValue(cas.SignalProcessed.get(j));
+                }
+            }
+            FileOutputStream fos = new FileOutputStream(myFile);
+            myWorkBook.write(fos);
+            System.out.println("Writing on XLSX file Finished ...");
+
         }
         catch (IOException e) {
             error(""+e);
@@ -725,7 +765,6 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         //  				list.select(i);
         //  		}
     }
-
 
     boolean measure() {
         ImagePlus imp = getImage();
@@ -1049,17 +1088,19 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     }
 }
 
-/**
- */
+/* CMT class */
 class CellManagerTableModel extends AbstractTableModel{
-    protected static int NUM_COLUMNS = 2;
+    protected static int NUM_COLUMNS = 5;
     protected static int START_NUM_ROWS = 0;
     protected int nextEmptyRow = 0;
     protected int numRows = 0;
 
     static final public String LABELINDEX = "#";
     static final public String LABEL = "Label";
-    static final public String STATUS  = "Active?";
+    static final public String ROI  = "Roi";
+    static final public String CASIG  = "CaSignal";
+    static final public String STATUS  = "Var";
+
 
     protected Vector data = null;
 
@@ -1074,6 +1115,10 @@ class CellManagerTableModel extends AbstractTableModel{
             case 1:
                 return LABEL;
             case 2:
+                return ROI;
+            case 3:
+                return CASIG;
+            case 4:
                 return STATUS;
         }
         return "";
@@ -1103,9 +1148,12 @@ class CellManagerTableModel extends AbstractTableModel{
                     return mmr.getRoi();
                 case 3:
                     return mmr.getCaSignal();
+                case 4:
+                    return mmr.getCaVar();
             }
         } catch (Exception e) {
             //TODO catch the exception
+            IJ.showMessage(" ERROR: getVal of CMT  is out of bound");
         }
         return "";
     }
@@ -1134,7 +1182,7 @@ class CellManagerTableModel extends AbstractTableModel{
         currmmr.setLabel(label);
         currmmr.setStatus(activeFlag);
         currmmr.setRoi(roi);
-        data.setElementAt(currmmr,index);
+        data.setElementAt(currmmr, index);
 
         fireTableRowsUpdated(index, index);
     }
@@ -1189,7 +1237,6 @@ class CellManagerTableModel extends AbstractTableModel{
         fireTableRowsInserted(index, index);
     }
 
-
     public void reindexRois(){
         int dl = data.size();
         Vector tmp = new Vector();
@@ -1209,14 +1256,35 @@ class CellManagerTableModel extends AbstractTableModel{
         numRows--;
         fireTableRowsDeleted(index, index);
     }
+
+    public void setValueAt(Object obj, int r, int c) {
+        try {
+            CellManagerRoi mmr = (CellManagerRoi)data.elementAt(r);
+            switch(c){
+                case 1:
+                    mmr.setLabel(obj.toString());
+                case 2:
+                    mmr.setStatus((Boolean) obj);
+                case 3:
+                    mmr.setRoi( obj );
+                case 4:
+                    mmr.set_casVar((Double) obj);
+            }
+        } catch (Exception e) {
+             IJ.showMessage("ERROR: setValue of CMT class was not performed - outbound c");        }
+        //data[r][c] = ((Integer) obj).intValue();
+        fireTableCellUpdated(r, c);
+    }
 }
 
+/* CMR class */
 class CellManagerRoi{
     private int _labelindex = 0;
     private String _label = "";
     private boolean _activeFlag = false;
     private Object _roi = null;
     private CalciumSignal _caSignal = new CalciumSignal();
+    private double _casVar = 0;
 
     public CellManagerRoi(int labelindex, String label){
         _labelindex = labelindex;
@@ -1235,6 +1303,7 @@ class CellManagerRoi{
         _activeFlag = cas.isactiveFlag;
         _roi = roi;
         _caSignal = cas;
+        _casVar  = cas.activityVariance;
     }
 
     public CellManagerRoi(String label){
@@ -1251,7 +1320,9 @@ class CellManagerRoi{
     public String getLabel(){ return _label; }
     public Object getRoi(){ return _roi; }
     public boolean getStatus(){ return _activeFlag; }
+    public double getCaVar(){ return _casVar;}
 
+    public void set_casVar( double var ){ _casVar = var; }
     public void setLabelindex(int labelindex){ _labelindex = labelindex; }
     public void setLabel(String label){ _label = label; }
     public void setStatus(boolean status){ _activeFlag = status; }

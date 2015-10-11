@@ -1,3 +1,5 @@
+package sliteanalysis;
+
 /**
  * Created by noambox on 8/26/2015.
  */
@@ -30,9 +32,9 @@ public class MyBlobFeature extends CustomBlobFeature {
         return feature;
     }
 
-    public ArrayList<Double> DeltaFoverF_Blob(CalciumSignal ca_sig) {
+/*    public ArrayList<Double> DeltaFoverF_Blob(CalciumSignal ca_sig) {
         ArrayList<Double> feature = ca_sig.getSignalProcessed();
         return feature;
-    }
+    }*/
 
 }

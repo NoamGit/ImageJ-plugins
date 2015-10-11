@@ -3,6 +3,9 @@ import ij.ImagePlus;
 import ij.blob.Blob;
 import ij.blob.ManyBlobs;
 import org.junit.*;
+import sliteanalysis.Activity_Analysis;
+import sliteanalysis.MyBlobFeature;
+
 import static org.junit.Assert.assertEquals;
 
 public class Activity_AnalysisTest {

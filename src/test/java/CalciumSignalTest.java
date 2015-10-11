@@ -12,12 +12,13 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Vector;
 
+import sliteanalysis.CalciumSignal;
 import static org.junit.Assert.*;
 
 /**
  * Created by noambox on 8/31/2015.
  */
-public class CalciumSignalTest {
+class CalciumSignalTest {
 
     @Test
     public void testSetSignal() {
@@ -76,7 +77,7 @@ public class CalciumSignalTest {
             }
             sig.setSignal(values);
             sig.DetrendSignal();
-            sig.showSignal(sig.SignalProcessed);
+//            sig.showSignal(sig.SignalProcessed);
 
         }
         catch (FileNotFoundException e) {

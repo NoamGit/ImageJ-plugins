@@ -1,0 +1,29 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Activity_Analysis_Plugin-1.0.1">
+    <output-path>$PROJECT_DIR$/classes/artifacts/Activity_Analysis_Plugin_1_0_1</output-path>
+    <root id="archive" name="Activity_Analysis_Plugin-1.0.1.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" />
+        <element id="directory" name="maven">
+          <element id="directory" name="sc.fiji">
+            <element id="directory" name="Activity_Analysis">
+              <element id="file-copy" path="$PROJECT_DIR$/test_save/pom.properties" />
+              <element id="file-copy" path="$PROJECT_DIR$/pom.xml" />
+            </element>
+          </element>
+        </element>
+      </element>
+      <element id="directory" name="sliteanalysis">
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Activity_Analysis.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/MyBlobFeature.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Class_Manager.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/CellManagerTableModel.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/CellManager.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/CellManagerRoi.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/CellManager$1.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/CalciumSignal.class" />
+      </element>
+      <element id="file-copy" path="$PROJECT_DIR$/test_save/plugins.config" />
+    </root>
+  </artifact>
+</component>
