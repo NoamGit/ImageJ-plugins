@@ -110,8 +110,11 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         addButton("Delete");
         addButton("Open");
         addButton("Open All");
-        addButton("Save");
+        addButton("Save RAW");
+        addButton("Save DF");
         addButton("Toggle Select All");// was 'Select All'
+        addButton("Add Cell");
+        addButton("RAW Signal");
         addButton("DF/F");
         addButton("Multi");
         addButton("Label All ROIs");
@@ -196,12 +199,18 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             open(null);
         else if (command.equals("Open All"))
             openAll();
-        else if (command.equals("Save"))
-            save();
+        else if (command.equals("Save DF"))
+            saveDf();
+        else if (command.equals("Save RAW"))
+            saveRaw();
         else if (command.equals("Toggle Select All"))// was 'Select All'
             selectAll();
         else if (command.equals("Measure"))
             measure();
+        else if (command.equals("Add Cell"))
+            additionalCell();
+        else if (command.equals("RAW Signal"))
+            rawSignal();
         else if (command.equals("DF/F"))
             dfOverF();
         else if (command.equals("Multi"))
@@ -241,10 +250,17 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         //rois.put(label, roi.clone());
         tmodel.addRoi(label, roi.clone(), cas);
 
-        // TODO: fix status plot by setValue or any other method
 //        table.setValueAt(Double.toString(cas.activityVariance), tmodel.numRows - 1, 4);
 //        table.setValueAt("test", tmodel.numRows - 1,4);
 
+    }
+
+    public void additionalCell(){
+        // TODO adds a ROI and its signal even if it wasn't picked by the classifier
+    }
+
+    public void rawSignal(){
+        // TODO plots raw signal
     }
 
     boolean add() {
@@ -634,8 +650,8 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         return name2;
     }
 
-    // TODO - enable single trace saving and raw data saving
-    boolean save() {
+    // TODO - enable single trace saving
+    boolean saveDf() {
         if (table.getRowCount() == 0) // was if (list.getItemCount()==0)
             return error("The list is empty."); // was "The selection list is empty"
         int indexes[] = table.getSelectedRows();//list.getSelectedIndexes();
@@ -667,7 +683,6 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         if(rownum == -1){ return error("No entry matching " + name + " was found."); }
 
         // OK - we're all good! Update the entry
-        // TODO change 3 to 4
         tmodel.updateRoi(rownum, newName, tmodel.getValueAt(rownum, 2), (Boolean) tmodel.getValueAt(rownum,3));
 
         // Before I changed things is looked like this
@@ -680,6 +695,11 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         //list.replaceItem(newName, indexes[0]);
         if (restore(indexes[0]))
             IJ.run("Selection...", "path='"+dir+newName+".roi'");
+        return true;
+    }
+
+    boolean saveRaw(){
+    // TODO - enable raw data saving
         return true;
     }
 
@@ -1152,7 +1172,6 @@ class CellManagerTableModel extends AbstractTableModel{
                     return mmr.getCaVar();
             }
         } catch (Exception e) {
-            //TODO catch the exception
             IJ.showMessage(" ERROR: getVal of CMT  is out of bound");
         }
         return "";

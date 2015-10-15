@@ -4,6 +4,7 @@ package sliteanalysis;
  * Created by noambox on 8/26/2015.
  */
 
+import ij.IJ;
 import ij.ImageStack;
 import ij.blob.*;
 

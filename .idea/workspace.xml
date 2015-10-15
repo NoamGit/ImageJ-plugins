@@ -7,27 +7,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="30c00cf5-e95e-48d7-82b8-a0b7a8f9a4ef" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/artifacts/Activity_Analysis_Plugin_1_0_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/FileChooserDemo.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" />
-      <change type="DELETED" beforePath="C:\Users\noambox\Documents\GitHub\ImageJ-plugins\target\classes\Activity_Analysis.class" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\noambox\Documents\GitHub\ImageJ-plugins\target\classes\CalciumSignal.class" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\noambox\Documents\GitHub\ImageJ-plugins\target\classes\CellManager$1.class" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\noambox\Documents\GitHub\ImageJ-plugins\target\classes\CellManager.class" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\noambox\Documents\GitHub\ImageJ-plugins\target\classes\CellManagerRoi.class" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\noambox\Documents\GitHub\ImageJ-plugins\target\classes\CellManagerTableModel.class" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\noambox\Documents\GitHub\ImageJ-plugins\target\classes\Class_Manager.class" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\noambox\Documents\GitHub\ImageJ-plugins\target\classes\MyBlobFeature.class" afterPath="" />
-      <change type="MOVED" beforePath="C:\Users\noambox\Documents\GitHub\ImageJ-plugins\src\main\java\Activity_Analysis.java" afterPath="$PROJECT_DIR$/src/main/java/sliteanalysis/Activity_Analysis.java" />
-      <change type="MOVED" beforePath="C:\Users\noambox\Documents\GitHub\ImageJ-plugins\src\main\java\CalciumSignal.java" afterPath="$PROJECT_DIR$/src/main/java/sliteanalysis/CalciumSignal.java" />
-      <change type="MOVED" beforePath="C:\Users\noambox\Documents\GitHub\ImageJ-plugins\src\main\java\Cell_Manager.java" afterPath="$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java" />
-      <change type="MOVED" beforePath="C:\Users\noambox\Documents\GitHub\ImageJ-plugins\src\main\java\Class_Manager.java" afterPath="$PROJECT_DIR$/src/main/java/sliteanalysis/Class_Manager.java" />
-      <change type="MOVED" beforePath="C:\Users\noambox\Documents\GitHub\ImageJ-plugins\src\main\java\MyBlobFeature.java" afterPath="$PROJECT_DIR$/src/main/java/sliteanalysis/MyBlobFeature.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/test-classes/Activity_AnalysisTest.class" afterPath="$PROJECT_DIR$/target/test-classes/Activity_AnalysisTest.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/test-classes/CalciumSignalTest.class" afterPath="$PROJECT_DIR$/target/test-classes/CalciumSignalTest.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/Activity_AnalysisTest.java" afterPath="$PROJECT_DIR$/src/test/java/Activity_AnalysisTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/CalciumSignalTest.java" afterPath="$PROJECT_DIR$/src/test/java/CalciumSignalTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/META-INF/json/org.scijava.plugin.Plugin" afterPath="$PROJECT_DIR$/target/classes/META-INF/json/org.scijava.plugin.Plugin" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/sliteanalysis/Activity_Analysis.class" afterPath="$PROJECT_DIR$/target/classes/sliteanalysis/Activity_Analysis.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classes/artifacts/Activity_Analysis_Plugin_1_0_1/Activity_Analysis_Plugin-1.0.1.jar" afterPath="$PROJECT_DIR$/classes/artifacts/Activity_Analysis_Plugin_1_0_1/Activity_Analysis_Plugin-1.0.1.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/sliteanalysis/MyBlobFeature.class" afterPath="$PROJECT_DIR$/target/classes/sliteanalysis/MyBlobFeature.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/sliteanalysis/Activity_Analysis.java" afterPath="$PROJECT_DIR$/src/main/java/sliteanalysis/Activity_Analysis.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java" afterPath="$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/sliteanalysis/MyBlobFeature.java" afterPath="$PROJECT_DIR$/src/main/java/sliteanalysis/MyBlobFeature.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="imagej.iws" />
@@ -63,10 +48,12 @@
       <file leaf-file-name="Activity_Analysis.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/Activity_Analysis.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5882353">
-              <caret line="211" column="74" selection-start-line="211" selection-start-column="73" selection-end-line="211" selection-end-column="74" />
+            <state vertical-scroll-proportion="0.45066273">
+              <caret line="72" column="18" selection-start-line="72" selection-start-column="18" selection-end-line="74" selection-end-column="62" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#7481#7482#0" expanded="true" />
+                <element signature="e#7537#7538#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -199,7 +186,7 @@
       <file leaf-file-name="ManyBlobs.class" pinned="false" current-in-tab="false">
         <entry file="jar://$PROJECT_DIR$/.idea/libraries/ij_blob-1.4.2-SNAPSHOT.jar!/ij/blob/ManyBlobs.class">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
+            <state vertical-scroll-proportion="-86.0625">
               <caret line="184" column="52" selection-start-line="184" selection-start-column="52" selection-end-line="184" selection-end-column="52" />
               <folding />
             </state>
@@ -210,7 +197,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/MyBlobFeature.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+              <caret line="31" column="43" selection-start-line="31" selection-start-column="43" selection-end-line="31" selection-end-column="43" />
               <folding />
             </state>
           </provider>
@@ -220,7 +207,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/CalciumSignal.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="412" column="23" selection-start-line="412" selection-start-column="20" selection-end-line="412" selection-end-column="23" />
+              <caret line="301" column="11" selection-start-line="301" selection-start-column="11" selection-end-line="301" selection-end-column="11" />
               <folding />
             </state>
           </provider>
@@ -229,12 +216,81 @@
       <file leaf-file-name="Cell_Manager.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-21.0">
-              <caret line="1311" column="0" selection-start-line="1311" selection-start-column="0" selection-end-line="1311" selection-end-column="0" />
+            <state vertical-scroll-proportion="-4.5588236">
+              <caret line="701" column="7" selection-start-line="701" selection-start-column="7" selection-end-line="701" selection-end-column="7" />
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#run#0;class#CellManager#0" expanded="false" />
+                <element signature="e#1501#1525#0" expanded="false" />
+                <element signature="e#3460#3492#0" expanded="false" />
+                <element signature="method#windowClosing#0;class#CellManager#0" expanded="false" />
+                <element signature="method#addButton#0;class#CellManager#0" expanded="false" />
+                <element signature="e#8157#8175#0" expanded="false" />
+                <element signature="method#add#0;class#CellManager#0" expanded="false" />
+                <element signature="e#9739#9757#0" expanded="false" />
+                <element signature="method#addParticles#0;class#CellManager#0" expanded="false" />
+                <element signature="e#11623#11641#0" expanded="false" />
+                <element signature="method#addAndDraw#0;class#CellManager#0" expanded="false" />
+                <element signature="method#delete#0;class#CellManager#0" expanded="false" />
+                <element signature="e#12565#12586#0" expanded="false" />
+                <element signature="method#restore#0;class#CellManager#0" expanded="false" />
+                <element signature="e#12744#12781#0" expanded="false" />
+                <element signature="method#open#0;class#CellManager#0" expanded="false" />
+                <element signature="e#16606#16623#0" expanded="false" />
+                <element signature="method#openZip#0;class#CellManager#0" expanded="false" />
+                <element signature="e#21038#21086#0" expanded="false" />
+                <element signature="e#21907#21924#0" expanded="false" />
+                <element signature="method#getUniqueName#0;class#CellManager#0" expanded="false" />
+                <element signature="e#22919#23014#0" expanded="false" />
+                <element signature="e#24460#24506#0" expanded="false" />
+                <element signature="method#saveMultiple#0;class#CellManager#0" expanded="false" />
+                <element signature="e#25879#25921#0" expanded="false" />
                 <element signature="method#selectAll#0;class#CellManager#0" expanded="false" />
+                <element signature="e#27946#27981#0" expanded="false" />
+                <element signature="method#measure#0;class#CellManager#0" expanded="false" />
+                <element signature="method#dfOverF#0;class#CellManager#0" expanded="false" />
+                <element signature="method#multi#0;class#CellManager#0" expanded="false" />
+                <element signature="method#copyList#0;class#CellManager#0" expanded="false" />
+                <element signature="e#32973#33026#0" expanded="false" />
+                <element signature="method#numMeasurements#0;class#CellManager#0" expanded="false" />
+                <element signature="method#fill#0;class#CellManager#0" expanded="false" />
+                <element signature="method#draw#0;class#CellManager#0" expanded="false" />
+                <element signature="method#labelROIs#0;class#CellManager#0" expanded="false" />
+                <element signature="method#updateActiveRoi#0;class#CellManager#0" expanded="false" />
+                <element signature="method#getAllIndexes#0;class#CellManager#0" expanded="false" />
+                <element signature="method#getImage#0;class#CellManager#0" expanded="false" />
+                <element signature="method#error#0;class#CellManager#0" expanded="false" />
+                <element signature="method#processWindowEvent#0;class#CellManager#0" expanded="false" />
+                <element signature="docComment;method#getInstance#0;class#CellManager#0" expanded="false" />
+                <element signature="docComment;method#getROIs#0;class#CellManager#0" expanded="false" />
+                <element signature="method#getROIs#0;class#CellManager#0" expanded="false" />
+                <element signature="docComment;method#keyPressed#0;class#CellManager#0" expanded="false" />
+                <element signature="method#keyPressed#0;class#CellManager#0" expanded="false" />
+                <element signature="docComment;method#main#0;class#CellManager#0" expanded="false" />
+                <element signature="method#main#0;class#CellManager#0" expanded="false" />
+                <element signature="method#getColumnName#0;class#CellManagerTableModel#0" expanded="false" />
+                <element signature="method#getRowCount#0;class#CellManagerTableModel#0" expanded="false" />
+                <element signature="method#getRowNumber#0;class#CellManagerTableModel#0" expanded="false" />
+                <element signature="method#updateRoi#0;class#CellManagerTableModel#0" expanded="false" />
+                <element signature="method#addRoi#0;class#CellManagerTableModel#0" expanded="false" />
+                <element signature="method#addRoi#1;class#CellManagerTableModel#0" expanded="false" />
+                <element signature="method#reindexRois#0;class#CellManagerTableModel#0" expanded="false" />
+                <element signature="method#removeRoi#0;class#CellManagerTableModel#0" expanded="false" />
+                <element signature="method#setValueAt#0;class#CellManagerTableModel#0" expanded="false" />
+                <element signature="class#CellManagerRoi#0" expanded="false" />
+                <element signature="method#CellManagerRoi#0;class#CellManagerRoi#0" expanded="false" />
+                <element signature="method#CellManagerRoi#1;class#CellManagerRoi#0" expanded="false" />
+                <element signature="method#CellManagerRoi#2;class#CellManagerRoi#0" expanded="false" />
+                <element signature="method#CellManagerRoi#4;class#CellManagerRoi#0" expanded="false" />
+                <element signature="method#getLabelindex#0;class#CellManagerRoi#0" expanded="false" />
+                <element signature="method#getCaSignal#0;class#CellManagerRoi#0" expanded="false" />
+                <element signature="method#getLabel#0;class#CellManagerRoi#0" expanded="false" />
+                <element signature="method#getRoi#0;class#CellManagerRoi#0" expanded="false" />
+                <element signature="method#getStatus#0;class#CellManagerRoi#0" expanded="false" />
+                <element signature="method#getCaVar#0;class#CellManagerRoi#0" expanded="false" />
+                <element signature="method#set_casVar#0;class#CellManagerRoi#0" expanded="false" />
+                <element signature="method#setLabelindex#0;class#CellManagerRoi#0" expanded="false" />
+                <element signature="method#setLabel#0;class#CellManagerRoi#0" expanded="false" />
+                <element signature="method#setStatus#0;class#CellManagerRoi#0" expanded="false" />
+                <element signature="method#setRoi#0;class#CellManagerRoi#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -349,7 +405,7 @@
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectView">
-    <navigator proportions="" version="1">
+    <navigator currentView="ProjectPane" proportions="" version="1">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -360,7 +416,21 @@
       <autoscrollFromSource />
       <sortByType />
     </navigator>
-    <panes />
+    <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
+      <pane id="PackagesPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="imagej" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+    </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$/pom.xml" />
@@ -379,6 +449,13 @@
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.includeInheritedMembers" value="false" />
     <property name="OverrideImplement.combined" value="true" />
     <property name="OverrideImplement.overriding.sorted" value="false" />
+    <property name="GenerateAntBuildDialog.generateSingleFile" value="false" />
+    <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
+    <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
+    <property name="GenerateAntBuildDialog.backupFiles" value="true" />
+    <property name="GenerateAntBuildDialog.inclineRuntiemClasspath" value="false" />
+    <property name="GenerateAntBuildDialog.generateIdeaHomeProperty" value="false" />
+    <property name="GenerateAntBuildDialog.outputFileNameProperty" value="imagej" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -752,35 +829,35 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-9" y="-9" width="1938" height="1050" extended-state="6" />
-    <editor active="false" />
+    <frame x="-9" y="-9" width="1938" height="1050" extended-state="7" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20989761" sideWeight="0.49088147" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20888889" sideWeight="0.49088147" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32222223" sideWeight="0.27139208" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4112628" sideWeight="0.46580547" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17154472" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32764506" sideWeight="0.4924012" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3311111" sideWeight="0.5007599" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3288889" sideWeight="0.486631" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.18449198" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17433155" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.08716577" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3288889" sideWeight="0.4893048" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14438502" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2495935" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2611111" sideWeight="0.5341945" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2611111" sideWeight="0.5341945" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="SBT Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32897863" sideWeight="0.49674797" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32222223" sideWeight="0.27139208" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3311111" sideWeight="0.5007599" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
       <window_info id="Thumbnails" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32885906" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3288889" sideWeight="0.4893048" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -847,7 +924,7 @@
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java</url>
-          <line>810</line>
+          <line>830</line>
           <properties />
           <option name="timeStamp" value="346" />
         </line-breakpoint>
@@ -859,25 +936,25 @@
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java</url>
-          <line>1261</line>
+          <line>1280</line>
           <properties />
           <option name="timeStamp" value="365" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java</url>
-          <line>1181</line>
+          <line>1200</line>
           <properties />
           <option name="timeStamp" value="366" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java</url>
-          <line>1180</line>
+          <line>1199</line>
           <properties />
           <option name="timeStamp" value="373" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java</url>
-          <line>1270</line>
+          <line>1289</line>
           <properties />
           <option name="timeStamp" value="385" />
         </line-breakpoint>
@@ -889,13 +966,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java</url>
-          <line>720</line>
+          <line>740</line>
           <properties />
           <option name="timeStamp" value="406" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java</url>
-          <line>713</line>
+          <line>733</line>
           <properties />
           <option name="timeStamp" value="407" />
         </line-breakpoint>
@@ -912,13 +989,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/javax/swing/table/TableColumn.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.3529415">
-          <caret line="583" column="27" selection-start-line="583" selection-start-column="16" selection-end-line="583" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/lang/Object.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -957,13 +1027,6 @@
             <element signature="e#6599#6825#0" expanded="false" />
             <element signature="e#6824#6825#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/javax/swing/JFileChooser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="280" column="17" selection-start-line="280" selection-start-column="17" selection-end-line="280" selection-end-column="17" />
         </state>
       </provider>
     </entry>
@@ -1164,48 +1227,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DRa0.875/sliteanalysis/Activity_Analysis.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3137255">
-          <caret line="38" column="37" selection-start-line="38" selection-start-column="37" selection-end-line="38" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DRa0.005/sliteanalysis/CalciumSignal.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33217993">
-          <caret line="41" column="5" selection-start-line="41" selection-start-column="5" selection-end-line="41" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DRa0.821/sliteanalysis/Activity_Analysis.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.25490198">
-          <caret line="35" column="32" selection-start-line="35" selection-start-column="32" selection-end-line="35" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DRa0.635/sliteanalysis/Activity_Analysis.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.862745">
-          <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DRa0.980/sliteanalysis/Activity_Analysis.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.4117647">
-          <caret line="28" column="31" selection-start-line="28" selection-start-column="31" selection-end-line="28" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DRa0.831/sliteanalysis/Activity_Analysis.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.3529412">
-          <caret line="35" column="33" selection-start-line="35" selection-start-column="33" selection-end-line="35" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/net/imagej/ij/1.49p/ij-1.49p-sources.jar!/ij/IJ.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.15189873">
@@ -1214,6 +1235,134 @@
             <element signature="e#5127#5128#0" expanded="false" />
             <element signature="e#5170#5171#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/target/classes/sliteanalysis/Activity_Analysis.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.1195079">
+          <caret line="139" column="53" selection-start-line="139" selection-start-column="53" selection-end-line="139" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DRa0.561/sliteanalysis/MyBlobFeature.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DRa0.843/sliteanalysis/Activity_Analysis.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.2783506">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/MyBlobFeature.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="31" column="43" selection-start-line="31" selection-start-column="43" selection-end-line="31" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/javax/swing/JFileChooser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="15.322534">
+          <caret line="678" column="15" selection-start-line="678" selection-start-column="15" selection-end-line="678" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.5588236">
+          <caret line="701" column="7" selection-start-line="701" selection-start-column="7" selection-end-line="701" selection-end-column="7" />
+          <folding>
+            <element signature="e#1501#1525#0" expanded="false" />
+            <element signature="e#3460#3492#0" expanded="false" />
+            <element signature="method#windowClosing#0;class#CellManager#0" expanded="false" />
+            <element signature="method#addButton#0;class#CellManager#0" expanded="false" />
+            <element signature="e#8157#8175#0" expanded="false" />
+            <element signature="method#add#0;class#CellManager#0" expanded="false" />
+            <element signature="e#9739#9757#0" expanded="false" />
+            <element signature="method#addParticles#0;class#CellManager#0" expanded="false" />
+            <element signature="e#11623#11641#0" expanded="false" />
+            <element signature="method#addAndDraw#0;class#CellManager#0" expanded="false" />
+            <element signature="method#delete#0;class#CellManager#0" expanded="false" />
+            <element signature="e#12565#12586#0" expanded="false" />
+            <element signature="method#restore#0;class#CellManager#0" expanded="false" />
+            <element signature="e#12744#12781#0" expanded="false" />
+            <element signature="method#open#0;class#CellManager#0" expanded="false" />
+            <element signature="e#16606#16623#0" expanded="false" />
+            <element signature="method#openZip#0;class#CellManager#0" expanded="false" />
+            <element signature="e#21038#21086#0" expanded="false" />
+            <element signature="e#21907#21924#0" expanded="false" />
+            <element signature="method#getUniqueName#0;class#CellManager#0" expanded="false" />
+            <element signature="e#22919#23014#0" expanded="false" />
+            <element signature="e#24460#24506#0" expanded="false" />
+            <element signature="method#saveMultiple#0;class#CellManager#0" expanded="false" />
+            <element signature="e#25879#25921#0" expanded="false" />
+            <element signature="method#selectAll#0;class#CellManager#0" expanded="false" />
+            <element signature="e#27946#27981#0" expanded="false" />
+            <element signature="method#measure#0;class#CellManager#0" expanded="false" />
+            <element signature="method#dfOverF#0;class#CellManager#0" expanded="false" />
+            <element signature="method#multi#0;class#CellManager#0" expanded="false" />
+            <element signature="method#copyList#0;class#CellManager#0" expanded="false" />
+            <element signature="e#32973#33026#0" expanded="false" />
+            <element signature="method#numMeasurements#0;class#CellManager#0" expanded="false" />
+            <element signature="method#fill#0;class#CellManager#0" expanded="false" />
+            <element signature="method#draw#0;class#CellManager#0" expanded="false" />
+            <element signature="method#labelROIs#0;class#CellManager#0" expanded="false" />
+            <element signature="method#updateActiveRoi#0;class#CellManager#0" expanded="false" />
+            <element signature="method#getAllIndexes#0;class#CellManager#0" expanded="false" />
+            <element signature="method#getImage#0;class#CellManager#0" expanded="false" />
+            <element signature="method#error#0;class#CellManager#0" expanded="false" />
+            <element signature="method#processWindowEvent#0;class#CellManager#0" expanded="false" />
+            <element signature="docComment;method#getInstance#0;class#CellManager#0" expanded="false" />
+            <element signature="docComment;method#getROIs#0;class#CellManager#0" expanded="false" />
+            <element signature="method#getROIs#0;class#CellManager#0" expanded="false" />
+            <element signature="docComment;method#keyPressed#0;class#CellManager#0" expanded="false" />
+            <element signature="method#keyPressed#0;class#CellManager#0" expanded="false" />
+            <element signature="docComment;method#main#0;class#CellManager#0" expanded="false" />
+            <element signature="method#main#0;class#CellManager#0" expanded="false" />
+            <element signature="method#getColumnName#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#getRowCount#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#getRowNumber#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#updateRoi#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#addRoi#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#addRoi#1;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#reindexRois#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#removeRoi#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#setValueAt#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#CellManagerRoi#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#CellManagerRoi#1;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#CellManagerRoi#2;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#CellManagerRoi#4;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getLabelindex#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getCaSignal#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getLabel#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getRoi#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getStatus#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getCaVar#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#set_casVar#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#setLabelindex#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#setLabel#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#setStatus#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#setRoi#0;class#CellManagerRoi#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/CalciumSignal.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="301" column="11" selection-start-line="301" selection-start-column="11" selection-end-line="301" selection-end-column="11" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1339,69 +1488,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DRa0.211/sliteanalysis/Activity_Analysis.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.71529">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/target/classes/sliteanalysis/Activity_Analysis.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.1195079">
-          <caret line="139" column="53" selection-start-line="139" selection-start-column="53" selection-end-line="139" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/MyBlobFeature.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DRa0.219/sliteanalysis/Activity_Analysis.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.1370826">
-          <caret line="28" column="56" selection-start-line="28" selection-start-column="56" selection-end-line="28" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/.idea/libraries/ij_blob-1.4.2-SNAPSHOT.jar!/ij/blob/ManyBlobs.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state vertical-scroll-proportion="-86.0625">
           <caret line="184" column="52" selection-start-line="184" selection-start-column="52" selection-end-line="184" selection-end-column="52" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/CalciumSignal.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="412" column="23" selection-start-line="412" selection-start-column="20" selection-end-line="412" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-21.0">
-          <caret line="1311" column="0" selection-start-line="1311" selection-start-column="0" selection-end-line="1311" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#run#0;class#CellManager#0" expanded="false" />
-            <element signature="method#selectAll#0;class#CellManager#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/Activity_Analysis.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5882353">
-          <caret line="211" column="74" selection-start-line="211" selection-start-column="73" selection-end-line="211" selection-end-column="74" />
+        <state vertical-scroll-proportion="0.45066273">
+          <caret line="72" column="18" selection-start-line="72" selection-start-column="18" selection-end-line="74" selection-end-column="62" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#7481#7482#0" expanded="true" />
+            <element signature="e#7537#7538#0" expanded="true" />
           </folding>
         </state>
       </provider>

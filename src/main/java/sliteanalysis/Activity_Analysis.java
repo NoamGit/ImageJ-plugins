@@ -70,8 +70,12 @@ public class Activity_Analysis implements PlugInFilter {
     private PolygonRoi currentROI;
 
     // Parameters - Segmentation
+    // TODO load classifier and do feature selection
     private String CLASSIFPATH = "C:\\Users\\noambox\\Documents\\NielFiji-repo\\Fiji" +
             "\\Self Customized Parameters\\Classifiers\\classifier1.model";
+    // SS version
+//    private String CLASSIFPATH = "C:\\Users\\niel\\Documents\\Noam\\Repos\\Fiji\\Fiji" +
+//            "\\Self Customized Parameters\\Classifiers\\classifier1.model";
 
     /* METHODS */
     // Parameters for ZProfile modification
@@ -91,6 +95,9 @@ public class Activity_Analysis implements PlugInFilter {
         //ImagePlus imp = IJ.getImage();
         if (imp.getStackSize()==1)
         {IJ.error("Stack required"); return;}
+
+        // Open GUI
+        UserInterface();
 
         // Get Average image for further Segmentation
         ImagePlus avr_img = getAverageIm();
@@ -180,6 +187,12 @@ public class Activity_Analysis implements PlugInFilter {
         return;
     }
 
+
+    /* Method fore opening the user interface */
+    private void UserInterface(){
+
+    }
+
     /* method for complete calcium signal analysis */
     public void SingleCellActivityAnalysis(Blob cell){
         float[] trace = getBlobTimeProfile(cell);
@@ -188,13 +201,11 @@ public class Activity_Analysis implements PlugInFilter {
     /* method for extracting cells data with ij_blob plugin */
     private ManyBlobs FilterAndGetCells(ImagePlus imp) {
             allBlobs = new ManyBlobs(imp); // Extended ArrayList
-            allBlobs.setBackground(0);
+        allBlobs.setBackground(0);
             allBlobs.findConnectedComponents(); // Start the Connected Component Algorithm
-            MyBlobFeature myOwnFeature = new MyBlobFeature();
+        MyBlobFeature myOwnFeature = new MyBlobFeature();
             Blob.addCustomFeature(myOwnFeature);
             ManyBlobs filteredBlobs = new ManyBlobs();
-
-                IJ.log("** connected componentes worked!");
 
             // Setting filter's parameters
             double scalinFactor = this.X_AXIS_FOV / imp.getWidth() * this.X_AXIS_FOV / imp.getWidth();
@@ -207,20 +218,10 @@ public class Activity_Analysis implements PlugInFilter {
                 IJ.log("** Ratio filtering - "+ filterAspRatio.size()+" left...");
             ManyBlobs filterCirc = filterAspRatio.filterBlobs(0, this.CIRC_MAX, Blob.GETCIRCULARITY); // perfect circle yields 1000
                 IJ.log("** Circ filtering - "+ filterCirc.size()+" left...");
-        // TODO fix location filtering
-//            filteredBlobs = filterCirc.filterBlobs(0, 1, "LocationFeature", imp.getWidth(), imp.getHeight(), ELLIPSE_a, ELLIPSE_b);
-//                IJ.log("** Location filtering - "+ filteredBlobs.size()+" left...");
-//
-//                if( filteredBlobs.size() == 0) {
-//                    IJ.log("** blob filtering was unsuccesfull...");
-//                    return filterCirc;
-//                }
-//                else {
-//                    IJ.log("** connected componentes worked!");
-//                    }
-
-//        filteredBlobs = allBlobs.filterBlobs(0, 1, "LocationFeature", imp.getWidth(), imp.getHeight(), ELLIPSE_a, ELLIPSE_b);
-          return filterCirc;
+            filteredBlobs = filterCirc.filterBlobs(0, 1, "LocationFeature", imp.getWidth(), imp.getHeight(), ELLIPSE_a, ELLIPSE_b);
+                IJ.log("** Location filtering - "+ filteredBlobs.size()+" left...");
+          return filteredBlobs;
+//          return filterCirc;
     }
 
     /* get signal values for specific blob */
