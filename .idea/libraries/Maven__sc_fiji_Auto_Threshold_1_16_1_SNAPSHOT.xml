@@ -1,8 +1,6 @@
 <component name="libraryTable">
   <library name="Maven: sc.fiji:Auto_Threshold:1.16.1-SNAPSHOT">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/sc/fiji/Auto_Threshold/1.16.1-SNAPSHOT/Auto_Threshold-1.16.1-20150917.140354-6.jar!/" />
-    </CLASSES>
+    <CLASSES />
     <JAVADOC>
       <root url="jar://$MAVEN_REPOSITORY$/sc/fiji/Auto_Threshold/1.16.1-SNAPSHOT/Auto_Threshold-1.16.1-20150917.140354-6-javadoc.jar!/" />
     </JAVADOC>

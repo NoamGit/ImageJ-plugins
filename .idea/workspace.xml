@@ -7,12 +7,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="30c00cf5-e95e-48d7-82b8-a0b7a8f9a4ef" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/sliteanalysis/Activity_Analysis.class" afterPath="$PROJECT_DIR$/target/classes/sliteanalysis/Activity_Analysis.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classes/artifacts/Activity_Analysis_Plugin_1_0_1/Activity_Analysis_Plugin-1.0.1.jar" afterPath="$PROJECT_DIR$/classes/artifacts/Activity_Analysis_Plugin_1_0_1/Activity_Analysis_Plugin-1.0.1.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/sliteanalysis/MyBlobFeature.class" afterPath="$PROJECT_DIR$/target/classes/sliteanalysis/MyBlobFeature.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/deltaFrame.java" />
+      <change type="DELETED" beforePath="C:\Users\Noam\Documents\GitHub\ImageJ-plugins\src\main\java\DefaultTestService.java" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/sliteanalysis/Activity_Analysis.java" afterPath="$PROJECT_DIR$/src/main/java/sliteanalysis/Activity_Analysis.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java" afterPath="$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/sliteanalysis/MyBlobFeature.java" afterPath="$PROJECT_DIR$/src/main/java/sliteanalysis/MyBlobFeature.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__sc_fiji_Auto_Threshold_1_16_1_SNAPSHOT.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__sc_fiji_Auto_Threshold_1_16_1_SNAPSHOT.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Trainable_Segmentation_2_1_6_javadoc.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Trainable_Segmentation_2_1_6_javadoc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/imagej.iml" afterPath="$PROJECT_DIR$/imagej.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="imagej.iws" />
@@ -45,159 +46,96 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Activity_Analysis.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Activity_Analysis.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/Activity_Analysis.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.45066273">
-              <caret line="72" column="18" selection-start-line="72" selection-start-column="18" selection-end-line="74" selection-end-column="62" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="160" column="12" selection-start-line="160" selection-start-column="12" selection-end-line="160" selection-end-column="12" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#7481#7482#0" expanded="true" />
-                <element signature="e#7537#7538#0" expanded="true" />
+                <element signature="e#6816#6817#0" expanded="true" />
+                <element signature="e#6898#6899#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ImagePlus.java" pinned="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/net/imagej/ij/1.49p/ij-1.49p-sources.jar!/ij/ImagePlus.java">
+      <file leaf-file-name="ImageStack.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/net/imagej/ij/1.49p/ij-1.49p.jar!/ij/ImageStack.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-2.6363637">
+              <caret line="116" column="16" selection-start-line="116" selection-start-column="16" selection-end-line="116" selection-end-column="16" />
+              <folding>
+                <element signature="e#3452#3453#0" expanded="true" />
+                <element signature="e#3515#3516#0" expanded="true" />
+                <element signature="e#6464#6465#0" expanded="true" />
+                <element signature="e#6497#6498#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="deltaFrame.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/deltaFrame.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="773" column="0" selection-start-line="773" selection-start-column="0" selection-end-line="773" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="false" />
-                <element signature="e#9111#9112#0" expanded="false" />
-                <element signature="e#9133#9134#0" expanded="false" />
-                <element signature="e#9356#9357#0" expanded="false" />
-                <element signature="e#9384#9385#0" expanded="false" />
-                <element signature="e#11483#11484#0" expanded="false" />
-                <element signature="e#11498#11499#0" expanded="false" />
-                <element signature="e#13498#13499#0" expanded="false" />
-                <element signature="e#13521#13522#0" expanded="false" />
-                <element signature="e#14042#14043#0" expanded="false" />
-                <element signature="e#14058#14059#0" expanded="false" />
-                <element signature="e#16417#16418#0" expanded="false" />
-                <element signature="e#16446#16447#0" expanded="false" />
-                <element signature="e#18590#18591#0" expanded="false" />
-                <element signature="e#18624#18625#0" expanded="false" />
-                <element signature="e#22082#22083#0" expanded="false" />
-                <element signature="e#22099#22100#0" expanded="false" />
-                <element signature="e#22208#22209#0" expanded="false" />
-                <element signature="e#22250#22251#0" expanded="false" />
-                <element signature="e#22558#22559#0" expanded="false" />
-                <element signature="e#22614#22615#0" expanded="false" />
-                <element signature="e#23093#23094#0" expanded="false" />
-                <element signature="e#23115#23116#0" expanded="false" />
-                <element signature="e#25406#25407#0" expanded="false" />
-                <element signature="e#25457#25458#0" expanded="false" />
-                <element signature="e#26135#26136#0" expanded="false" />
-                <element signature="e#26187#26188#0" expanded="false" />
-                <element signature="e#26456#26457#0" expanded="false" />
-                <element signature="e#26510#26511#0" expanded="false" />
-                <element signature="e#28660#28661#0" expanded="false" />
-                <element signature="e#28685#28686#0" expanded="false" />
-                <element signature="e#28715#28716#0" expanded="false" />
-                <element signature="e#28741#28742#0" expanded="false" />
-                <element signature="e#30731#30732#0" expanded="false" />
-                <element signature="e#30810#30811#0" expanded="false" />
-                <element signature="e#31876#31877#0" expanded="false" />
-                <element signature="e#31909#31910#0" expanded="false" />
-                <element signature="e#32637#32638#0" expanded="false" />
-                <element signature="e#32666#32667#0" expanded="false" />
-                <element signature="e#35033#35034#0" expanded="false" />
-                <element signature="e#35088#35089#0" expanded="false" />
-                <element signature="e#35179#35180#0" expanded="false" />
-                <element signature="e#35215#35216#0" expanded="false" />
-                <element signature="e#37154#37155#0" expanded="false" />
-                <element signature="e#37179#37180#0" expanded="false" />
-                <element signature="e#41260#41261#0" expanded="false" />
-                <element signature="e#41285#41286#0" expanded="false" />
-                <element signature="e#41312#41313#0" expanded="false" />
-                <element signature="e#41337#41338#0" expanded="false" />
-                <element signature="e#41363#41364#0" expanded="false" />
-                <element signature="e#41388#41389#0" expanded="false" />
-                <element signature="e#42761#42762#0" expanded="false" />
-                <element signature="e#42804#42805#0" expanded="false" />
-                <element signature="e#42893#42894#0" expanded="false" />
-                <element signature="e#42934#42935#0" expanded="false" />
-                <element signature="e#43022#43023#0" expanded="false" />
-                <element signature="e#43063#43064#0" expanded="false" />
-                <element signature="e#43142#43143#0" expanded="false" />
-                <element signature="e#43167#43168#0" expanded="false" />
-                <element signature="e#43245#43246#0" expanded="false" />
-                <element signature="e#43270#43271#0" expanded="false" />
-                <element signature="e#43347#43348#0" expanded="false" />
-                <element signature="e#43372#43373#0" expanded="false" />
-                <element signature="e#46635#46636#0" expanded="false" />
-                <element signature="e#46652#46653#0" expanded="false" />
-                <element signature="e#46843#46844#0" expanded="false" />
-                <element signature="e#46870#46871#0" expanded="false" />
-                <element signature="e#47967#47968#0" expanded="false" />
-                <element signature="e#48016#48017#0" expanded="false" />
-                <element signature="e#48093#48094#0" expanded="false" />
-                <element signature="e#48144#48145#0" expanded="false" />
-                <element signature="e#51007#51008#0" expanded="false" />
-                <element signature="e#51025#51026#0" expanded="false" />
-                <element signature="e#58492#58493#0" expanded="false" />
-                <element signature="e#58529#58530#0" expanded="false" />
-                <element signature="e#58614#58615#0" expanded="false" />
-                <element signature="e#58656#58657#0" expanded="false" />
-                <element signature="e#61070#61071#0" expanded="false" />
-                <element signature="e#61118#61119#0" expanded="false" />
-                <element signature="e#61235#61236#0" expanded="false" />
-                <element signature="e#61261#61262#0" expanded="false" />
-                <element signature="e#62257#62258#0" expanded="false" />
-                <element signature="e#62292#62293#0" expanded="false" />
-                <element signature="e#63135#63136#0" expanded="false" />
-                <element signature="e#63221#63222#0" expanded="false" />
-                <element signature="e#64554#64555#0" expanded="false" />
-                <element signature="e#64612#64613#0" expanded="false" />
-                <element signature="e#65818#65819#0" expanded="false" />
-                <element signature="e#65836#65837#0" expanded="false" />
-                <element signature="e#69422#69423#0" expanded="false" />
-                <element signature="e#69445#69446#0" expanded="false" />
-                <element signature="e#69525#69526#0" expanded="false" />
-                <element signature="e#69548#69549#0" expanded="false" />
-                <element signature="e#70030#70031#0" expanded="false" />
-                <element signature="e#70067#70068#0" expanded="false" />
-                <element signature="e#70135#70136#0" expanded="false" />
-                <element signature="e#70175#70176#0" expanded="false" />
-                <element signature="e#70254#70255#0" expanded="false" />
-                <element signature="e#70274#70275#0" expanded="false" />
-                <element signature="e#70337#70338#0" expanded="false" />
-                <element signature="e#70384#70385#0" expanded="false" />
-                <element signature="e#70426#70427#0" expanded="false" />
-                <element signature="e#70456#70457#0" expanded="false" />
-                <element signature="e#71170#71171#0" expanded="false" />
-                <element signature="e#71195#71196#0" expanded="false" />
-                <element signature="e#71234#71235#0" expanded="false" />
-                <element signature="e#71259#71260#0" expanded="false" />
-                <element signature="e#72513#72514#0" expanded="false" />
-                <element signature="e#72557#72558#0" expanded="false" />
-                <element signature="e#79219#79220#0" expanded="false" />
-                <element signature="e#79244#79245#0" expanded="false" />
-                <element signature="e#79379#79380#0" expanded="false" />
-                <element signature="e#79430#79431#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ManyBlobs.class" pinned="false" current-in-tab="false">
-        <entry file="jar://$PROJECT_DIR$/.idea/libraries/ij_blob-1.4.2-SNAPSHOT.jar!/ij/blob/ManyBlobs.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-86.0625">
-              <caret line="184" column="52" selection-start-line="184" selection-start-column="52" selection-end-line="184" selection-end-column="52" />
+              <caret line="72" column="27" selection-start-line="72" selection-start-column="27" selection-end-line="72" selection-end-column="27" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MyBlobFeature.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/MyBlobFeature.java">
+      <file leaf-file-name="Kalman_Stack_Filter.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/Kalman_Stack_Filter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.27552673">
+              <caret line="15" column="71" selection-start-line="15" selection-start-column="71" selection-end-line="15" selection-end-column="71" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ImagePlus.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/net/imagej/ij/1.49p/ij-1.49p.jar!/ij/ImagePlus.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-7.1875">
+              <caret line="2208" column="21" selection-start-line="2208" selection-start-column="21" selection-end-line="2208" selection-end-column="21" />
+              <folding>
+                <element signature="e#65224#65225#0" expanded="true" />
+                <element signature="e#65275#65276#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GenericDialog.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/net/imagej/ij/1.49p/ij-1.49p.jar!/ij/gui/GenericDialog.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-8.09375">
+              <caret line="160" column="72" selection-start-line="160" selection-start-column="72" selection-end-line="160" selection-end-column="72" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Object.java" pinned="false" current-in-tab="false">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_60/src.zip!/java/lang/Object.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="31" column="43" selection-start-line="31" selection-start-column="43" selection-end-line="31" selection-end-column="43" />
+              <caret line="234" column="18" selection-start-line="234" selection-start-column="18" selection-end-line="234" selection-end-column="18" />
+              <folding>
+                <element signature="e#10065#10066#0" expanded="true" />
+                <element signature="e#10148#10149#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ImageCalculator.class" pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/net/imagej/ij/1.49p/ij-1.49p.jar!/ij/plugin/ImageCalculator.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-4.7727275">
+              <caret line="153" column="47" selection-start-line="153" selection-start-column="47" selection-end-line="153" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -207,91 +145,8 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/CalciumSignal.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="301" column="11" selection-start-line="301" selection-start-column="11" selection-end-line="301" selection-end-column="11" />
+              <caret line="33" column="23" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="23" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Cell_Manager.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.5588236">
-              <caret line="701" column="7" selection-start-line="701" selection-start-column="7" selection-end-line="701" selection-end-column="7" />
-              <folding>
-                <element signature="e#1501#1525#0" expanded="false" />
-                <element signature="e#3460#3492#0" expanded="false" />
-                <element signature="method#windowClosing#0;class#CellManager#0" expanded="false" />
-                <element signature="method#addButton#0;class#CellManager#0" expanded="false" />
-                <element signature="e#8157#8175#0" expanded="false" />
-                <element signature="method#add#0;class#CellManager#0" expanded="false" />
-                <element signature="e#9739#9757#0" expanded="false" />
-                <element signature="method#addParticles#0;class#CellManager#0" expanded="false" />
-                <element signature="e#11623#11641#0" expanded="false" />
-                <element signature="method#addAndDraw#0;class#CellManager#0" expanded="false" />
-                <element signature="method#delete#0;class#CellManager#0" expanded="false" />
-                <element signature="e#12565#12586#0" expanded="false" />
-                <element signature="method#restore#0;class#CellManager#0" expanded="false" />
-                <element signature="e#12744#12781#0" expanded="false" />
-                <element signature="method#open#0;class#CellManager#0" expanded="false" />
-                <element signature="e#16606#16623#0" expanded="false" />
-                <element signature="method#openZip#0;class#CellManager#0" expanded="false" />
-                <element signature="e#21038#21086#0" expanded="false" />
-                <element signature="e#21907#21924#0" expanded="false" />
-                <element signature="method#getUniqueName#0;class#CellManager#0" expanded="false" />
-                <element signature="e#22919#23014#0" expanded="false" />
-                <element signature="e#24460#24506#0" expanded="false" />
-                <element signature="method#saveMultiple#0;class#CellManager#0" expanded="false" />
-                <element signature="e#25879#25921#0" expanded="false" />
-                <element signature="method#selectAll#0;class#CellManager#0" expanded="false" />
-                <element signature="e#27946#27981#0" expanded="false" />
-                <element signature="method#measure#0;class#CellManager#0" expanded="false" />
-                <element signature="method#dfOverF#0;class#CellManager#0" expanded="false" />
-                <element signature="method#multi#0;class#CellManager#0" expanded="false" />
-                <element signature="method#copyList#0;class#CellManager#0" expanded="false" />
-                <element signature="e#32973#33026#0" expanded="false" />
-                <element signature="method#numMeasurements#0;class#CellManager#0" expanded="false" />
-                <element signature="method#fill#0;class#CellManager#0" expanded="false" />
-                <element signature="method#draw#0;class#CellManager#0" expanded="false" />
-                <element signature="method#labelROIs#0;class#CellManager#0" expanded="false" />
-                <element signature="method#updateActiveRoi#0;class#CellManager#0" expanded="false" />
-                <element signature="method#getAllIndexes#0;class#CellManager#0" expanded="false" />
-                <element signature="method#getImage#0;class#CellManager#0" expanded="false" />
-                <element signature="method#error#0;class#CellManager#0" expanded="false" />
-                <element signature="method#processWindowEvent#0;class#CellManager#0" expanded="false" />
-                <element signature="docComment;method#getInstance#0;class#CellManager#0" expanded="false" />
-                <element signature="docComment;method#getROIs#0;class#CellManager#0" expanded="false" />
-                <element signature="method#getROIs#0;class#CellManager#0" expanded="false" />
-                <element signature="docComment;method#keyPressed#0;class#CellManager#0" expanded="false" />
-                <element signature="method#keyPressed#0;class#CellManager#0" expanded="false" />
-                <element signature="docComment;method#main#0;class#CellManager#0" expanded="false" />
-                <element signature="method#main#0;class#CellManager#0" expanded="false" />
-                <element signature="method#getColumnName#0;class#CellManagerTableModel#0" expanded="false" />
-                <element signature="method#getRowCount#0;class#CellManagerTableModel#0" expanded="false" />
-                <element signature="method#getRowNumber#0;class#CellManagerTableModel#0" expanded="false" />
-                <element signature="method#updateRoi#0;class#CellManagerTableModel#0" expanded="false" />
-                <element signature="method#addRoi#0;class#CellManagerTableModel#0" expanded="false" />
-                <element signature="method#addRoi#1;class#CellManagerTableModel#0" expanded="false" />
-                <element signature="method#reindexRois#0;class#CellManagerTableModel#0" expanded="false" />
-                <element signature="method#removeRoi#0;class#CellManagerTableModel#0" expanded="false" />
-                <element signature="method#setValueAt#0;class#CellManagerTableModel#0" expanded="false" />
-                <element signature="class#CellManagerRoi#0" expanded="false" />
-                <element signature="method#CellManagerRoi#0;class#CellManagerRoi#0" expanded="false" />
-                <element signature="method#CellManagerRoi#1;class#CellManagerRoi#0" expanded="false" />
-                <element signature="method#CellManagerRoi#2;class#CellManagerRoi#0" expanded="false" />
-                <element signature="method#CellManagerRoi#4;class#CellManagerRoi#0" expanded="false" />
-                <element signature="method#getLabelindex#0;class#CellManagerRoi#0" expanded="false" />
-                <element signature="method#getCaSignal#0;class#CellManagerRoi#0" expanded="false" />
-                <element signature="method#getLabel#0;class#CellManagerRoi#0" expanded="false" />
-                <element signature="method#getRoi#0;class#CellManagerRoi#0" expanded="false" />
-                <element signature="method#getStatus#0;class#CellManagerRoi#0" expanded="false" />
-                <element signature="method#getCaVar#0;class#CellManagerRoi#0" expanded="false" />
-                <element signature="method#set_casVar#0;class#CellManagerRoi#0" expanded="false" />
-                <element signature="method#setLabelindex#0;class#CellManagerRoi#0" expanded="false" />
-                <element signature="method#setLabel#0;class#CellManagerRoi#0" expanded="false" />
-                <element signature="method#setStatus#0;class#CellManagerRoi#0" expanded="false" />
-                <element signature="method#setRoi#0;class#CellManagerRoi#0" expanded="false" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -325,7 +180,6 @@
         <option value="$PROJECT_DIR$/src/main/java/DsiplayTable.java" />
         <option value="$PROJECT_DIR$/src/main/java/TestService.groovy" />
         <option value="$PROJECT_DIR$/src/main/java/DisplayATable.java" />
-        <option value="$PROJECT_DIR$/src/main/java/DefaultTestService.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/imagej/app/Test.java" />
         <option value="$PROJECT_DIR$/src/main/java/TestService.java" />
         <option value="$PROJECT_DIR$/src/main/java/Kalman_Stack_Filter.java" />
@@ -359,7 +213,10 @@
         <option value="$PROJECT_DIR$/test_save/plugins.config" />
         <option value="$PROJECT_DIR$/src/main/java/sliteanalysis/MyBlobFeature.java" />
         <option value="$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java" />
+        <option value="$PROJECT_DIR$/src/main/java/DefaultTestService.java" />
+        <option value="$PROJECT_DIR$/src/test/java/deltaFrame.java" />
         <option value="$PROJECT_DIR$/src/main/java/sliteanalysis/Activity_Analysis.java" />
+        <option value="$PROJECT_DIR$/src/main/java/deltaFrame.java" />
       </list>
     </option>
   </component>
@@ -392,7 +249,7 @@
     <option name="x" value="-9" />
     <option name="y" value="-9" />
     <option name="width" value="1938" />
-    <option name="height" value="1050" />
+    <option name="height" value="1048" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -417,9 +274,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -428,12 +282,105 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="imagej" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ImageJ-plugins" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="imagej" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ImageJ-plugins" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="imagej" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ImageJ-plugins" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="imagej" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ImageJ-plugins" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sliteanalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="imagej" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ImageJ-plugins" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/pom.xml" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../NIEL-FIJI-ImageJ/Fiji/plugins/Auto_Threshold-1.16.0.jar!/" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="recentsLimit" value="5" />
@@ -441,7 +388,7 @@
     <property name="dynamic.classpath" value="false" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.1215781" />
-    <property name="project.structure.side.proportion" value="0.37695923" />
+    <property name="project.structure.side.proportion" value="0.0999001" />
     <property name="FullScreen" value="false" />
     <property name="SearchEverywhereHistoryKey" value="Navigation&#9;null&#9;null&#10;Filter&#9;PSI&#9;JAVA://Kalman_Stack_Filter#filter&#10;water&#9;PSI&#9;JAVA://net.imglib2.algorithm.labeling.Watershed&#10;Weka&#9;PSI&#9;JAVA://trainableSegmentation.Weka_Segmentation&#10;Maven &#9;ACTION&#9;ActivateMavenProjectsToolWindow&#10;IJ.class&#9;FILE&#9;jar://C:/Users/noambox/.m2/repository/net/imagej/ij/1.49v/ij-1.49v.jar!/ij/IJ.class&#10;filechoos&#9;PSI&#9;JAVA://javafx.stage.FileChooser" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/src/main/java" />
@@ -479,7 +426,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Activity_Analysis (1)">
+  <component name="RunManager" selected="Application.deltaFrame">
     <configuration default="false" name="Activity_Analysis" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="Activity_Analysis" />
@@ -498,26 +445,6 @@
     <configuration default="false" name="CalciumSignal" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="CalciumSignal" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="imagej" />
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="false" name="FileChooserDemo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="components.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="MAIN_CLASS_NAME" value="components.FileChooserDemo" />
       <option name="VM_PARAMETERS" />
       <option name="PROGRAM_PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
@@ -570,10 +497,66 @@
       <envs />
       <method />
     </configuration>
+    <configuration default="false" name="deltaFrame" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" value="deltaFrame" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="imagej" />
+      <envs />
+      <method />
+    </configuration>
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
       <option name="PROGRAM_PARAMETERS" />
+      <method />
+    </configuration>
+    <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
+      <module name="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="DEPLOY" value="true" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="USE_COMMAND_LINE" value="true" />
+      <option name="COMMAND_LINE" value="" />
+      <option name="WIPE_USER_DATA" value="false" />
+      <option name="DISABLE_BOOT_ANIMATION" value="false" />
+      <option name="NETWORK_SPEED" value="full" />
+      <option name="NETWORK_LATENCY" value="none" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
+      <option name="FILTER_LOGCAT_AUTOMATICALLY" value="true" />
+      <method />
+    </configuration>
+    <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Tests">
+      <module name="" />
+      <option name="TESTING_TYPE" value="0" />
+      <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="USE_COMMAND_LINE" value="true" />
+      <option name="COMMAND_LINE" value="" />
+      <option name="WIPE_USER_DATA" value="false" />
+      <option name="DISABLE_BOOT_ANIMATION" value="false" />
+      <option name="NETWORK_SPEED" value="full" />
+      <option name="NETWORK_LATENCY" value="none" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
+      <option name="FILTER_LOGCAT_AUTOMATICALLY" value="true" />
       <method />
     </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
@@ -784,17 +767,17 @@
       <item index="1" class="java.lang.String" itemvalue="JAR Application.ij_blob-1.4.2-SNAPSHOT.jar" />
       <item index="2" class="java.lang.String" itemvalue="Application.Activity_Analysis" />
       <item index="3" class="java.lang.String" itemvalue="Application.CalciumSignal" />
-      <item index="4" class="java.lang.String" itemvalue="Application.FileChooserDemo" />
-      <item index="5" class="java.lang.String" itemvalue="Application.Activity_Analysis (1)" />
-      <item index="6" class="java.lang.String" itemvalue="Application.CalciumSignal (1)" />
+      <item index="4" class="java.lang.String" itemvalue="Application.Activity_Analysis (1)" />
+      <item index="5" class="java.lang.String" itemvalue="Application.CalciumSignal (1)" />
+      <item index="6" class="java.lang.String" itemvalue="Application.deltaFrame" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Application.Activity_Analysis (1)" />
-        <item index="1" class="java.lang.String" itemvalue="Application.CalciumSignal (1)" />
-        <item index="2" class="java.lang.String" itemvalue="Application.CalciumSignal" />
-        <item index="3" class="java.lang.String" itemvalue="Application.Activity_Analysis" />
-        <item index="4" class="java.lang.String" itemvalue="Application.FileChooserDemo" />
+        <item index="0" class="java.lang.String" itemvalue="Application.deltaFrame" />
+        <item index="1" class="java.lang.String" itemvalue="Application.Activity_Analysis (1)" />
+        <item index="2" class="java.lang.String" itemvalue="Application.CalciumSignal (1)" />
+        <item index="3" class="java.lang.String" itemvalue="Application.CalciumSignal" />
+        <item index="4" class="java.lang.String" itemvalue="Application.Activity_Analysis" />
       </list>
     </recent_temporary>
   </component>
@@ -829,35 +812,35 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-9" y="-9" width="1938" height="1050" extended-state="7" />
-    <editor active="true" />
+    <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20888889" sideWeight="0.49088147" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32222223" sideWeight="0.27139208" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20819113" sideWeight="0.49088147" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="SBT Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32897863" sideWeight="0.49674797" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32185274" sideWeight="0.27139208" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4112628" sideWeight="0.46580547" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17154472" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32764506" sideWeight="0.4924012" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3311111" sideWeight="0.5007599" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33073497" sideWeight="0.5007599" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3288889" sideWeight="0.486631" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.08716577" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3288889" sideWeight="0.4893048" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14438502" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1486631" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24796748" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2495935" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2611111" sideWeight="0.5341945" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27616927" sideWeight="0.5341945" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="SBT Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32897863" sideWeight="0.49674797" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
       <window_info id="Thumbnails" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32885906" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3288889" sideWeight="0.4893048" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -906,7 +889,7 @@
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/Activity_AnalysisTest.java</url>
-          <line>14</line>
+          <line>17</line>
           <properties />
           <option name="timeStamp" value="151" />
         </line-breakpoint>
@@ -976,11 +959,17 @@
           <properties />
           <option name="timeStamp" value="407" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/deltaFrame.java</url>
+          <line>66</line>
+          <properties />
+          <option name="timeStamp" value="439" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="422" />
+      <option name="time" value="440" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -989,297 +978,27 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/lang/Object.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="234" column="18" selection-start-line="234" selection-start-column="18" selection-end-line="234" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/javax/swing/JTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2739" column="16" selection-start-line="2739" selection-start-column="16" selection-end-line="2739" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/util/Vector.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="779" column="32" selection-start-line="779" selection-start-column="32" selection-end-line="779" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/net/imagej/ij/1.49p/ij-1.49p-sources.jar!/ij/gui/PolygonRoi.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1519" column="0" selection-start-line="1519" selection-start-column="0" selection-end-line="1519" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/FileChooserDemo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="127" column="0" selection-start-line="127" selection-start-column="0" selection-end-line="127" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#7150#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-            <element signature="e#6599#6825#0" expanded="false" />
-            <element signature="e#6824#6825#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/util/zip/ZipEntry.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3322785">
-          <caret line="75" column="11" selection-start-line="75" selection-start-column="11" selection-end-line="75" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/io/File.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="274" column="11" selection-start-line="274" selection-start-column="11" selection-end-line="274" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/io/FileInputStream.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="122" column="51" selection-start-line="122" selection-start-column="51" selection-end-line="122" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/util/HashSet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="217" column="19" selection-start-line="217" selection-start-column="19" selection-end-line="217" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/apache/poi/poi-ooxml/3.11-beta2/poi-ooxml-3.11-beta2.jar!/org/apache/poi/xssf/usermodel/XSSFWorkbook.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-12.09375">
-          <caret line="132" column="34" selection-start-line="132" selection-start-column="34" selection-end-line="132" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/apache/poi/poi-ooxml/3.11-beta2/poi-ooxml-3.11-beta2.jar!/org/apache/poi/openxml4j/opc/internal/marshallers/ZipPartMarshaller.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.25">
-          <caret line="75" column="26" selection-start-line="75" selection-start-column="26" selection-end-line="75" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/util/zip/ZipOutputStream.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.852941">
-          <caret line="190" column="0" selection-start-line="190" selection-start-column="0" selection-end-line="190" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../NielFiji-repo/Fiji/plugins/Multi_Measure.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="6.1327105">
-          <caret line="202" column="8" selection-start-line="202" selection-start-column="6" selection-end-line="202" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/io/FileOutputStream.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.352941">
-          <caret line="136" column="71" selection-start-line="136" selection-start-column="71" selection-end-line="136" selection-end-column="71" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/Class_Manager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.0">
-          <caret line="0" column="15" selection-start-line="0" selection-start-column="15" selection-end-line="0" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/apache/poi/poi-ooxml/3.11-beta2/poi-ooxml-3.11-beta2.jar!/org/apache/poi/xssf/usermodel/XSSFSheet.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.25">
-          <caret line="393" column="16" selection-start-line="393" selection-start-column="16" selection-end-line="393" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/lang/Class.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3321617">
-          <caret line="263" column="0" selection-start-line="263" selection-start-column="0" selection-end-line="263" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/test_save/jar_demo.jar!/plugins.config">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="54" selection-start-line="21" selection-start-column="54" selection-end-line="21" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/test_save/jar_demo.jar!/JAR_Plugin.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="10" column="30" selection-start-line="10" selection-start-column="30" selection-end-line="10" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Kalman_Stack_Filter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.2724078">
-          <caret line="32" column="38" selection-start-line="32" selection-start-column="21" selection-end-line="32" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/target/classes/META-INF/json/org.scijava.plugin.Plugin">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="57" selection-start-line="0" selection-start-column="57" selection-end-line="0" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.05882353">
-          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/artifacts/Activity_Analysis_Plugin_1_0_1.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5294118">
-          <caret line="27" column="11" selection-start-line="27" selection-start-column="11" selection-end-line="27" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/target/classes/DisplayATable.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="50" selection-start-line="25" selection-start-column="50" selection-end-line="25" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/Activity_AnalysisTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="15" column="38" selection-start-line="15" selection-start-column="38" selection-end-line="15" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/CalciumSignalTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="24" selection-start-line="20" selection-start-column="24" selection-end-line="20" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/.idea/libraries/ij_blob-1.4.2-SNAPSHOT.jar!/ij/blob/Blob.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="13.396407">
-          <caret line="707" column="16" selection-start-line="707" selection-start-column="16" selection-end-line="707" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/.idea/libraries/ij_blob-1.4.2-SNAPSHOT.jar!/ij/blob/FractalBoxCounterBlob.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.12215569">
-          <caret line="16" column="6" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/.idea/libraries/ij_blob-1.4.2-SNAPSHOT.jar!/ij/blob/RotatingCalipers.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.08489388">
-          <caret line="17" column="19" selection-start-line="17" selection-start-column="19" selection-end-line="17" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/.idea/libraries/ij_blob-1.4.2-SNAPSHOT.jar!/ij/blob/CustomBlobFeature.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.12734082">
-          <caret line="9" column="22" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/lang/NoSuchMethodException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.47058824">
-          <caret line="49" column="11" selection-start-line="49" selection-start-column="11" selection-end-line="49" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_save/plugins.config">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="9" column="58" selection-start-line="9" selection-start-column="58" selection-end-line="9" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/net/imagej/ij/1.49p/ij-1.49p-sources.jar!/ij/IJ.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.15189873">
-          <caret line="155" column="67" selection-start-line="155" selection-start-column="67" selection-end-line="155" selection-end-column="67" />
-          <folding>
-            <element signature="e#5127#5128#0" expanded="false" />
-            <element signature="e#5170#5171#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/target/classes/sliteanalysis/Activity_Analysis.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.1195079">
-          <caret line="139" column="53" selection-start-line="139" selection-start-column="53" selection-end-line="139" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DRa0.561/sliteanalysis/MyBlobFeature.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DRa0.843/sliteanalysis/Activity_Analysis.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.2783506">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/MyBlobFeature.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="31" column="43" selection-start-line="31" selection-start-column="43" selection-end-line="31" selection-end-column="43" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/javax/swing/JFileChooser.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/CalciumSignal.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="15.322534">
-          <caret line="678" column="15" selection-start-line="678" selection-start-column="15" selection-end-line="678" selection-end-column="15" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="301" column="11" selection-start-line="301" selection-start-column="11" selection-end-line="301" selection-end-column="11" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.5588236">
+        <state vertical-scroll-proportion="0.0">
           <caret line="701" column="7" selection-start-line="701" selection-start-column="7" selection-end-line="701" selection-end-column="7" />
           <folding>
             <element signature="e#1501#1525#0" expanded="false" />
@@ -1358,6 +1077,35 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/Activity_Analysis.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#6816#6817#0" expanded="true" />
+            <element signature="e#6898#6899#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/.idea/libraries/ij_blob-1.4.2-SNAPSHOT.jar!/ij/blob/ManyBlobs.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="184" column="52" selection-start-line="184" selection-start-column="52" selection-end-line="184" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/MyBlobFeature.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="31" column="43" selection-start-line="31" selection-start-column="43" selection-end-line="31" selection-end-column="43" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/CalciumSignal.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1366,145 +1114,501 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/net/imagej/ij/1.49p/ij-1.49p-sources.jar!/ij/ImagePlus.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="773" column="0" selection-start-line="773" selection-start-column="0" selection-end-line="773" selection-end-column="0" />
+          <caret line="701" column="7" selection-start-line="701" selection-start-column="7" selection-end-line="701" selection-end-column="7" />
+          <folding>
+            <element signature="e#1501#1525#0" expanded="false" />
+            <element signature="e#3460#3492#0" expanded="false" />
+            <element signature="method#windowClosing#0;class#CellManager#0" expanded="false" />
+            <element signature="method#addButton#0;class#CellManager#0" expanded="false" />
+            <element signature="e#8157#8175#0" expanded="false" />
+            <element signature="method#add#0;class#CellManager#0" expanded="false" />
+            <element signature="e#9739#9757#0" expanded="false" />
+            <element signature="method#addParticles#0;class#CellManager#0" expanded="false" />
+            <element signature="e#11623#11641#0" expanded="false" />
+            <element signature="method#addAndDraw#0;class#CellManager#0" expanded="false" />
+            <element signature="method#delete#0;class#CellManager#0" expanded="false" />
+            <element signature="e#12565#12586#0" expanded="false" />
+            <element signature="method#restore#0;class#CellManager#0" expanded="false" />
+            <element signature="e#12744#12781#0" expanded="false" />
+            <element signature="method#open#0;class#CellManager#0" expanded="false" />
+            <element signature="e#16606#16623#0" expanded="false" />
+            <element signature="method#openZip#0;class#CellManager#0" expanded="false" />
+            <element signature="e#21038#21086#0" expanded="false" />
+            <element signature="e#21907#21924#0" expanded="false" />
+            <element signature="method#getUniqueName#0;class#CellManager#0" expanded="false" />
+            <element signature="e#22919#23014#0" expanded="false" />
+            <element signature="e#24460#24506#0" expanded="false" />
+            <element signature="method#saveMultiple#0;class#CellManager#0" expanded="false" />
+            <element signature="e#25879#25921#0" expanded="false" />
+            <element signature="method#selectAll#0;class#CellManager#0" expanded="false" />
+            <element signature="e#27946#27981#0" expanded="false" />
+            <element signature="method#measure#0;class#CellManager#0" expanded="false" />
+            <element signature="method#dfOverF#0;class#CellManager#0" expanded="false" />
+            <element signature="method#multi#0;class#CellManager#0" expanded="false" />
+            <element signature="method#copyList#0;class#CellManager#0" expanded="false" />
+            <element signature="e#32973#33026#0" expanded="false" />
+            <element signature="method#numMeasurements#0;class#CellManager#0" expanded="false" />
+            <element signature="method#fill#0;class#CellManager#0" expanded="false" />
+            <element signature="method#draw#0;class#CellManager#0" expanded="false" />
+            <element signature="method#labelROIs#0;class#CellManager#0" expanded="false" />
+            <element signature="method#updateActiveRoi#0;class#CellManager#0" expanded="false" />
+            <element signature="method#getAllIndexes#0;class#CellManager#0" expanded="false" />
+            <element signature="method#getImage#0;class#CellManager#0" expanded="false" />
+            <element signature="method#error#0;class#CellManager#0" expanded="false" />
+            <element signature="method#processWindowEvent#0;class#CellManager#0" expanded="false" />
+            <element signature="docComment;method#getInstance#0;class#CellManager#0" expanded="false" />
+            <element signature="docComment;method#getROIs#0;class#CellManager#0" expanded="false" />
+            <element signature="method#getROIs#0;class#CellManager#0" expanded="false" />
+            <element signature="docComment;method#keyPressed#0;class#CellManager#0" expanded="false" />
+            <element signature="method#keyPressed#0;class#CellManager#0" expanded="false" />
+            <element signature="docComment;method#main#0;class#CellManager#0" expanded="false" />
+            <element signature="method#main#0;class#CellManager#0" expanded="false" />
+            <element signature="method#getColumnName#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#getRowCount#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#getRowNumber#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#updateRoi#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#addRoi#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#addRoi#1;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#reindexRois#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#removeRoi#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#setValueAt#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#CellManagerRoi#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#CellManagerRoi#1;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#CellManagerRoi#2;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#CellManagerRoi#4;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getLabelindex#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getCaSignal#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getLabel#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getRoi#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getStatus#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getCaVar#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#set_casVar#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#setLabelindex#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#setLabel#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#setStatus#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#setRoi#0;class#CellManagerRoi#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/lang/Object.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="234" column="18" selection-start-line="234" selection-start-column="18" selection-end-line="234" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/javax/swing/JTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2739" column="16" selection-start-line="2739" selection-start-column="16" selection-end-line="2739" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/util/Vector.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="779" column="32" selection-start-line="779" selection-start-column="32" selection-end-line="779" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/FileChooserDemo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="127" column="0" selection-start-line="127" selection-start-column="0" selection-end-line="127" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#7150#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#6599#6825#0" expanded="false" />
+            <element signature="e#6824#6825#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/util/zip/ZipEntry.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3322785">
+          <caret line="75" column="11" selection-start-line="75" selection-start-column="11" selection-end-line="75" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/io/File.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="274" column="11" selection-start-line="274" selection-start-column="11" selection-end-line="274" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/io/FileInputStream.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="122" column="51" selection-start-line="122" selection-start-column="51" selection-end-line="122" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/util/HashSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="217" column="19" selection-start-line="217" selection-start-column="19" selection-end-line="217" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/apache/poi/poi-ooxml/3.11-beta2/poi-ooxml-3.11-beta2.jar!/org/apache/poi/xssf/usermodel/XSSFWorkbook.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-12.09375">
+          <caret line="132" column="34" selection-start-line="132" selection-start-column="34" selection-end-line="132" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/apache/poi/poi-ooxml/3.11-beta2/poi-ooxml-3.11-beta2.jar!/org/apache/poi/openxml4j/opc/internal/marshallers/ZipPartMarshaller.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.25">
+          <caret line="75" column="26" selection-start-line="75" selection-start-column="26" selection-end-line="75" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/util/zip/ZipOutputStream.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.852941">
+          <caret line="190" column="0" selection-start-line="190" selection-start-column="0" selection-end-line="190" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/io/FileOutputStream.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.352941">
+          <caret line="136" column="71" selection-start-line="136" selection-start-column="71" selection-end-line="136" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/Class_Manager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.0">
+          <caret line="0" column="15" selection-start-line="0" selection-start-column="15" selection-end-line="0" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/apache/poi/poi-ooxml/3.11-beta2/poi-ooxml-3.11-beta2.jar!/org/apache/poi/xssf/usermodel/XSSFSheet.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.25">
+          <caret line="393" column="16" selection-start-line="393" selection-start-column="16" selection-end-line="393" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/lang/Class.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3321617">
+          <caret line="263" column="0" selection-start-line="263" selection-start-column="0" selection-end-line="263" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/target/classes/META-INF/json/org.scijava.plugin.Plugin">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="57" selection-start-line="0" selection-start-column="57" selection-end-line="0" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/artifacts/Activity_Analysis_Plugin_1_0_1.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5294118">
+          <caret line="27" column="11" selection-start-line="27" selection-start-column="11" selection-end-line="27" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/target/classes/DisplayATable.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="25" column="50" selection-start-line="25" selection-start-column="50" selection-end-line="25" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/CalciumSignalTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="20" column="24" selection-start-line="20" selection-start-column="24" selection-end-line="20" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/.idea/libraries/ij_blob-1.4.2-SNAPSHOT.jar!/ij/blob/Blob.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="13.396407">
+          <caret line="707" column="16" selection-start-line="707" selection-start-column="16" selection-end-line="707" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/.idea/libraries/ij_blob-1.4.2-SNAPSHOT.jar!/ij/blob/FractalBoxCounterBlob.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.12215569">
+          <caret line="16" column="6" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/.idea/libraries/ij_blob-1.4.2-SNAPSHOT.jar!/ij/blob/RotatingCalipers.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.08489388">
+          <caret line="17" column="19" selection-start-line="17" selection-start-column="19" selection-end-line="17" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/.idea/libraries/ij_blob-1.4.2-SNAPSHOT.jar!/ij/blob/CustomBlobFeature.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.12734082">
+          <caret line="9" column="22" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/java/lang/NoSuchMethodException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.47058824">
+          <caret line="49" column="11" selection-start-line="49" selection-start-column="11" selection-end-line="49" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/target/classes/sliteanalysis/Activity_Analysis.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.1195079">
+          <caret line="139" column="53" selection-start-line="139" selection-start-column="53" selection-end-line="139" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/MyBlobFeature.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="31" column="43" selection-start-line="31" selection-start-column="43" selection-end-line="31" selection-end-column="43" />
           <folding>
             <element signature="imports" expanded="false" />
-            <element signature="e#9111#9112#0" expanded="false" />
-            <element signature="e#9133#9134#0" expanded="false" />
-            <element signature="e#9356#9357#0" expanded="false" />
-            <element signature="e#9384#9385#0" expanded="false" />
-            <element signature="e#11483#11484#0" expanded="false" />
-            <element signature="e#11498#11499#0" expanded="false" />
-            <element signature="e#13498#13499#0" expanded="false" />
-            <element signature="e#13521#13522#0" expanded="false" />
-            <element signature="e#14042#14043#0" expanded="false" />
-            <element signature="e#14058#14059#0" expanded="false" />
-            <element signature="e#16417#16418#0" expanded="false" />
-            <element signature="e#16446#16447#0" expanded="false" />
-            <element signature="e#18590#18591#0" expanded="false" />
-            <element signature="e#18624#18625#0" expanded="false" />
-            <element signature="e#22082#22083#0" expanded="false" />
-            <element signature="e#22099#22100#0" expanded="false" />
-            <element signature="e#22208#22209#0" expanded="false" />
-            <element signature="e#22250#22251#0" expanded="false" />
-            <element signature="e#22558#22559#0" expanded="false" />
-            <element signature="e#22614#22615#0" expanded="false" />
-            <element signature="e#23093#23094#0" expanded="false" />
-            <element signature="e#23115#23116#0" expanded="false" />
-            <element signature="e#25406#25407#0" expanded="false" />
-            <element signature="e#25457#25458#0" expanded="false" />
-            <element signature="e#26135#26136#0" expanded="false" />
-            <element signature="e#26187#26188#0" expanded="false" />
-            <element signature="e#26456#26457#0" expanded="false" />
-            <element signature="e#26510#26511#0" expanded="false" />
-            <element signature="e#28660#28661#0" expanded="false" />
-            <element signature="e#28685#28686#0" expanded="false" />
-            <element signature="e#28715#28716#0" expanded="false" />
-            <element signature="e#28741#28742#0" expanded="false" />
-            <element signature="e#30731#30732#0" expanded="false" />
-            <element signature="e#30810#30811#0" expanded="false" />
-            <element signature="e#31876#31877#0" expanded="false" />
-            <element signature="e#31909#31910#0" expanded="false" />
-            <element signature="e#32637#32638#0" expanded="false" />
-            <element signature="e#32666#32667#0" expanded="false" />
-            <element signature="e#35033#35034#0" expanded="false" />
-            <element signature="e#35088#35089#0" expanded="false" />
-            <element signature="e#35179#35180#0" expanded="false" />
-            <element signature="e#35215#35216#0" expanded="false" />
-            <element signature="e#37154#37155#0" expanded="false" />
-            <element signature="e#37179#37180#0" expanded="false" />
-            <element signature="e#41260#41261#0" expanded="false" />
-            <element signature="e#41285#41286#0" expanded="false" />
-            <element signature="e#41312#41313#0" expanded="false" />
-            <element signature="e#41337#41338#0" expanded="false" />
-            <element signature="e#41363#41364#0" expanded="false" />
-            <element signature="e#41388#41389#0" expanded="false" />
-            <element signature="e#42761#42762#0" expanded="false" />
-            <element signature="e#42804#42805#0" expanded="false" />
-            <element signature="e#42893#42894#0" expanded="false" />
-            <element signature="e#42934#42935#0" expanded="false" />
-            <element signature="e#43022#43023#0" expanded="false" />
-            <element signature="e#43063#43064#0" expanded="false" />
-            <element signature="e#43142#43143#0" expanded="false" />
-            <element signature="e#43167#43168#0" expanded="false" />
-            <element signature="e#43245#43246#0" expanded="false" />
-            <element signature="e#43270#43271#0" expanded="false" />
-            <element signature="e#43347#43348#0" expanded="false" />
-            <element signature="e#43372#43373#0" expanded="false" />
-            <element signature="e#46635#46636#0" expanded="false" />
-            <element signature="e#46652#46653#0" expanded="false" />
-            <element signature="e#46843#46844#0" expanded="false" />
-            <element signature="e#46870#46871#0" expanded="false" />
-            <element signature="e#47967#47968#0" expanded="false" />
-            <element signature="e#48016#48017#0" expanded="false" />
-            <element signature="e#48093#48094#0" expanded="false" />
-            <element signature="e#48144#48145#0" expanded="false" />
-            <element signature="e#51007#51008#0" expanded="false" />
-            <element signature="e#51025#51026#0" expanded="false" />
-            <element signature="e#58492#58493#0" expanded="false" />
-            <element signature="e#58529#58530#0" expanded="false" />
-            <element signature="e#58614#58615#0" expanded="false" />
-            <element signature="e#58656#58657#0" expanded="false" />
-            <element signature="e#61070#61071#0" expanded="false" />
-            <element signature="e#61118#61119#0" expanded="false" />
-            <element signature="e#61235#61236#0" expanded="false" />
-            <element signature="e#61261#61262#0" expanded="false" />
-            <element signature="e#62257#62258#0" expanded="false" />
-            <element signature="e#62292#62293#0" expanded="false" />
-            <element signature="e#63135#63136#0" expanded="false" />
-            <element signature="e#63221#63222#0" expanded="false" />
-            <element signature="e#64554#64555#0" expanded="false" />
-            <element signature="e#64612#64613#0" expanded="false" />
-            <element signature="e#65818#65819#0" expanded="false" />
-            <element signature="e#65836#65837#0" expanded="false" />
-            <element signature="e#69422#69423#0" expanded="false" />
-            <element signature="e#69445#69446#0" expanded="false" />
-            <element signature="e#69525#69526#0" expanded="false" />
-            <element signature="e#69548#69549#0" expanded="false" />
-            <element signature="e#70030#70031#0" expanded="false" />
-            <element signature="e#70067#70068#0" expanded="false" />
-            <element signature="e#70135#70136#0" expanded="false" />
-            <element signature="e#70175#70176#0" expanded="false" />
-            <element signature="e#70254#70255#0" expanded="false" />
-            <element signature="e#70274#70275#0" expanded="false" />
-            <element signature="e#70337#70338#0" expanded="false" />
-            <element signature="e#70384#70385#0" expanded="false" />
-            <element signature="e#70426#70427#0" expanded="false" />
-            <element signature="e#70456#70457#0" expanded="false" />
-            <element signature="e#71170#71171#0" expanded="false" />
-            <element signature="e#71195#71196#0" expanded="false" />
-            <element signature="e#71234#71235#0" expanded="false" />
-            <element signature="e#71259#71260#0" expanded="false" />
-            <element signature="e#72513#72514#0" expanded="false" />
-            <element signature="e#72557#72558#0" expanded="false" />
-            <element signature="e#79219#79220#0" expanded="false" />
-            <element signature="e#79244#79245#0" expanded="false" />
-            <element signature="e#79379#79380#0" expanded="false" />
-            <element signature="e#79430#79431#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_51/src.zip!/javax/swing/JFileChooser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="15.322534">
+          <caret line="678" column="15" selection-start-line="678" selection-start-column="15" selection-end-line="678" selection-end-column="15" />
         </state>
       </provider>
     </entry>
     <entry file="jar://$PROJECT_DIR$/.idea/libraries/ij_blob-1.4.2-SNAPSHOT.jar!/ij/blob/ManyBlobs.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-86.0625">
+        <state vertical-scroll-proportion="0.0">
           <caret line="184" column="52" selection-start-line="184" selection-start-column="52" selection-end-line="184" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="71" column="32" selection-start-line="71" selection-start-column="32" selection-end-line="71" selection-end-column="32" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../NIEL-FIJI-ImageJ/Fiji/plugins/Kalman_Filter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="182" column="63" selection-start-line="182" selection-start-column="63" selection-end-line="182" selection-end-column="63" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/Activity_AnalysisTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="15" column="38" selection-start-line="15" selection-start-column="38" selection-end-line="15" selection-end-column="38" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/Cell_Manager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="701" column="7" selection-start-line="701" selection-start-column="7" selection-end-line="701" selection-end-column="7" />
+          <folding>
+            <element signature="e#1501#1525#0" expanded="false" />
+            <element signature="e#3460#3492#0" expanded="false" />
+            <element signature="method#windowClosing#0;class#CellManager#0" expanded="false" />
+            <element signature="method#addButton#0;class#CellManager#0" expanded="false" />
+            <element signature="e#8157#8175#0" expanded="false" />
+            <element signature="method#add#0;class#CellManager#0" expanded="false" />
+            <element signature="e#9739#9757#0" expanded="false" />
+            <element signature="method#addParticles#0;class#CellManager#0" expanded="false" />
+            <element signature="e#11623#11641#0" expanded="false" />
+            <element signature="method#addAndDraw#0;class#CellManager#0" expanded="false" />
+            <element signature="method#delete#0;class#CellManager#0" expanded="false" />
+            <element signature="e#12565#12586#0" expanded="false" />
+            <element signature="method#restore#0;class#CellManager#0" expanded="false" />
+            <element signature="e#12744#12781#0" expanded="false" />
+            <element signature="method#open#0;class#CellManager#0" expanded="false" />
+            <element signature="e#16606#16623#0" expanded="false" />
+            <element signature="method#openZip#0;class#CellManager#0" expanded="false" />
+            <element signature="e#21038#21086#0" expanded="false" />
+            <element signature="e#21907#21924#0" expanded="false" />
+            <element signature="method#getUniqueName#0;class#CellManager#0" expanded="false" />
+            <element signature="e#22919#23014#0" expanded="false" />
+            <element signature="e#24460#24506#0" expanded="false" />
+            <element signature="method#saveMultiple#0;class#CellManager#0" expanded="false" />
+            <element signature="e#25879#25921#0" expanded="false" />
+            <element signature="method#selectAll#0;class#CellManager#0" expanded="false" />
+            <element signature="e#27946#27981#0" expanded="false" />
+            <element signature="method#measure#0;class#CellManager#0" expanded="false" />
+            <element signature="method#dfOverF#0;class#CellManager#0" expanded="false" />
+            <element signature="method#multi#0;class#CellManager#0" expanded="false" />
+            <element signature="method#copyList#0;class#CellManager#0" expanded="false" />
+            <element signature="e#32973#33026#0" expanded="false" />
+            <element signature="method#numMeasurements#0;class#CellManager#0" expanded="false" />
+            <element signature="method#fill#0;class#CellManager#0" expanded="false" />
+            <element signature="method#draw#0;class#CellManager#0" expanded="false" />
+            <element signature="method#labelROIs#0;class#CellManager#0" expanded="false" />
+            <element signature="method#updateActiveRoi#0;class#CellManager#0" expanded="false" />
+            <element signature="method#getAllIndexes#0;class#CellManager#0" expanded="false" />
+            <element signature="method#getImage#0;class#CellManager#0" expanded="false" />
+            <element signature="method#error#0;class#CellManager#0" expanded="false" />
+            <element signature="method#processWindowEvent#0;class#CellManager#0" expanded="false" />
+            <element signature="docComment;method#getInstance#0;class#CellManager#0" expanded="false" />
+            <element signature="docComment;method#getROIs#0;class#CellManager#0" expanded="false" />
+            <element signature="method#getROIs#0;class#CellManager#0" expanded="false" />
+            <element signature="docComment;method#keyPressed#0;class#CellManager#0" expanded="false" />
+            <element signature="method#keyPressed#0;class#CellManager#0" expanded="false" />
+            <element signature="docComment;method#main#0;class#CellManager#0" expanded="false" />
+            <element signature="method#main#0;class#CellManager#0" expanded="false" />
+            <element signature="method#getColumnName#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#getRowCount#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#getRowNumber#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#updateRoi#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#addRoi#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#addRoi#1;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#reindexRois#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#removeRoi#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="method#setValueAt#0;class#CellManagerTableModel#0" expanded="false" />
+            <element signature="class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#CellManagerRoi#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#CellManagerRoi#1;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#CellManagerRoi#2;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#CellManagerRoi#4;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getLabelindex#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getCaSignal#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getLabel#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getRoi#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getStatus#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#getCaVar#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#set_casVar#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#setLabelindex#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#setLabel#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#setStatus#0;class#CellManagerRoi#0" expanded="false" />
+            <element signature="method#setRoi#0;class#CellManagerRoi#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/net/imagej/ij/1.49p/ij-1.49p.jar!/ij/plugin/ImageCalculator.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.7727275">
+          <caret line="153" column="47" selection-start-line="153" selection-start-column="47" selection-end-line="153" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_60/src.zip!/java/lang/Object.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="234" column="18" selection-start-line="234" selection-start-column="18" selection-end-line="234" selection-end-column="18" />
+          <folding>
+            <element signature="e#10065#10066#0" expanded="true" />
+            <element signature="e#10148#10149#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/net/imagej/ij/1.49p/ij-1.49p.jar!/ij/plugin/PlugIn.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.10939511">
+          <caret line="8" column="9" selection-start-line="8" selection-start-column="9" selection-end-line="8" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/net/imagej/ij/1.49p/ij-1.49p.jar!/ij/gui/GenericDialog.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.09375">
+          <caret line="160" column="72" selection-start-line="160" selection-start-column="72" selection-end-line="160" selection-end-column="72" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/net/imagej/ij/1.49p/ij-1.49p.jar!/ij/process/ImageProcessor.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="1900" column="30" selection-start-line="1900" selection-start-column="30" selection-end-line="1900" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/CalciumSignal.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="33" column="23" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/net/imagej/ij/1.49p/ij-1.49p.jar!/ij/ImageStack.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.6363637">
+          <caret line="116" column="16" selection-start-line="116" selection-start-column="16" selection-end-line="116" selection-end-column="16" />
+          <folding>
+            <element signature="e#3452#3453#0" expanded="true" />
+            <element signature="e#3515#3516#0" expanded="true" />
+            <element signature="e#6464#6465#0" expanded="true" />
+            <element signature="e#6497#6498#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/net/imagej/ij/1.49p/ij-1.49p.jar!/ij/ImagePlus.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.1875">
+          <caret line="2208" column="21" selection-start-line="2208" selection-start-column="21" selection-end-line="2208" selection-end-column="21" />
+          <folding>
+            <element signature="e#65224#65225#0" expanded="true" />
+            <element signature="e#65275#65276#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/sliteanalysis/Activity_Analysis.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.45066273">
-          <caret line="72" column="18" selection-start-line="72" selection-start-column="18" selection-end-line="74" selection-end-column="62" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="160" column="12" selection-start-line="160" selection-start-column="12" selection-end-line="160" selection-end-column="12" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#7481#7482#0" expanded="true" />
-            <element signature="e#7537#7538#0" expanded="true" />
+            <element signature="e#6816#6817#0" expanded="true" />
+            <element signature="e#6898#6899#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/deltaFrame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="72" column="27" selection-start-line="72" selection-start-column="27" selection-end-line="72" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Kalman_Stack_Filter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.27552673">
+          <caret line="15" column="71" selection-start-line="15" selection-start-column="71" selection-end-line="15" selection-end-column="71" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1518,7 +1622,7 @@
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.37695923" />
+                <option value="0.16666667" />
                 <option value="0.5" />
               </list>
             </option>
@@ -1531,7 +1635,7 @@
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.2" />
+                <option value="0.16666667" />
               </list>
             </option>
           </splitter-proportions>
@@ -1543,7 +1647,7 @@
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.2" />
+                <option value="0.16666667" />
               </list>
             </option>
           </splitter-proportions>
@@ -1551,11 +1655,11 @@
       </state>
       <state key="JdkListConfigurable.UI">
         <settings>
-          <last-edited>1.8</last-edited>
+          <last-edited>1.7</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.2" />
+                <option value="0.16666667" />
               </list>
             </option>
           </splitter-proportions>
@@ -1567,7 +1671,7 @@
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.37695923" />
+                <option value="0.0999001" />
               </list>
             </option>
           </splitter-proportions>
@@ -1587,11 +1691,11 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
-          <last-edited>Maven: org.ow2.asm:asm-analysis:4.0</last-edited>
+          <last-edited>Maven: com.github.jnr:jnr-unixsocket:0.3</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.37695923" />
+                <option value="0.51497006" />
               </list>
             </option>
           </splitter-proportions>

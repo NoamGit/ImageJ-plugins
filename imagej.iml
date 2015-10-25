@@ -8,7 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Trainable_Segmentation-2.1.6" level="project" />
     <orderEntry type="library" name="Trainable_Segmentation-2.1.6-javadoc" level="project" />
@@ -199,5 +199,14 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.jruby:jruby-stdlib:1.7.12" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.scijava:scripting-jython:0.2.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.scijava:jython-shaded:2.5.3" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../NIEL-FIJI-ImageJ/Fiji/plugins/Auto_Threshold-1.16.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

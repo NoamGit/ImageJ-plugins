@@ -1,39 +1,26 @@
 package sliteanalysis;
 
-import edu.mines.jtk.mesh.Geometry;
 import fiji.threshold.Auto_Local_Threshold;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.blob.Blob;
 import ij.blob.ManyBlobs;
+import ij.gui.GenericDialog;
 import ij.gui.NewImage;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.measure.Calibration;
-import ij.plugin.ImageCalculator;
-import ij.plugin.PlugIn;
 import ij.plugin.ZProjector;
 import ij.plugin.filter.Analyzer;
 import ij.plugin.filter.PlugInFilter;
-import ij.plugin.filter.ScaleDialog;
-import ij.plugin.frame.RoiManager;
 import ij.process.Blitter;
 import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
-import net.imagej.ImageJ;
-import net.imglib2.algorithm.labeling.Watershed;
-import org.apache.commons.math3.distribution.GeometricDistribution;
-import org.junit.Test;
-import org.scijava.command.Command;
-import org.scijava.plugin.Plugin;
 import trainableSegmentation.WekaSegmentation;
-import util.ImageCalculatorRevised;
 
 import java.awt.*;
-
-import static org.junit.Assert.assertEquals;
 
 /*
 author: Noam Cohen
@@ -107,11 +94,11 @@ public class Activity_Analysis implements PlugInFilter {
         segmentator.loadClassifier(this.CLASSIFPATH);
         ImagePlus imp_prob = segmentator.applyClassifier(avr_img, 0, true); // get probabilities image
 
-                                ImagePlus imp_temp_0 = new ImagePlus();
+                             /*   ImagePlus imp_temp_0 = new ImagePlus();
                                 imp_temp_0.setImage(imp_prob);
                                 imp_temp_0.show();
                                 IJ.run("In [+]", "");
-                                IJ.run("In [+]", "");
+                                IJ.run("In [+]", "");*/
 
         // Threshold ,Binary & Erode
 //        ImagePlus imp_prob = IJ.openImage(path+"ProbImage.tif"); // DEBUG
@@ -124,36 +111,36 @@ public class Activity_Analysis implements PlugInFilter {
         Object[] result = thresholder.exec(imp_prob, THRESH_METHOD, THRESH_RADIUS, THRESH_P1, 0, true);
         imp_prob = ((ImagePlus) result[0]);
 
-                                ImagePlus imp_temp_1 = new ImagePlus();
+                             /*   ImagePlus imp_temp_1 = new ImagePlus();
                                 imp_temp_1.setImage(imp_prob);
                                 imp_temp_1.show();
                                 IJ.run("In [+]", "");
-                                IJ.run("In [+]", "");
+                                IJ.run("In [+]", "");*/
 
         IJ.run(imp_prob, "Options...", "iterations=" + MORPH_ITER + " count=" + MORPH_COUNT + " black do=" + MORPH_PROC);
 
-                                ImagePlus imp_temp_3 = new ImagePlus();
+                        /*        ImagePlus imp_temp_3 = new ImagePlus();
                                 imp_temp_3.setImage(imp_prob);
                                 imp_temp_3.show();
                                 IJ.run("In [+]", "");
-                                IJ.run("In [+]", "");
+                                IJ.run("In [+]", "");*/
 
         IJ.run(imp_prob, "Watershed", "");
 
         // Add location features and detect blobs
         IJ.run(imp_prob, "Set Scale...", "distance=0.1 known=0.01 pixel=1 unit=unit"); // moves to [mm] scale
 
-                                ImagePlus imp_temp_2 = new ImagePlus();
+                             /*   ImagePlus imp_temp_2 = new ImagePlus();
                                 imp_temp_2.setImage(imp_prob);
                                 imp_temp_2.show();
                                 IJ.run("In [+]", "");
-                                IJ.run("In [+]", "");
+                                IJ.run("In [+]", "");*/
 
         ManyBlobs cellLocation = FilterAndGetCells(imp_prob);
 
-                                cellLocation.getLabeledImage().show();
+                    /*            cellLocation.getLabeledImage().show();
                                 IJ.run("In [+]", "");
-                                IJ.run("In [+]", "");
+                                IJ.run("In [+]", "");*/
 
         // Add Cs Signal as blob feature
         MyBlobFeature myOwnFeature = new MyBlobFeature();
@@ -161,9 +148,9 @@ public class Activity_Analysis implements PlugInFilter {
         int size = cellLocation.size();
         CellManager cm = new CellManager(avr_img);
 
-                                avr_img.show();
+                /*                avr_img.show();
                                 IJ.run("In [+]", "");
-                                IJ.run("In [+]", "");
+                                IJ.run("In [+]", "");*/
 
         // for evey Blob take the trace form the stack
         for (int k=1; k<size;k++){
@@ -171,8 +158,6 @@ public class Activity_Analysis implements PlugInFilter {
             CalciumSignal ca_sig = new CalciumSignal(getBlobTimeProfile(cellLocation.get(k)));
             ca_sig.DeltaF();
             cm.addCell(ca_sig, this.currentROI);
-
-//            IJ.showMessage("activity variance of cell " + k + " is " + ca_sig.variance(ca_sig.SignalProcessed));
             }
             catch(Exception e){
                 IJ.showMessage(e.getMessage());
@@ -190,7 +175,7 @@ public class Activity_Analysis implements PlugInFilter {
 
     /* Method fore opening the user interface */
     private void UserInterface(){
-
+        GenericDialog gd = new GenericDialog("Activity Analysis settings");
     }
 
     /* method for complete calcium signal analysis */
@@ -279,7 +264,8 @@ public class Activity_Analysis implements PlugInFilter {
         return iPlus;
     }
 
-    /** Tests the plugin. */
+
+//    }    /** Tests the plugin. */
 //    public static void main(final String... args) {
 //        String path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\";
 ////        String path = "C:\\Users\\Noam\\Dropbox\\# graduate studies m.sc\\# SLITE\\ij - plugin data\\";
@@ -288,6 +274,5 @@ public class Activity_Analysis implements PlugInFilter {
 //        Activity_Analysis acta = new Activity_Analysis();
 //        acta.setup("", imp);
 //        acta.run(imp.getProcessor());
-//    }
 
 }
