@@ -18,9 +18,12 @@ import ij.process.Blitter;
 import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
+import net.imagej.Main;
 import trainableSegmentation.WekaSegmentation;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 /*
 author: Noam Cohen
@@ -60,9 +63,6 @@ public class Activity_Analysis implements PlugInFilter {
     // TODO load classifier and do feature selection
     private String CLASSIFPATH = "C:\\Users\\noambox\\Documents\\NielFiji-repo\\Fiji" +
             "\\Self Customized Parameters\\Classifiers\\classifier1.model";
-    // SS version
-//    private String CLASSIFPATH = "C:\\Users\\niel\\Documents\\Noam\\Repos\\Fiji\\Fiji" +
-//            "\\Self Customized Parameters\\Classifiers\\classifier1.model";
 
     /* METHODS */
     // Parameters for ZProfile modification
@@ -76,6 +76,7 @@ public class Activity_Analysis implements PlugInFilter {
     /*Run method for full Activity Analysis*/
     public void run(ImageProcessor ip) {
 //        this.imp = IJ.getImage();
+        IJ.hideProcessStackDialog = true;
         this.stack = imp.getStack();
 
         // Validate data type (Stacks)
@@ -90,6 +91,16 @@ public class Activity_Analysis implements PlugInFilter {
         ImagePlus avr_img = getAverageIm();
 
         // Segment data with classifier
+        File f1 = new File(this.CLASSIFPATH);
+        if(!f1.exists()){
+            this.CLASSIFPATH = "C:\\Users\\niel\\Documents\\Noam\\Repos\\Fiji\\Fiji"; // load SS version
+            File f2 = new File(this.CLASSIFPATH);
+            if(!f2.exists())
+            {
+                IJ.showMessage("Error", "There is no classifier in speciied path....");
+                return;
+            }
+        }
         WekaSegmentation segmentator = new WekaSegmentation( avr_img );
         segmentator.loadClassifier(this.CLASSIFPATH);
         ImagePlus imp_prob = segmentator.applyClassifier(avr_img, 0, true); // get probabilities image
@@ -146,16 +157,18 @@ public class Activity_Analysis implements PlugInFilter {
         MyBlobFeature myOwnFeature = new MyBlobFeature();
         Blob.addCustomFeature(myOwnFeature);
         int size = cellLocation.size();
-        CellManager cm = new CellManager(avr_img);
+        CellManager cm = new CellManager(avr_img, imp);
 
                 /*                avr_img.show();
                                 IJ.run("In [+]", "");
                                 IJ.run("In [+]", "");*/
 
         // for evey Blob take the trace form the stack
+        avr_img.show();
+        double dt = findSignalDt();
         for (int k=1; k<size;k++){
             try{
-            CalciumSignal ca_sig = new CalciumSignal(getBlobTimeProfile(cellLocation.get(k)));
+            CalciumSignal ca_sig = new CalciumSignal(getBlobTimeProfile(cellLocation.get(k)), dt);
             ca_sig.DeltaF();
             cm.addCell(ca_sig, this.currentROI);
             }
@@ -168,14 +181,36 @@ public class Activity_Analysis implements PlugInFilter {
 //                                double d = cellLocation.get(k).getCircularity();
 //                                IJ.showMessage("cell " + k+"\nAreaConv " + a + " AreaEnc " + b +"\nAspec " + c + " Circu " + d);
         }
-
         return;
     }
 
 
-    /* Method fore opening the user interface */
+    private double findSignalDt() {
+        String fileTitle = imp.getTitle().toLowerCase();
+        if(fileTitle.contains("hz") == true){
+            int indx = fileTitle.indexOf("hz");
+            String str =  fileTitle.substring(indx-2,indx);
+            return 1/Double.valueOf(str);
+        }
+        else{
+            return 0.1; // Hz
+        }
+    }
+
     private void UserInterface(){
-        GenericDialog gd = new GenericDialog("Activity Analysis settings");
+    /* Method fore opening the user interface */
+
+/*        GenericDialog gd = new GenericDialog("Activity Analysis settings");
+        Panel panel = new
+        gd.addPanel();
+        gd.addNumericField("Gain:",default_amplitude,2);
+
+        this.default_amplitude = (int) gd.getNextNumber();
+        gd.showDialog();
+        if (gd.wasCanceled()) {
+            IJ.error("PlugIn canceled!");
+            return;
+        }*/
     }
 
     /* method for complete calcium signal analysis */
@@ -234,6 +269,7 @@ public class Activity_Analysis implements PlugInFilter {
         return values;
     }
 
+
     /* Get Average image for processing */
     private ImagePlus getAverageIm(){
         ZProjector stackimp = new ZProjector(this.imp);
@@ -241,6 +277,26 @@ public class Activity_Analysis implements PlugInFilter {
         stackimp.doProjection(true);
         ImagePlus avr_img = stackimp.getProjection();
         return avr_img;
+    }
+
+    static public double[] getAverageSignal(ImagePlus imp) {
+        ImageProcessor ip = imp.getProcessor();
+        ImageStack imp_stack = imp.getStack();
+        double minThreshold = ip.getMinThreshold();
+        double maxThreshold = ip.getMaxThreshold();
+        int size = imp.getNSlices();
+        double[] values = new double[size];
+        Calibration cal = imp.getCalibration();
+        Analyzer analyzer = new Analyzer(imp);
+        int measurements = Analyzer.getMeasurements();
+        for (int i=1; i<=size; i++) {
+            ip = imp_stack.getProcessor(i);
+            if (minThreshold!=ImageProcessor.NO_THRESHOLD)
+                ip.setThreshold(minThreshold,maxThreshold,ImageProcessor.NO_LUT_UPDATE);
+            ImageStatistics stats = ImageStatistics.getStatistics(ip, measurements, cal);
+            values[i-1] = stats.mean;
+        }
+        return values;
     }
 
     // TODO - Iterative watershed algorithm with minimum segment size
@@ -265,14 +321,27 @@ public class Activity_Analysis implements PlugInFilter {
     }
 
 
-//    }    /** Tests the plugin. */
+    /** Tests the plugin. */
 //    public static void main(final String... args) {
-//        String path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\";
-////        String path = "C:\\Users\\Noam\\Dropbox\\# graduate studies m.sc\\# SLITE\\ij - plugin data\\";
-////        ImagePlus imp = IJ.openImage(path+"FLASH_20msON_10Hz_SLITE_1.tif"); // DEBUG
-//        ImagePlus imp = IJ.openImage(path+"FLASH_20msON_20Hz_SLITE_1.tif"); // DEBUG
+//        String path;
+//        ImagePlus imp;
+//        try {
+//            path = "C:\\Users\\Noam\\Dropbox\\# graduate studies m.sc\\# SLITE\\ij - plugin data\\"; // LAB
+//            imp = IJ.openImage(path + "FLASH_20msON_20Hz_SLITE_1.tif");
+//            if(imp == null){
+//                throw new FileNotFoundException("Your not in Lab....");
+//            }
+//        }
+//        catch(FileNotFoundException error){
+//            path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\"; //HOME
+//             imp = IJ.openImage(path + "FLASH_20msON_20Hz_SLITE_1.tif"); // DEBUG
+//        }
+//
+//
 //        Activity_Analysis acta = new Activity_Analysis();
 //        acta.setup("", imp);
+//        imp.show();
 //        acta.run(imp.getProcessor());
+//    }
 
 }

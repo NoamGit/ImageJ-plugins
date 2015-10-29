@@ -202,7 +202,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../NIEL-FIJI-ImageJ/Fiji/plugins/Auto_Threshold-1.16.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../NielFiji-repo/Fiji/plugins/Auto_Threshold-1.16.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

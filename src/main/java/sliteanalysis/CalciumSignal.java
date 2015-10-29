@@ -32,9 +32,11 @@ public class CalciumSignal {
 /* Properties */
 
     protected AlgVector signalRaw;
+    private double dt;
     protected ArrayList<Double> SignalProcessed = new ArrayList<Double>(); // gives finally the values for DF/F
     private float[] sig2Detrend;
     private float mean;
+    private double CUTOFF = 0.002;
     private IirFilterCoefficients filterCoefficients;
     private float noisePrecentile; //30% percentile
     private float detectionVariance; // over this threshold there is a good chance for cell's activity
@@ -60,12 +62,26 @@ public class CalciumSignal {
         initilaize();
     }
 
+    public CalciumSignal(float[] initSig, double dt){
+        initilaize();
+        this.dt = dt;
+        this.signalRaw = new AlgVector(FloatToDouble(initSig));
+        // subtract mean
+        this.mean = average(initSig);
+        this.sig2Detrend = initSig;
+//        for (int i = 0; i < this.sig2Detrend.length; i++){
+//            this.sig2Detrend[i] = this.sig2Detrend[i] - this.mean;
+//        }
+    }
+
     private void initilaize(){
         filterCoefficients = new IirFilterCoefficients();
         filterCoefficients.b = new double[]{2.094852E-14,  1.047426E-13, 2.094852E-13,  2.094852E-13, 1.047426E-13, 2.094852E-14}; // default LPF coefficients
         filterCoefficients.a = new double[]{1.000, -4.9923054980901425, 9.96927569026119, -9.95399387801544, 4.9693826781446955, -0.9923589922996323};
-        this.noisePrecentile = (float)0.7;
+        this.CUTOFF = 0.001;
+        this.noisePrecentile = (float)0.3;
         detectionVariance = (float)2;
+        this.dt = 0.1;
     }
 
     public void setSignal(double[] values) {
@@ -74,13 +90,33 @@ public class CalciumSignal {
         this.signalRaw = new AlgVector(values);
         this.sig2Detrend = new float[this.signalRaw.numElements()];
         for (int i = 0; i < this.signalRaw.numElements(); i++){
-            this.sig2Detrend[i] = (float)this.signalRaw.getElement(i) - this.mean;
+//            this.sig2Detrend[i] = (float)this.signalRaw.getElement(i) - this.mean;
+            this.sig2Detrend[i] = (float)this.signalRaw.getElement(i);
+
         }
     }
 
     // SIMPLE HELPER FUNCTIONS
 
+    public static double[] ArraytoDouble(Object[] array){
+        double[] out = new double[array.length];
+        int i = 0;
+        for (Object f : array) {
+            out[i++] = (Double)(f != null ? f : 0);
+        }
+        return out;
+    }
+
     private static float[] DoubletoFloat(Double[] array){
+        float[] out = new float[array.length];
+        int i = 0;
+        for (Double f : array) {
+            out[i++] = (float)(f != null ? f : Float.NaN);
+        }
+        return out;
+    }
+
+    private float[] DoubletoFloat(double[] array) {
         float[] out = new float[array.length];
         int i = 0;
         for (Double f : array) {
@@ -105,6 +141,10 @@ public class CalciumSignal {
         return targ;
     }
 
+    public double getdt(){
+        return this.dt;
+    }
+
     public ArrayList<Double> getSignalProcessed(){
         return this.SignalProcessed;
     }
@@ -119,14 +159,17 @@ public class CalciumSignal {
         return sum;
     }
 
+    public static double sum(double[] array) {
+        double sum = 0;
+        for (int i = 0; i < array.length; i++){
+            sum += array[i];
+        }
+        return sum;
+    }
+
     public static double average(ArrayList<Double> list) {
         double average = sum(list) / list.size();
         return average;
-    }
-
-    public static double variance(ArrayList<Double> list) {
-        double sumMinusAverage = sum(list) - average(list);
-        return sumMinusAverage * sumMinusAverage / (list.size()-1);
     }
 
     public static float average(float[] array){
@@ -147,6 +190,25 @@ public class CalciumSignal {
         return average;
     }
 
+    public static double variance(ArrayList<Double> list) {
+        ArrayList<Double> meanVect = new ArrayList<Double>();
+        double var = 0;
+        double mean = average(list);
+        for(int k=0;k<list.size();k++){
+            var += Math.pow(list.get(k) - mean, 2);
+        }
+        return (var / (list.size()-1));
+    }
+
+    public static double variance(double[] array) {
+        double var = 0;
+        double mean = average(array);
+        for(int k=0;k<array.length;k++){
+            var += Math.pow(array[k] - mean, 2);
+        }
+        return (var / (array.length-1));
+    }
+
     // PLOT METHODS
 
     static public void showSignal(ArrayList<Double> Signal) {
@@ -156,7 +218,7 @@ public class CalciumSignal {
             x[i] = i;
             values[i] = Signal.get(i);
         }
-        Plot plot = new Plot("Plot window","x","values",x,values);
+        Plot plot = new Plot("Plot window","time","fluoe",x,values);
         plot.show();
     }
 
@@ -196,6 +258,36 @@ public class CalciumSignal {
         plot.show();
     }
 
+    static public void compareSignal(AlgVector sig2, ArrayList<Double> sig1){
+        double[] x = new double[sig1.size()];
+        double values[] = new double[sig1.size()];
+        for (int i = 0; i < x.length; i++) {
+            x[i] = i;
+            values[i] = sig1.get(i);
+        }
+        Plot plot = new Plot("two Sig Comparison","time","fluor");
+        plot.setColor(Color.RED);
+        plot = new Plot("Plot window","x","values",x,sig2.getElements());
+        plot.setColor(Color.BLUE);
+        plot.draw();
+        plot.addPoints(x,values, Plot.LINE);
+        plot.show();
+    }
+
+    static public void compareSignal(AlgVector sig2, double[] sig1){
+        double[] x = new double[sig1.length];
+        for (int i = 0; i < x.length; i++) {
+            x[i] = i;
+        }
+        Plot plot = new Plot("two Sig Comparison","time","fluor");
+        plot.setColor(Color.RED);
+        plot = new Plot("Plot window","x","values",x,sig2.getElements());
+        plot.setColor(Color.BLUE);
+        plot.draw();
+        plot.addPoints(x,sig1, Plot.LINE);
+        plot.show();
+    }
+
     static public void compareSignal(ArrayList<Double> sig1, ArrayList<Double> sig2, ArrayList<Double> sig2Indx){
         double[] x = new double[sig1.size()];
         double values[] = new double[sig1.size()];
@@ -226,11 +318,38 @@ public class CalciumSignal {
         plot.show();
     }
 
+    static public void compareSignal(ArrayList<Double> sigList, float[] sigFloat) {
+        double[] x = new double[sigList.size()];
+        double values[] = new double[sigList.size()];
+        for (int i = 0; i < x.length; i++) {
+            x[i] = i;
+            values[i] = sigList.get(i);
+        }
+        Plot plot = new Plot("Plot window","x","values",x,values);
+        plot.setColor(Color.RED);
+        plot.draw();
+        plot.addPoints(x, FloatToDouble(sigFloat), Plot.LINE);
+        plot.show();
+    }
+
+    static public void compareSignal(double[] sigDouble, float[] sigFloat) {
+        double[] x = new double[sigDouble.length];
+        double values[] = new double[sigDouble.length];
+        for (int i = 0; i < x.length; i++) {
+            x[i] = i;
+        }
+        Plot plot = new Plot("Plot window","x","values",x,FloatToDouble(sigFloat));
+        plot.setColor(Color.RED);
+        plot.draw();
+        plot.addPoints(x, sigDouble, Plot.LINE);
+        plot.show();
+    }
+
     public void showSignal() {
         double[] x = new double[this.signalRaw.numElements()];
         for (int i = 0; i < x.length; i++)
             x[i] = i;
-        Plot plot = new Plot("Plot window","x","values",x, this.signalRaw.getElements());
+        Plot plot = new Plot("Signal Raw","x","values",x, this.signalRaw.getElements());
         plot.setColor(Color.BLUE);
         plot.show();
     }
@@ -242,7 +361,27 @@ public class CalciumSignal {
             x[i] = i;
             y[i] = this.SignalProcessed.get(i);
         }
-        Plot plot = new Plot("Plot window", "x", "values", x, y);
+        Plot plot = new Plot("Signal Processed", "x", "values", x, y);
+        plot.show();
+    }
+    public void showSignalProccesed(String title) {
+        double[] x = new double[this.SignalProcessed.size()];
+        double[] y = new double[this.SignalProcessed.size()];
+        for (int i = 0; i < x.length; i++) {
+            x[i] = i * this.dt;
+            y[i] = this.SignalProcessed.get(i);
+        }
+        Plot plot = new Plot(title, "time", "Fluo", x, y);
+        plot.setColor(Color.DARK_GRAY);
+        plot.show();
+    }
+
+    public void showSignal(String title) {
+        double[] x = new double[this.signalRaw.numElements()];
+        for (int i = 0; i < x.length; i++)
+            x[i] = i * this.dt;
+        Plot plot = new Plot(title,"x","values",x, this.signalRaw.getElements());
+        plot.setColor(Color.BLUE);
         plot.show();
     }
 
@@ -251,33 +390,56 @@ public class CalciumSignal {
     /* detrend signal by LPF ; Source - http://www.source-code.biz/dsp/java/ */
     public ArrayList<Double> DetrendSignal(){
         int order = 5;
-         IirFilterCoefficients filterCoefficients = IirFilterDesignFisher.design(FilterPassType.lowpass, FilterCharacteristicsType.chebyshev, order, -0.1, 0.0008, 1);
-        // TODO - find right coefficients
+        IirFilterCoefficients filterCoefficients = IirFilterDesignFisher.design(FilterPassType.lowpass, FilterCharacteristicsType.chebyshev, order, -0.1, this.CUTOFF, 1);
         ArrayList<Double> trend = filtfiltwithLPF(filterCoefficients);
         for (int i = 0; i < this.signalSize(); i++ ) {
-            trend.set(i, ( trend.get(i) + this.mean ));
-            this.SignalProcessed.add(i, this.signalRaw.getElement(i) - trend.get(i) );
+            trend.set(i, (trend.get(i)));
+//            this.SignalProcessed.add(i, this.sig2Detrend[i] - trend.get(i) );
+            this.SignalProcessed.add(i, (double) this.sig2Detrend[i]);
+            this.sig2Detrend[i] = (float) ((double) this.sig2Detrend[i] - trend.get(i));
         }
 
         // TEST
+//        compareSignal(trend, this.sig2Detrend);
 //        showSignal();
-//        compareSignal(trend, this.signalRaw);
 //        compareSignal(this.SignalProcessed, this.signalRaw);
 
         return trend;
     }
 
+
+    private void detrendExp() {
+    /* Detrends Raw signal by Exponential fitting with offset*/
+        double[] x = new double[this.signalRaw.numElements()];
+        for (int i = 0; i < this.signalRaw.numElements(); i++) {
+            x[i] = (double) i;
+        }
+        CurveFitter fitter = new CurveFitter(x, FloatToDouble(this.sig2Detrend));
+        fitter.doFit(CurveFitter.EXP_WITH_OFFSET);
+        double[] paramExp = fitter.getParams();
+        double[] expTrend = new double[this.sig2Detrend.length];
+        for (int i = 0; i < expTrend.length; i++) {
+            expTrend[i] = paramExp[0] * Math.exp(i * -paramExp[1]) + paramExp[2];
+            this.sig2Detrend[i] = this.sig2Detrend[i] - (float) expTrend[i];
+        }
+
+//        compareSignal(this.signalRaw, expTrend);
+    }
+
     /* Estimate baseline by linear regression to perecntile*/
     protected double[] EstimateBaseline() {
-        Double val1[] = new Double[this.SignalProcessed.size()];
-        val1 = this.SignalProcessed.toArray(val1);
-        float[] val3 = DoubletoFloat(val1);
+//        Double val1[] = new Double[this.SignalProcessed.size()];
+//        val1 = this.SignalProcessed.toArray(val1);
+//        float[] val3 = DoubletoFloat(val1);
+
+//        float val1[] = new float[this.sig2Detrend.length];
+        float[] val3 = this.sig2Detrend;
         int numbin = 100;
         edu.mines.jtk.dsp.Histogram hist = new edu.mines.jtk.dsp.Histogram(val3, numbin);
 
         // create cumulative distribution function
         // TODO - find right threshold
-        float[] histcdf = new float[numbin];
+        float[] histcdf;
         histcdf = hist.getDensities();
         double thresValue = 0;
         for (int i = 1; i < histcdf.length; i++) {
@@ -290,18 +452,19 @@ public class CalciumSignal {
 
         // find baseline values
         ArrayList<Double> baselineValues = new ArrayList<Double>();
-        Double thresValueCast = (Double) thresValue;
+        Double thresValueCast = thresValue;
         ArrayList<Double> baselineValues_index = new ArrayList<Double>();
-        for (int i = 0; i < this.SignalProcessed.size(); i++) {
-            if (this.SignalProcessed.get(i) <= thresValueCast) {
-                baselineValues.add(this.SignalProcessed.get(i));
+        for (int i = 0; i < this.sig2Detrend.length; i++) {
+            if (this.sig2Detrend[i] <= thresValueCast) {
+                baselineValues.add((double) this.sig2Detrend[i]);
                 baselineValues_index.add((double) i);
             }
         }
 
         // TODO - fix show Message of goddness of fit
         CurveFitter fitter = new CurveFitter(getDoubleFromArrayList(baselineValues_index),getDoubleFromArrayList(baselineValues));
-        fitter.doFit(CurveFitter.POLY3);
+        fitter.doFit(CurveFitter.STRAIGHT_LINE);
+//        fitter.doFit(CurveFitter.POLY3);
 
 //        if (fitter.getRSquared() < 0.7){
 ////            IJ.error("");
@@ -310,32 +473,31 @@ public class CalciumSignal {
 //                    "(current noise percentile )" + String.valueOf(this.noisePrecentile));
 //        }
         double[] paramLinearRegress = fitter.getParams();
-        double[] fullBaseLineY = new double[this.SignalProcessed.size()];
-        ArrayList<Double> SignalDetrend = new ArrayList<Double>();
+        double[] fullBaseLineY = new double[this.sig2Detrend.length];
         for (int i = 0; i < fullBaseLineY.length; i++) {
-            fullBaseLineY[i] = paramLinearRegress[0] + paramLinearRegress[1]*i + paramLinearRegress[2]*i*i + paramLinearRegress[3]*Math.pow(i,3);
+            fullBaseLineY[i] = paramLinearRegress[0] + paramLinearRegress[1]*i ;
+//            fullBaseLineY[i] = paramLinearRegress[0] + paramLinearRegress[1]*i + paramLinearRegress[2]*i*i + paramLinearRegress[3]*Math.pow(i,3);
         }
 
         //         TEST
 //        Fitter.plot(fitter);
 //        showSignal();
-//        compareSignal(SignalDetrend, this.SignalProcessed);
 //        AlgVector temp = new AlgVector(fullBaseLineY);
-//        compareSignal(SignalDetrend, temp);
 //        showSignal();
-//        showSignal(this.SignalProcessed);
+//        compareSignal(this.SignalProcessed, DoubletoFloat(fullBaseLineY));
 //        IJ.showMessage("Processed signal variance is " +
 //                variance(this.SignalProcessed) + " )\n" );
 
         return fullBaseLineY;
     }
 
+
     /* Compute DF/F*/
     protected void DeltaF(ArrayList<Double> trend,double[] baseLine){
         double f0 = 0;
-    for (int i = 0; i < this.signalRaw.numElements(); i++) {
+    for (int i = 0; i < this.SignalProcessed.size(); i++) {
         f0 = trend.get(i)+baseLine[i];
-        this.SignalProcessed.set(i, (this.signalRaw.getElement(i) - f0)/f0);
+        this.SignalProcessed.set(i, (this.SignalProcessed.get(i) - f0)/Math.abs(baseLine[i]));
     }
         // Flag activity
         if(variance(this.SignalProcessed) > this.detectionVariance){
@@ -345,13 +507,15 @@ public class CalciumSignal {
 
     /* Compute DF/F*/
     protected void DeltaF(){
+        detrendExp();
         ArrayList<Double> trend = this.DetrendSignal();
         double[] bl = this.EstimateBaseline();
         double f0 = 0;
-        for (int i = 0; i < this.signalRaw.numElements(); i++) {
+        for (int i = 0; i < this.SignalProcessed.size(); i++) {
             f0 = trend.get(i)+bl[i];
-            this.SignalProcessed.set(i, (this.signalRaw.getElement(i) - f0)/f0);
+            this.SignalProcessed.set(i, (this.SignalProcessed.get(i) - f0)/Math.abs(bl[i]));
         }
+
         // Flag activity
         this.activityVariance = variance(this.SignalProcessed);
         if( this.activityVariance > this.detectionVariance){
@@ -379,7 +543,6 @@ public class CalciumSignal {
             finalSignal.add(backfilt[size-1 - i]);
         }
         // showSignal(finalSignal);
-        // compareSignal(finalSignal, this.signalRaw);
         return finalSignal;
     }
 
@@ -394,8 +557,10 @@ public class CalciumSignal {
         // test class
         String path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\";
 //        String path = "C:\\Users\\Noam\\Dropbox\\# graduate studies m.sc\\# SLITE\\ij - plugin data\\";
+        File traceSample = new File(path+"trace sample\\test_detrending_src.xlsx");
+//        File traceSample = new File(path+"trace sample\\Cell8.xlsx");
+
         CalciumSignal sig = new CalciumSignal();
-        File traceSample = new File(path+"trace sample\\cell8.xlsx");
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(traceSample);
@@ -415,13 +580,27 @@ public class CalciumSignal {
                 idx++;
             }
             sig.setSignal(values);
+
+            showSignal(sig.sig2Detrend);
+
+            // detrend according to exponential fit (works and manipulates on sig2Detrend)
+            sig.detrendExp();
+            showSignal(sig.sig2Detrend);
+
+            // removes high freq with LPF (works and manipulates on sig2Detrend and sets SignalProccessed )
             ArrayList<Double> trend = sig.DetrendSignal();
-//            compareSignal(trend, sig.signalRaw);
+            compareSignal(sig.SignalProcessed, trend);
+
+            // Estimates baseline (works and manipulates on sig2Detrend)
             double[] bl = sig.EstimateBaseline();
-//            showSignal(bl);
+//            sig.showSignalProccesed();
+            compareSignal(bl, sig.sig2Detrend);
+
+            // Computes DF  (works and manipulates on SignalProccessed)
             sig.DeltaF(trend, bl);
             sig.showSignalProccesed();
-            IJ.showMessage("activity variance - " + variance(sig.SignalProcessed));
+
+//            IJ.showMessage("activity variance - " + variance(sig.SignalProcessed));
         }
         catch (FileNotFoundException e) {
             e.printStackTrace();

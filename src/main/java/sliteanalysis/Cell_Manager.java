@@ -10,7 +10,10 @@ import javax.swing.*;
 import javax.swing.table.*;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+
+import com.sun.xml.internal.ws.api.model.ExceptionType;
 import ij.*;
+import ij.measure.Calibration;
 import ij.process.*;
 import ij.gui.*;
 import ij.io.*;
@@ -34,6 +37,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     static Frame instance;
     //java.awt.List list;
     //Hashtable rois = new Hashtable();
+    ImagePlus avr_imp;
     ImagePlus imp;
     JTable table;
     CellManagerTableModel tmodel;
@@ -44,7 +48,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     Thread thread;
     JFileChooser fc;
 
-    public CellManager(ImagePlus imp) {
+    public CellManager(ImagePlus avr_imp, ImagePlus imp) {
         super("Cell Manager");
         if (instance!=null) {
             instance.toFront();
@@ -60,6 +64,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         int twidth = 200;
         int theight = 450;
 
+        this.avr_imp = avr_imp;
         this.imp = imp;
         tmodel = new CellManagerTableModel();
         table = new JTable(tmodel);
@@ -155,9 +160,9 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         while (!done) {
             try {Thread.sleep(500);}
             catch(InterruptedException e) {}
-            ImagePlus imp = WindowManager.getCurrentImage();
-            if (imp != null){
-                ImageWindow win = imp.getWindow();
+            ImagePlus avr_imp = WindowManager.getCurrentImage();
+            if (avr_imp != null){
+                ImageWindow win = avr_imp.getWindow();
                 ImageCanvas canvas = win.getCanvas();
                 if (canvas != previousCanvas){
                     if(previousCanvas != null)
@@ -200,9 +205,9 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         else if (command.equals("Open All"))
             openAll();
         else if (command.equals("Save DF"))
-            saveDf();
+            save("processed");
         else if (command.equals("Save RAW"))
-            saveRaw();
+            save("raw");
         else if (command.equals("Toggle Select All"))// was 'Select All'
             selectAll();
         else if (command.equals("Measure"))
@@ -210,9 +215,9 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         else if (command.equals("Add Cell"))
             additionalCell();
         else if (command.equals("RAW Signal"))
-            rawSignal();
+            dfOverF("raw");
         else if (command.equals("DF/F"))
-            dfOverF();
+            dfOverF("df");
         else if (command.equals("Multi"))
             multi();
         else if (command.equals("Draw"))
@@ -235,7 +240,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         }
     }
 
-    public void addCell(CalciumSignal cas, PolygonRoi roi){
+    public void addCell(CalciumSignal cas, Roi roi){
     /* Adds the roi of an calcium singal with its properties*/
         String type = "Cell ";
         Rectangle r = roi.getBoundingRect();
@@ -256,18 +261,37 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     }
 
     public void additionalCell(){
-        // TODO adds a ROI and its signal even if it wasn't picked by the classifier
-    }
+    /* Add's Selection based ROI cell to table*/
 
-    public void rawSignal(){
-        // TODO plots raw signal
+        // get Roi Selection
+        Roi roi = null;
+        roi = avr_imp.getRoi();
+        if(roi == null)
+                roi = imp.getRoi();
+        if(roi == null){
+                IJ.log("No ROI was selected...");
+                return;
+        }
+
+        // extract Ca signal from roi and process
+        float[] values = getRoiSignal(roi);
+        CalciumSignal ca_sig = new CalciumSignal(values);
+        ca_sig.DeltaF();
+
+        // add cell location and signal to list
+        try{
+            this.addCell(ca_sig, roi);
+        }
+        catch(Exception e){
+            IJ.showMessage(e.getMessage());
+        }
     }
 
     boolean add() {
-        ImagePlus imp = getImage();
-        if (imp==null)
+        ImagePlus avr_imp = getImage();
+        if (avr_imp==null)
             return false;
-        Roi roi = imp.getRoi();
+        Roi roi = avr_imp.getRoi();
         if (roi==null) {
             error("The active image does not have an ROI.");
             return false;
@@ -301,8 +325,8 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     }
 
     boolean addParticles() {
-        ImagePlus imp = getImage();
-        if (imp==null)
+        ImagePlus avr_imp = getImage();
+        if (avr_imp==null)
             return false;
         ResultsTable rt = Analyzer.getResultsTable();
         if(rt == null){
@@ -320,7 +344,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
                     "be run first with Record Stats selected.");
             return false;
         }
-        ImageProcessor ip = imp.getProcessor();
+        ImageProcessor ip = avr_imp.getProcessor();
         int tMin = (int)ip.getMinThreshold();
         for (int i = 0; i < nP; i++){
             Wand w = new Wand(ip);
@@ -379,13 +403,13 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         //String label = (String)tmodel.getValueAt(index,1);
         //Roi roi = (Roi)rois.get(label);
         Roi roi = (Roi)tmodel.getValueAt(index,2);
-        ImagePlus imp = getImage();
-        if (imp==null)
+        ImagePlus avr_imp = getImage();
+        if (avr_imp==null)
             return error("No image selected.");
         Rectangle r = roi.getBoundingRect();
-        if (r.x+r.width>imp.getWidth() || r.y+r.height>imp.getHeight())
+        if (r.x+r.width>avr_imp.getWidth() || r.y+r.height>avr_imp.getHeight())
             return error("This ROI does not fit the current image.");
-        imp.setRoi(roi);
+        avr_imp.setRoi(roi);
         return true;
     }
 	/* These open and save methods are replaced by the methods of the integrated ROI manager of ImageJ.
@@ -650,8 +674,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         return name2;
     }
 
-    // TODO - enable single trace saving
-    boolean saveDf() {
+    boolean save(String saveType) {
         if (table.getRowCount() == 0) // was if (list.getItemCount()==0)
             return error("The list is empty."); // was "The selection list is empty"
         int indexes[] = table.getSelectedRows();//list.getSelectedIndexes();
@@ -660,62 +683,70 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         // what is the point in that?
         // if (indexes.length==0)
         //	indexes = getAllIndexes();
-        if(indexes.length==0){ error("At least one ROI must be selected from the list."); }
-        if (indexes.length>1){
-            //Create a file chooser
-            int returnVal = fc.showSaveDialog(CellManager.this);
-            return saveMultiple(indexes, fc.getSelectedFile().getPath());
-        }
-        String name = (String) tmodel.getValueAt(indexes[0],1); // was list.getItem(indexes[0]);
-        Macro.setOptions(null);
-        SaveDialog sd = new SaveDialog("Save Selection...", name, ".roi");
-        String name2 = sd.getFileName();
-        if (name2 == null)
+        if (indexes.length == 0) {
+            error("At least one ROI must be selected from the list.");
             return false;
-        // The user has changed the name of the file so the name of the ROI should also change!
-        String dir = sd.getDirectory();
-        String newName;
-        // If the new name ends with '.roi' it must be removed
-        if(name2.endsWith(".roi")){ newName = name2.substring(0, name2.length()-4); }
-        else{ newName = name2; }
-        int rownum = tmodel.getRowNumber(name,1);
-        // If nothing was found a -1 is returned - better make some use of it!
-        if(rownum == -1){ return error("No entry matching " + name + " was found."); }
-
-        // OK - we're all good! Update the entry
-        tmodel.updateRoi(rownum, newName, tmodel.getValueAt(rownum, 2), (Boolean) tmodel.getValueAt(rownum,3));
-
-        // Before I changed things is looked like this
-        //Roi roi = (Roi)rois.get(name);
-        //rois.remove(name);
-        //if (!name2.endsWith(".roi")) name2 = name2+".roi";
-        //String newName = name2.substring(0, name2.length()-4);
-        //rois.put(newName, roi);
-        //roi.setName(newName);
-        //list.replaceItem(newName, indexes[0]);
-        if (restore(indexes[0]))
-            IJ.run("Selection...", "path='"+dir+newName+".roi'");
-        return true;
+        } else {
+            String nameData = "DataProcessed_" + imp.getTitle().subSequence(0, imp.getTitle().length() - 4) + ".xlsx";;
+            if (saveType.compareTo("raw") == 0){
+                nameData = "DataRaw_" + imp.getTitle().subSequence(0, imp.getTitle().length() - 4) + ".xlsx";
+            }
+            String nameRoi = "RoiSet_" + imp.getTitle().subSequence(0, imp.getTitle().length() - 4) + ".zip";
+            Macro.setOptions(null);
+            SaveDialog sd = new SaveDialog("Save Signals...", nameData, ".xlsx");
+            String dir = sd.getDirectory();
+            nameData = sd.getFileName();
+//            int returnVal = fc.showSaveDialog(CellManager.this);
+//            saveMultiple(indexes, fc.getSelectedFile().getPath());
+            saveMultiple(indexes, dir, nameRoi, nameData, saveType);
+            return true;
+        }
+//
+//        String name = (String) tmodel.getValueAt(indexes[0],1); // was list.getItem(indexes[0]);
+//        Macro.setOptions(null);
+//        SaveDialog sd = new SaveDialog("Save Selection...", name, ".roi");
+//        String name2 = sd.getFileName();
+//        if (name2 == null)
+//            return false;
+//        // The user has changed the name of the file so the name of the ROI should also change!
+//        String dir = sd.getDirectory();
+//        String newName;
+//        // If the new name ends with '.roi' it must be removed
+//        if(name2.endsWith(".roi")){ newName = name2.substring(0, name2.length()-4); }
+//        else{ newName = name2; }
+//        int rownum = tmodel.getRowNumber(name,1);
+//        // If nothing was found a -1 is returned - better make some use of it!
+//        if(rownum == -1){ return error("No entry matching " + name + " was found."); }
+//
+//        // OK - we're all good! Update the entry
+//        tmodel.updateRoi(rownum, newName, tmodel.getValueAt(rownum, 2), (Boolean) tmodel.getValueAt(rownum,3));
+//
+//        // Before I changed things is looked like this
+//        //Roi roi = (Roi)rois.get(name);
+//        //rois.remove(name);
+//        //if (!name2.endsWith(".roi")) name2 = name2+".roi";
+//        //String newName = name2.substring(0, name2.length()-4);
+//        //rois.put(newName, roi);
+//        //roi.setName(newName);
+//        //list.replaceItem(newName, indexes[0]);
+//        if (restore(indexes[0]))
+//            IJ.run("Selection...", "path='"+dir+newName+".roi'");
+//        return true;
     }
 
-    boolean saveRaw(){
-    // TODO - enable raw data saving
-        return true;
-    }
-
-    boolean saveMultiple(int[] indexes, String path) {
+    void saveMultiple(int[] indexes, String path, String nameRoi, String nameData, String saveType) {
         Macro.setOptions(null);
         if (path==null) {
             SaveDialog sd = new SaveDialog("Save ROIs...", "RoiSet", ".zip");
             String name = sd.getFileName();
             if (name == null)
-                return false;
+                return;
             String dir = sd.getDirectory();
             path = dir+name;
         }
         try {
             // save ROI to ZIP
-            ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(path));
+            ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(path+nameRoi));
             DataOutputStream out = new DataOutputStream(new BufferedOutputStream(zos));
             RoiEncoder re = new RoiEncoder(out);
             String name = "";
@@ -737,23 +768,82 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             }
             out.close();
 
-            // Save signals
-            File myFile = new File(path +".xlsx");
+            // Save signals with apache POI
+            File myFile = new File(path+nameData);
             XSSFWorkbook myWorkBook = new XSSFWorkbook(); // Return first sheet from the XLSX workbook
             XSSFSheet mySheet = myWorkBook.createSheet(); // Get iterator to all the rows in current sheet
 
             int rownum = 0;
-            for (int i=0; i<indexes.length; i++) {
-                Row row = mySheet.createRow(rownum++); // create row
-                cas = (CalciumSignal) tmodel.getValueAt(indexes[i],3);
-                int cellnum = 0;
-                Cell cell = row.createCell(cellnum++);
-                cell.setCellValue((String)tmodel.getValueAt(indexes[i],1));
-                for (int j=1; j<cas.signalSize(); j++) {
+            if(saveType.compareTo("processed") == 0){
+                cas = (CalciumSignal) tmodel.getValueAt(indexes[0],3);
+                int signalSize = cas.signalSize();
+                for (int rowNum =0; rowNum<signalSize; rowNum++) { // for signal size
+                    Row row = mySheet.createRow(rownum++); // create row
+                    int cellnum = 0;
+
+                    // write headers in first column
+                    if(rowNum == 0){
+                        Cell cell = row.createCell(cellnum++);
+                        cell.setCellValue("Time");
+                        cell = row.createCell(cellnum++);
+                        cell.setCellValue("Stim");
+                        for (int colNum=0; colNum<indexes.length; colNum++) { // for number of cells
+                            cell = row.createCell(cellnum++);
+                            cell.setCellValue((String)tmodel.getValueAt(indexes[colNum],1));
+                        }
+                        continue;
+                    }
+
+                    // next start plugin in values
+                    Cell cell;
                     cell = row.createCell(cellnum++);
-                    cell.setCellValue(cas.SignalProcessed.get(j));
+                    cell.setCellValue((rowNum-1) * cas.getdt()); // set time
+                    cell = row.createCell(cellnum++);
+                    // TODO insert stimulus
+                    cell.setCellValue(0);
+                    for (int colNum=0; colNum<indexes.length; colNum++) { // for number of cells
+                        cell = row.createCell(cellnum++);
+                        CalciumSignal currentCas = (CalciumSignal) tmodel.getValueAt(indexes[colNum],3);
+                        cell.setCellValue(currentCas.SignalProcessed.get(rowNum));
+                    }
                 }
             }
+
+            else if(saveType.compareTo("raw") == 0){
+                cas = (CalciumSignal) tmodel.getValueAt(indexes[0],3);
+                int signalSize = cas.signalSize();
+                for (int rowNum =0; rowNum<signalSize; rowNum++) { // for signal size
+                    Row row = mySheet.createRow(rownum++); // create row
+                    int cellnum = 0;
+
+                    // write headers in first column
+                    if(rowNum == 0){
+                        Cell cell = row.createCell(cellnum++);
+                        cell.setCellValue("Time");
+                        cell = row.createCell(cellnum++);
+                        cell.setCellValue("Stim");
+                        for (int colNum=0; colNum<indexes.length; colNum++) { // for number of cells
+                            cell = row.createCell(cellnum++);
+                            cell.setCellValue((String)tmodel.getValueAt(indexes[colNum],1));
+                        }
+                        continue;
+                    }
+
+                    // next start plugin in values
+                    Cell cell;
+                    cell = row.createCell(cellnum++);
+                    cell.setCellValue((rowNum-1) * cas.getdt()); // set time
+                    cell = row.createCell(cellnum++);
+                    // TODO insert stimulus
+                    cell.setCellValue(0);
+                    for (int colNum=0; colNum<indexes.length; colNum++) { // for number of cells
+                        cell = row.createCell(cellnum++);
+                        CalciumSignal currentCas = (CalciumSignal) tmodel.getValueAt(indexes[colNum],3);
+                        cell.setCellValue(currentCas.signalRaw.getElement(rowNum));
+                    }
+                }
+            }
+
             FileOutputStream fos = new FileOutputStream(myFile);
             myWorkBook.write(fos);
             System.out.println("Writing on XLSX file Finished ...");
@@ -761,10 +851,10 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         }
         catch (IOException e) {
             error(""+e);
-            return false;
+            return;
         }
         //if (Recorder.record) Recorder.record("roiManager", "Save", path);
-        return true;
+        return;
     }
 
     void selectAll(){
@@ -787,20 +877,20 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     }
 
     boolean measure() {
-        ImagePlus imp = getImage();
-        if (imp==null)
+        ImagePlus avr_imp = getImage();
+        if (avr_imp==null)
             return false;
         int[] index = table.getSelectedRows();//list.getSelectedIndexes();
         if (index.length==0)
             return error("At least one ROI must be selected from the list.");
 
-        int setup = IJ.setupDialog(imp, 0);
+        int setup = IJ.setupDialog(avr_imp, 0);
         if (setup==PlugInFilter.DONE)
             return false;
         int nSlices = setup==PlugInFilter.DOES_STACKS?imp.getStackSize():1;
-        int currentSlice = imp.getCurrentSlice();
+        int currentSlice = avr_imp.getCurrentSlice();
         for (int slice=1; slice<=nSlices; slice++) {
-            imp.setSlice(slice);
+            avr_imp.setSlice(slice);
             for (int i=0; i<index.length; i++) {
                 if (restore(index[i]))
                     IJ.run("Measure");
@@ -808,18 +898,18 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
                     break;
             }
         }
-        imp.setSlice(currentSlice);
+        avr_imp.setSlice(currentSlice);
         if (index.length>1)
             IJ.run("Select None");
         return true;
     }
 
-    boolean dfOverF() {
+    boolean dfOverF(String str) {
         int[] index = table.getSelectedRows();//list.getSelectedIndexes(); table is the table of ROI's in the GUI
         if (index.length == 0) {
             return error("At least one ROI must be selected from the list.");
         }
-        int setup = IJ.setupDialog(this.imp, 0);
+        int setup = IJ.setupDialog(this.avr_imp, 0);
         if (setup == PlugInFilter.DONE) {
             return false;
         }
@@ -828,10 +918,14 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             if (restore(index[i])) {
                 cas = (CalciumSignal) tmodel.getValueAt(index[i], 3);
 //                table.();
-                if (cas.SignalProcessed.isEmpty()) { // DEBUGGING: for NaN exception handeling
-                    cas.showSignal();
-                } else {
-                    cas.showSignalProccesed();
+                if(cas.SignalProcessed.isEmpty()){
+                    IJ.log("Signal could not be processed...");
+                }
+                else if (str.equals("raw")) { // DEBUGGING: for NaN exception handeling
+                    cas.showSignal("Cell "+ Integer.toString(index[i]+1));
+                }
+                else if(str.equals("df")) {
+                    cas.showSignalProccesed("Cell "+ Integer.toString(index[i]+1));
                 }
             }
             else
@@ -843,30 +937,30 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     boolean multi() {
         Prefs.set("multimeasure.center", center.getState());
         Prefs.set("multimeasure.slices", slices.getState());
-        ImagePlus imp = getImage();
-        if (imp==null)
+        ImagePlus avr_imp = getImage();
+        if (avr_imp==null)
             return false;
         int[] index = table.getSelectedRows();//list.getSelectedIndexes();
         if (index.length==0)
             return error("At least one ROI must be selected from the list.");
 
-        int setup = IJ.setupDialog(imp, 0);
+        int setup = IJ.setupDialog(avr_imp, 0);
         if (setup==PlugInFilter.DONE)
             return false;
-        int nSlices = setup==PlugInFilter.DOES_STACKS?imp.getStackSize():1;
-        int currentSlice = imp.getCurrentSlice();
+        int nSlices = setup==PlugInFilter.DOES_STACKS?avr_imp.getStackSize():1;
+        int currentSlice = avr_imp.getCurrentSlice();
 
         int measurements = Analyzer.getMeasurements();
         Analyzer.setMeasurements(measurements);
         Analyzer aSys = new Analyzer(); //System Analyzer
         ResultsTable rtSys = Analyzer.getResultsTable();
         ResultsTable rtMulti = new ResultsTable();
-        Analyzer aMulti = new Analyzer(imp,Analyzer.getMeasurements(),rtMulti); //Private Analyzer
+        Analyzer aMulti = new Analyzer(avr_imp,Analyzer.getMeasurements(),rtMulti); //Private Analyzer
 
         for (int slice=1; slice<=nSlices; slice++) {
             int sliceUse = slice;
             if(nSlices == 1)sliceUse = currentSlice;
-            imp.setSlice(sliceUse);
+            avr_imp.setSlice(sliceUse);
             rtMulti.incrementCounter();
             int roiIndex = 0;
             if(slices.getState())
@@ -874,8 +968,8 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             for (int i=0; i<index.length; i++) {
                 if (restore(index[i])){
                     roiIndex++;
-                    Roi roi = imp.getRoi();
-                    ImageStatistics stats = imp.getStatistics(measurements);
+                    Roi roi = avr_imp.getRoi();
+                    ImageStatistics stats = avr_imp.getStatistics(measurements);
                     aSys.saveResults(stats,roi); //Save measurements in system results table;
                     for (int j = 0; j < ResultsTable.MAX_COLUMNS; j++){
                         float[] col = rtSys.getColumn(j);
@@ -891,7 +985,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             aMulti.updateHeadings();
         }
 
-        imp.setSlice(currentSlice);
+        avr_imp.setSlice(currentSlice);
         if (index.length>1)
             IJ.run("Select None");
         return true;
@@ -946,8 +1040,8 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         int[] index = table.getSelectedRows(); // was list.getSelectedIndexes();
         if (index.length==0)
             return error("At least one ROI must be selected from the list.");
-        ImagePlus imp = WindowManager.getCurrentImage();
-        Undo.setup(Undo.COMPOUND_FILTER, imp);
+        ImagePlus avr_imp = WindowManager.getCurrentImage();
+        Undo.setup(Undo.COMPOUND_FILTER, avr_imp);
         for (int i=0; i<index.length; i++) {
             if (restore(index[i])) {
                 IJ.run("Fill");
@@ -955,7 +1049,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             } else
                 break;
         }
-        Undo.setup(Undo.COMPOUND_FILTER_DONE, imp);
+        Undo.setup(Undo.COMPOUND_FILTER_DONE, avr_imp);
         return true;
     }
 
@@ -963,8 +1057,8 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         int[] index = table.getSelectedRows(); // was list.getSelectedIndexes();
         if (index.length==0)
             return error("At least one ROI must be selected from the list.");
-        ImagePlus imp = WindowManager.getCurrentImage();
-        Undo.setup(Undo.COMPOUND_FILTER, imp);
+        ImagePlus avr_imp = WindowManager.getCurrentImage();
+        Undo.setup(Undo.COMPOUND_FILTER, avr_imp);
         for (int i=0; i<index.length; i++) {
             if (restore(index[i])) {
                 IJ.run("Draw");
@@ -972,7 +1066,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             } else
                 break;
         }
-        Undo.setup(Undo.COMPOUND_FILTER_DONE, imp);
+        Undo.setup(Undo.COMPOUND_FILTER_DONE, avr_imp);
         return true;
     }
 
@@ -982,8 +1076,8 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         int[] index = table.getSelectedRows(); // was list.getSelectedIndexes();
         if (index.length==0)
             return error("At least one ROI must be selected from the list.");
-        ImagePlus imp = WindowManager.getCurrentImage();
-        Undo.setup(Undo.COMPOUND_FILTER, imp);
+        ImagePlus avr_imp = WindowManager.getCurrentImage();
+        Undo.setup(Undo.COMPOUND_FILTER, avr_imp);
 
         IJ.run("Clear Results");
 
@@ -996,16 +1090,41 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
                 break;
         }
         table.clearSelection();
-        Undo.setup(Undo.COMPOUND_FILTER_DONE, imp);
+        Undo.setup(Undo.COMPOUND_FILTER_DONE, avr_imp);
         return true;
+    }
+
+    /* get signal values for specific Roi */
+    private float[] getRoiSignal(Roi roi) {
+        ImageProcessor ip = imp.getProcessor();
+        ImageStack stack = imp.getStack();
+        double minThreshold = ip.getMinThreshold();
+        double maxThreshold = ip.getMaxThreshold();
+        //Polygon blobContour = cell.getOuterContour();
+        //this.currentROI =  new PolygonRoi(blobContour.xpoints,blobContour.ypoints,blobContour.npoints, Roi.FREELINE) ;
+        int size = stack.getSize();
+        float[] values = new float[size];
+        Calibration cal = imp.getCalibration();
+        Analyzer analyzer = new Analyzer(imp);
+        int measurements = Analyzer.getMeasurements();
+        for (int i=1; i<=size; i++) {
+            ip = stack.getProcessor(i);
+            if (minThreshold!=ImageProcessor.NO_THRESHOLD)
+                ip.setThreshold(minThreshold,maxThreshold,ImageProcessor.NO_LUT_UPDATE);
+            ip.setRoi(roi);
+            ImageStatistics stats = ImageStatistics.getStatistics(ip, measurements, cal);
+            analyzer.saveResults(stats,roi);
+            values[i-1] = (float)stats.mean;
+        }
+        return values;
     }
 
     public boolean updateActiveRoi(){
         int[] index = table.getSelectedRows();
-        ImagePlus imp = getImage();
-        if (imp==null)
+        ImagePlus avr_imp = getImage();
+        if (avr_imp==null)
             return false;
-        Roi roi = imp.getRoi();
+        Roi roi = avr_imp.getRoi();
         if (roi==null){ return error("The active image does not have an ROI."); }
 
         if(index.length == 0){
@@ -1039,12 +1158,12 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     }
 
     ImagePlus getImage() {
-        ImagePlus imp = WindowManager.getCurrentImage();
-        if (imp==null) {
+        ImagePlus avr_imp = WindowManager.getCurrentImage();
+        if (avr_imp==null) {
             error("There are no images open.");
             return null;
         } else
-            return imp;
+            return avr_imp;
     }
 
     boolean error(String msg) {
