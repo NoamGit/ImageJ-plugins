@@ -62,9 +62,11 @@ public class CalciumSignal {
         initilaize();
     }
 
-    public CalciumSignal(float[] initSig, double dt){
+    public CalciumSignal(float[] initSig, double dt, float bl_noise_per, double lpf_param){
         initilaize();
         this.dt = dt;
+        this.CUTOFF = lpf_param;
+        this.noisePrecentile = bl_noise_per;
         this.signalRaw = new AlgVector(FloatToDouble(initSig));
         // subtract mean
         this.mean = average(initSig);
@@ -557,8 +559,9 @@ public class CalciumSignal {
         // test class
         String path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\";
 //        String path = "C:\\Users\\Noam\\Dropbox\\# graduate studies m.sc\\# SLITE\\ij - plugin data\\";
-        File traceSample = new File(path+"trace sample\\test_detrending_src.xlsx");
+//        File traceSample = new File(path+"trace sample\\test_detrending_src.xlsx");
 //        File traceSample = new File(path+"trace sample\\Cell8.xlsx");
+        File traceSample = new File(path+"trace sample\\test_nonexpTrend.xlsx");
 
         CalciumSignal sig = new CalciumSignal();
         FileInputStream fis = null;

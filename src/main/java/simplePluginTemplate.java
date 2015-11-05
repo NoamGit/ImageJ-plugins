@@ -1,9 +1,11 @@
 import ij.IJ;
 import ij.ImagePlus;
+import ij.plugin.PlugIn;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import sun.plugin2.main.server.Plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,7 +17,7 @@ import java.util.Iterator;
 /**
  * Created by noambox on ******
  */
-public class simplePluginTemplate {
+public class simplePluginTemplate implements PlugIn {
 
     /* Class Variabels*/
     ImagePlus imp;

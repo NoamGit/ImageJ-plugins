@@ -6,10 +6,9 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.blob.Blob;
 import ij.blob.ManyBlobs;
-import ij.gui.GenericDialog;
-import ij.gui.NewImage;
-import ij.gui.PolygonRoi;
-import ij.gui.Roi;
+import ij.gui.*;
+import ij.io.OpenDialog;
+import ij.io.SaveDialog;
 import ij.measure.Calibration;
 import ij.plugin.ZProjector;
 import ij.plugin.filter.Analyzer;
@@ -35,6 +34,11 @@ It detects cells, Calculates their activity trace and returns the dF/F of the in
 /*@Plugin(type = Command.class, headless = true,
         menuPath = "Analyze>Activity Analysis")*/
 public class Activity_Analysis implements PlugInFilter {
+    // User Parameters
+    private double BL_NOISE_PREC = 0.3;
+    private double LPF_THRES = 0.002;
+    private double DT = 0.1;
+    private Checkbox ELLIPS_CHB;
 
     // Parameters - Erode
     private String MORPH_PROC = "Close";
@@ -61,8 +65,9 @@ public class Activity_Analysis implements PlugInFilter {
 
     // Parameters - Segmentation
     // TODO load classifier and do feature selection
-    private String CLASSIFPATH = "C:\\Users\\noambox\\Documents\\NielFiji-repo\\Fiji" +
-            "\\Self Customized Parameters\\Classifiers\\classifier1.model";
+    private String CLASSIFPATH = "C:\\Users\\niel\\Documents\\Noam\\Repos\\Fiji\\Fiji"; // SS version
+    private String CLASSI = "\\Self Customized Parameters\\Classifiers\\classifier1.model";
+
 
     /* METHODS */
     // Parameters for ZProfile modification
@@ -93,7 +98,7 @@ public class Activity_Analysis implements PlugInFilter {
         // Segment data with classifier
         File f1 = new File(this.CLASSIFPATH);
         if(!f1.exists()){
-            this.CLASSIFPATH = "C:\\Users\\niel\\Documents\\Noam\\Repos\\Fiji\\Fiji"; // load SS version
+            this.CLASSIFPATH = "C:\\Users\\noambox\\Documents\\NielFiji-repo\\Fiji"; // load noambox version
             File f2 = new File(this.CLASSIFPATH);
             if(!f2.exists())
             {
@@ -102,7 +107,7 @@ public class Activity_Analysis implements PlugInFilter {
             }
         }
         WekaSegmentation segmentator = new WekaSegmentation( avr_img );
-        segmentator.loadClassifier(this.CLASSIFPATH);
+        segmentator.loadClassifier(this.CLASSIFPATH+this.CLASSI);
         ImagePlus imp_prob = segmentator.applyClassifier(avr_img, 0, true); // get probabilities image
 
                              /*   ImagePlus imp_temp_0 = new ImagePlus();
@@ -164,11 +169,13 @@ public class Activity_Analysis implements PlugInFilter {
                                 IJ.run("In [+]", "");*/
 
         // for evey Blob take the trace form the stack
-        avr_img.show();
-        double dt = findSignalDt();
-        for (int k=1; k<size;k++){
+        Overlay overLay = new Overlay();
+        cellLocation.getLabeledImage();
+        // double dt = findSignalDt();
+        for (int k=0; k<size;k++){
             try{
-            CalciumSignal ca_sig = new CalciumSignal(getBlobTimeProfile(cellLocation.get(k)), dt);
+            CalciumSignal ca_sig = new CalciumSignal(getBlobTimeProfile(cellLocation.get(k)), this.DT, (float) this.BL_NOISE_PREC, this.LPF_THRES);
+            overLay.add(this.currentROI);
             ca_sig.DeltaF();
             cm.addCell(ca_sig, this.currentROI);
             }
@@ -181,6 +188,13 @@ public class Activity_Analysis implements PlugInFilter {
 //                                double d = cellLocation.get(k).getCircularity();
 //                                IJ.showMessage("cell " + k+"\nAreaConv " + a + " AreaEnc " + b +"\nAspec " + c + " Circu " + d);
         }
+        overLay.setLabelColor(Color.WHITE);
+        overLay.setFillColor(Color.GREEN);
+        overLay.setStrokeColor(Color.YELLOW);
+        avr_img.setOverlay(overLay);
+        avr_img.show();
+        IJ.selectWindow("Log");
+        IJ.run("Close");
         return;
     }
 
@@ -193,24 +207,58 @@ public class Activity_Analysis implements PlugInFilter {
             return 1/Double.valueOf(str);
         }
         else{
-            return 0.1; // Hz
+            return 0; // Hz
         }
     }
 
     private void UserInterface(){
     /* Method fore opening the user interface */
 
-/*        GenericDialog gd = new GenericDialog("Activity Analysis settings");
-        Panel panel = new
-        gd.addPanel();
-        gd.addNumericField("Gain:",default_amplitude,2);
+//        GenericDialog gd = new GenericDialog("Activity Analysis settings");
+//        Panel panel = new
+//        gd.addPanel();
+//        gd.addNumericField("Gain:",default_amplitude,2);
+//
+//        this.default_amplitude = (int) gd.getNextNumber();
+//        gd.showDialog();
+//        if (gd.wasCanceled()) {
+//            IJ.error("PlugIn canceled!");
+//            return;
+//        }
 
-        this.default_amplitude = (int) gd.getNextNumber();
+        /*for ADI*/
+//        DialogListener dl = new DialogListener() {
+//            public boolean dialogItemChanged(GenericDialog gd, AWTEvent e) {
+//
+//                return false;
+//            }
+//        };
+
+        GenericDialog gd = new GenericDialog("DeltaSlice settings");
+//        gd.addDialogListener(dl);
+        gd.addNumericField("Base Line noise percentage:", this.BL_NOISE_PREC, 3);
+        gd.addNumericField("dt:",this.DT,3);
+        gd.addNumericField("LPF threshold (Hz):", this.LPF_THRES, 3);
+        gd.addCheckbox("Do ellipse filtering:", true);
+        gd.addCheckbox("Load Classifyer:", true);
+
         gd.showDialog();
+
+        this.BL_NOISE_PREC = gd.getNextNumber();
+        this.DT = gd.getNextNumber();
+        this.LPF_THRES = gd.getNextNumber();
+        this.ELLIPS_CHB = (Checkbox) gd.getCheckboxes().get(0);
+        Checkbox classif_chbx = (Checkbox) gd.getCheckboxes().get(1);
+
+        if(classif_chbx.getState()){
+            OpenDialog od = new OpenDialog("Choose model file (Classifyer)");
+            CLASSIFPATH = od.getDirectory();
+            CLASSI = od.getFileName();
+        }
         if (gd.wasCanceled()) {
             IJ.error("PlugIn canceled!");
             return;
-        }*/
+        }
     }
 
     /* method for complete calcium signal analysis */
@@ -238,10 +286,12 @@ public class Activity_Analysis implements PlugInFilter {
                 IJ.log("** Ratio filtering - "+ filterAspRatio.size()+" left...");
             ManyBlobs filterCirc = filterAspRatio.filterBlobs(0, this.CIRC_MAX, Blob.GETCIRCULARITY); // perfect circle yields 1000
                 IJ.log("** Circ filtering - "+ filterCirc.size()+" left...");
+        if(this.ELLIPS_CHB.getState()){
             filteredBlobs = filterCirc.filterBlobs(0, 1, "LocationFeature", imp.getWidth(), imp.getHeight(), ELLIPSE_a, ELLIPSE_b);
                 IJ.log("** Location filtering - "+ filteredBlobs.size()+" left...");
-          return filteredBlobs;
-//          return filterCirc;
+            return filteredBlobs;
+        }
+          return filterCirc;
     }
 
     /* get signal values for specific blob */
@@ -257,7 +307,7 @@ public class Activity_Analysis implements PlugInFilter {
         Analyzer analyzer = new Analyzer(imp);
         int measurements = Analyzer.getMeasurements();
         int current = imp.getCurrentSlice();
-        for (int i=1; i<=size; i++) {
+        for (int i=1; i<=size; i++) { // TODO check if trims number of samples
             ip = this.stack.getProcessor(i);
             if (minThreshold!=ImageProcessor.NO_THRESHOLD)
                 ip.setThreshold(minThreshold,maxThreshold,ImageProcessor.NO_LUT_UPDATE);
@@ -284,7 +334,7 @@ public class Activity_Analysis implements PlugInFilter {
         ImageStack imp_stack = imp.getStack();
         double minThreshold = ip.getMinThreshold();
         double maxThreshold = ip.getMaxThreshold();
-        int size = imp.getNSlices();
+        int size = imp_stack.getSize();
         double[] values = new double[size];
         Calibration cal = imp.getCalibration();
         Analyzer analyzer = new Analyzer(imp);
@@ -322,26 +372,26 @@ public class Activity_Analysis implements PlugInFilter {
 
 
     /** Tests the plugin. */
-//    public static void main(final String... args) {
-//        String path;
-//        ImagePlus imp;
-//        try {
-//            path = "C:\\Users\\Noam\\Dropbox\\# graduate studies m.sc\\# SLITE\\ij - plugin data\\"; // LAB
-//            imp = IJ.openImage(path + "FLASH_20msON_20Hz_SLITE_1.tif");
-//            if(imp == null){
-//                throw new FileNotFoundException("Your not in Lab....");
-//            }
-//        }
-//        catch(FileNotFoundException error){
-//            path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\"; //HOME
-//             imp = IJ.openImage(path + "FLASH_20msON_20Hz_SLITE_1.tif"); // DEBUG
-//        }
-//
-//
-//        Activity_Analysis acta = new Activity_Analysis();
-//        acta.setup("", imp);
-//        imp.show();
-//        acta.run(imp.getProcessor());
-//    }
+    public static void main(final String... args) {
+        String path;
+        ImagePlus imp;
+        try {
+            path = "C:\\Users\\Noam\\Dropbox\\# graduate studies m.sc\\# SLITE\\ij - plugin data\\"; // LAB
+            imp = IJ.openImage(path + "FLASH_20msON_20Hz_SLITE_1.tif");
+            if(imp == null){
+                throw new FileNotFoundException("Your not in Lab....");
+            }
+        }
+        catch(FileNotFoundException error){
+            path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\"; //HOME
+             imp = IJ.openImage(path + "FLASH_20msON_20Hz_SLITE_1.tif"); // DEBUG
+        }
+
+
+        Activity_Analysis acta = new Activity_Analysis();
+        acta.setup("", imp);
+        imp.show();
+        acta.run(imp.getProcessor());
+    }
 
 }
