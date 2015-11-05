@@ -62,11 +62,12 @@ public class CalciumSignal {
         initilaize();
     }
 
-    public CalciumSignal(float[] initSig, double dt, float bl_noise_per, double lpf_param){
+//    public CalciumSignal(float[] initSig, double dt, float bl_noise_per, double lpf_param){
+    public CalciumSignal(float[] initSig, double dt){
         initilaize();
         this.dt = dt;
-        this.CUTOFF = lpf_param;
-        this.noisePrecentile = bl_noise_per;
+//        this.CUTOFF = lpf_param;
+//        this.noisePrecentile = bl_noise_per;
         this.signalRaw = new AlgVector(FloatToDouble(initSig));
         // subtract mean
         this.mean = average(initSig);

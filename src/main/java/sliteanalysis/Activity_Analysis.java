@@ -171,11 +171,13 @@ public class Activity_Analysis implements PlugInFilter {
         // for evey Blob take the trace form the stack
         Overlay overLay = new Overlay();
         cellLocation.getLabeledImage();
-        // double dt = findSignalDt();
+        double dt = findSignalDt();
         for (int k=0; k<size;k++){
             try{
-            CalciumSignal ca_sig = new CalciumSignal(getBlobTimeProfile(cellLocation.get(k)), this.DT, (float) this.BL_NOISE_PREC, this.LPF_THRES);
-            overLay.add(this.currentROI);
+//            CalciumSignal ca_sig = new CalciumSignal(getBlobTimeProfile(cellLocation.get(k)), this.DT, (float) this.BL_NOISE_PREC, this.LPF_THRES);
+            CalciumSignal ca_sig = new CalciumSignal(getBlobTimeProfile(cellLocation.get(k)), dt);
+
+                overLay.add(this.currentROI);
             ca_sig.DeltaF();
             cm.addCell(ca_sig, this.currentROI);
             }
@@ -226,39 +228,33 @@ public class Activity_Analysis implements PlugInFilter {
 //            return;
 //        }
 
-        /*for ADI*/
-//        DialogListener dl = new DialogListener() {
-//            public boolean dialogItemChanged(GenericDialog gd, AWTEvent e) {
+//        /*for ADI*/
 //
-//                return false;
-//            }
-//        };
-
-        GenericDialog gd = new GenericDialog("DeltaSlice settings");
-//        gd.addDialogListener(dl);
-        gd.addNumericField("Base Line noise percentage:", this.BL_NOISE_PREC, 3);
-        gd.addNumericField("dt:",this.DT,3);
-        gd.addNumericField("LPF threshold (Hz):", this.LPF_THRES, 3);
-        gd.addCheckbox("Do ellipse filtering:", true);
-        gd.addCheckbox("Load Classifyer:", true);
-
-        gd.showDialog();
-
-        this.BL_NOISE_PREC = gd.getNextNumber();
-        this.DT = gd.getNextNumber();
-        this.LPF_THRES = gd.getNextNumber();
-        this.ELLIPS_CHB = (Checkbox) gd.getCheckboxes().get(0);
-        Checkbox classif_chbx = (Checkbox) gd.getCheckboxes().get(1);
-
-        if(classif_chbx.getState()){
-            OpenDialog od = new OpenDialog("Choose model file (Classifyer)");
-            CLASSIFPATH = od.getDirectory();
-            CLASSI = od.getFileName();
-        }
-        if (gd.wasCanceled()) {
-            IJ.error("PlugIn canceled!");
-            return;
-        }
+//        GenericDialog gd = new GenericDialog("DeltaSlice settings");
+////        gd.addDialogListener(dl);
+//        gd.addNumericField("Base Line noise percentage:", this.BL_NOISE_PREC, 3);
+//        gd.addNumericField("dt:",this.DT,3);
+//        gd.addNumericField("LPF threshold (Hz):", this.LPF_THRES, 3);
+//        gd.addCheckbox("Do ellipse filtering:", true);
+//        gd.addCheckbox("Load Classifyer:", true);
+//
+//        gd.showDialog();
+//
+//        this.BL_NOISE_PREC = gd.getNextNumber();
+//        this.DT = gd.getNextNumber();
+//        this.LPF_THRES = gd.getNextNumber();
+//        this.ELLIPS_CHB = (Checkbox) gd.getCheckboxes().get(0);
+//        Checkbox classif_chbx = (Checkbox) gd.getCheckboxes().get(1);
+//
+//        if(classif_chbx.getState()){
+//            OpenDialog od = new OpenDialog("Choose model file (Classifyer)");
+//            CLASSIFPATH = od.getDirectory();
+//            CLASSI = od.getFileName();
+//        }
+//        if (gd.wasCanceled()) {
+//            IJ.error("PlugIn canceled!");
+//            return;
+//        }
     }
 
     /* method for complete calcium signal analysis */
@@ -286,12 +282,12 @@ public class Activity_Analysis implements PlugInFilter {
                 IJ.log("** Ratio filtering - "+ filterAspRatio.size()+" left...");
             ManyBlobs filterCirc = filterAspRatio.filterBlobs(0, this.CIRC_MAX, Blob.GETCIRCULARITY); // perfect circle yields 1000
                 IJ.log("** Circ filtering - "+ filterCirc.size()+" left...");
-        if(this.ELLIPS_CHB.getState()){
+//        if(this.ELLIPS_CHB.getState()){
             filteredBlobs = filterCirc.filterBlobs(0, 1, "LocationFeature", imp.getWidth(), imp.getHeight(), ELLIPSE_a, ELLIPSE_b);
                 IJ.log("** Location filtering - "+ filteredBlobs.size()+" left...");
             return filteredBlobs;
-        }
-          return filterCirc;
+//        }
+//          return filterCirc;
     }
 
     /* get signal values for specific blob */
