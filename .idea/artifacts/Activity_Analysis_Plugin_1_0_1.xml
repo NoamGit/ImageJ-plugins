@@ -22,6 +22,8 @@
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/CellManagerRoi.class" />
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/CellManager$1.class" />
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/CalciumSignal.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/TimeSeries.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Extract_Stimulus.class" />
       </element>
       <element id="file-copy" path="$PROJECT_DIR$/test_save/plugins.config" />
     </root>
