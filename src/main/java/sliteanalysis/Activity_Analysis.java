@@ -66,8 +66,11 @@ public class Activity_Analysis implements PlugInFilter {
     // Parameters - Segmentation
     // TODO load classifier and do feature selection
     private String CLASSIFPATH = "C:\\Users\\niel\\Documents\\Noam\\Repos\\Fiji\\Fiji"; // SS version
+    // private String CLASSI = "\\Self Customized Parameters\\Classifiers\\classy20XRetina.model";
     private String CLASSI = "\\Self Customized Parameters\\Classifiers\\classifier1.model";
 
+    // Visualization
+    private Overlay overLay = new Overlay();
 
     /* METHODS */
     // Parameters for ZProfile modification
@@ -162,14 +165,14 @@ public class Activity_Analysis implements PlugInFilter {
         MyBlobFeature myOwnFeature = new MyBlobFeature();
         Blob.addCustomFeature(myOwnFeature);
         int size = cellLocation.size();
-        CellManager cm = new CellManager(avr_img, imp);
+        CellManager cm = new CellManager(avr_img, imp, this.overLay);
 
                 /*                avr_img.show();
                                 IJ.run("In [+]", "");
                                 IJ.run("In [+]", "");*/
 
         // for evey Blob take the trace form the stack
-        Overlay overLay = new Overlay();
+
         cellLocation.getLabeledImage();
         double dt = findSignalDt();
         for (int k=0; k<size;k++){
@@ -196,7 +199,7 @@ public class Activity_Analysis implements PlugInFilter {
         avr_img.setOverlay(overLay);
         avr_img.show();
         IJ.selectWindow("Log");
-        IJ.run("Close");
+        //IJ.run("Close");
         return;
     }
 

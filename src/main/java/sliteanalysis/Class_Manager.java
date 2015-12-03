@@ -2,6 +2,7 @@ package sliteanalysis;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.Overlay;
 import ij.plugin.PlugIn;
 
 /** Bob Dougherty.  This is a copy of Wayne Rasband's ROI Manager with
@@ -56,6 +57,7 @@ public class Class_Manager implements PlugIn {
     public void run(String arg) {
         if (IJ.versionLessThan("1.33"))return;
         ImagePlus avr_imp = IJ.openImage("C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\avr_image.tif"); // DEBUG
-        mm = new CellManager(avr_imp,avr_imp);
+        Overlay ovr = new Overlay();
+        mm = new CellManager(avr_imp,avr_imp, ovr);
     }
 }

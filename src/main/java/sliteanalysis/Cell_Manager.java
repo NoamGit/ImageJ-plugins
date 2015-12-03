@@ -38,6 +38,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     //java.awt.List list;
     //Hashtable rois = new Hashtable();
     ImagePlus avr_imp;
+    Overlay overlay;
     ImagePlus imp;
     JTable table;
     CellManagerTableModel tmodel;
@@ -48,7 +49,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     Thread thread;
     JFileChooser fc;
 
-    public CellManager(ImagePlus avr_imp, ImagePlus imp) {
+    public CellManager(ImagePlus avr_imp, ImagePlus imp, Overlay pOverlay) {
         super("Cell Manager");
         if (instance!=null) {
             instance.toFront();
@@ -65,6 +66,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         int theight = 450;
 
         this.avr_imp = avr_imp;
+        this.overlay = pOverlay;
         this.imp = imp;
         tmodel = new CellManagerTableModel();
         table = new JTable(tmodel);
@@ -182,6 +184,16 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     void addButton(String label) {
         Button b = new Button(label);
         b.addActionListener(this);
+        switch(label) { // TODO repair
+            case "Add Cell":
+                b.setBackground(Color.orange);
+                break;
+            case "DF/F":
+                b.setBackground(Color.cyan);
+                break;
+            default:
+                break;
+        }
         panel.add(b);
     }
 
@@ -281,8 +293,12 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         // add cell location and signal to list
         try{
             this.addCell(ca_sig, roi);
-        }
-        catch(Exception e){
+            this.overlay.add(roi);
+            this.overlay.setLabelColor(Color.WHITE);
+            this.overlay.setStrokeColor(Color.YELLOW);
+            this.avr_imp.setOverlay(this.overlay);
+            this.avr_imp.show();
+        } catch(Exception e){
             IJ.showMessage(e.getMessage());
         }
     }
@@ -393,6 +409,9 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             String label = (String)tmodel.getValueAt(index[i],1);
             //rois.remove(label);
             //list.delItem(index[i]);
+            this.overlay.remove(this.overlay.get(index[i])); // TODO check if works
+            this.avr_imp.setOverlay(this.overlay);
+            this.avr_imp.show();
             tmodel.removeRoi(index[i]);
         }
         return true;
@@ -1208,11 +1227,16 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
 
 
     public void keyPressed(KeyEvent e) {
+        /* This method is for keyboard event handling */
         final int SPACE = 32;
         final int CR = 10;
         int keyCode = e.getKeyCode();
         if (keyCode == SPACE)
-            add();
+            additionalCell();
+        else if(keyCode == KeyEvent.VK_A)
+            additionalCell();
+        else if(keyCode == KeyEvent.VK_D)
+            dfOverF("df");
         else if (keyCode == CR)
             addAndDraw();
     }
