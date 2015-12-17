@@ -14,6 +14,10 @@ public class TimeSeries {
     public double dt;
 
     /* Methods */
+    public TimeSeries(){
+
+    }
+
     public TimeSeries(int[] x, double[] y){
         this.sample = x;
         this.Signal = y;

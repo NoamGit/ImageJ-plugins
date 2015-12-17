@@ -34,7 +34,7 @@ public class Extract_Stimulus implements PlugIn {
     double[] stim_samp;
     TimeSeries stim;
     ImageStack imp_stack;
-    private int STD_GAIN = 3;
+    private double STD_GAIN = 3;
 
 
     /* Methods */
@@ -54,16 +54,18 @@ public class Extract_Stimulus implements PlugIn {
         // run gui
         GenericDialog gd = new GenericDialog("DeltaSlice settings");
         gd.addNumericField("Standard Deviation Gain:",STD_GAIN,3);
-        this.STD_GAIN = (int) gd.getNextNumber();
         gd.showDialog();
         if (gd.wasCanceled()) {
             IJ.error("PlugIn canceled!");
             return;
         }
+        this.STD_GAIN = (int) gd.getNextNumber();
+
 
         // run local method
         double[] avr_sig = Activity_Analysis.getAverageSignal(this.imp);
-        Object[] Peaks = getPeaks(avr_sig, this.STD_GAIN);
+        double[] detr_sig = CalciumSignal.DetrendSignal(avr_sig, 0.001);
+        Object[] Peaks = getPeaks(detr_sig, this.STD_GAIN);
         this.stim_samp = CalciumSignal.ArraytoDouble(Peaks);
         stim = getStimulusArray(Peaks, avr_sig.length);
         Plot plot = new Plot("Stimulus","Samples","",stim.time,stim.Signal);
@@ -75,7 +77,7 @@ public class Extract_Stimulus implements PlugIn {
         this.STD_GAIN = gain;
     }
 
-    static public Object[] getPeaks(double[] sig, int std_gain) {
+    static public Object[] getPeaks(double[] sig, double std_gain) {
         /* finds signal's stimulus times according to values over std*/
 
         ArrayList<Double> peaks = new ArrayList<Double>();
@@ -102,7 +104,7 @@ public class Extract_Stimulus implements PlugIn {
 
     public static void main(final String... args) {
 
-        String testFlag = "im"; // "im" or "numeric"
+        String testFlag = "num"; // "im" or "numeric"
         Extract_Stimulus es = new Extract_Stimulus();
         String path;
         try {
@@ -117,7 +119,7 @@ public class Extract_Stimulus implements PlugIn {
         }
 
         if(testFlag.equals("num") == true){
-            File traceSample = new File(path+"trace sample\\sliteanalysis.Extract_Stimulus.xlsx");
+            File traceSample = new File(path+"trace sample\\ExtractStimTest.xlsx");
             FileInputStream fis = null;
             try {
                 fis = new FileInputStream(traceSample);
@@ -128,16 +130,17 @@ public class Extract_Stimulus implements PlugIn {
 
                 Iterator rows = mySheet.rowIterator();
                 int idx = 0;
-                double[] values = new double[2139]; //2139 1103
+                int value_length = 2998;
+                double[] values = new double[value_length]; //2139 1103
 
-                while (rows.hasNext() && idx < 2139) {
+                while (rows.hasNext() && idx < value_length) {
                     Row row = (XSSFRow) rows.next();
                     values[idx] = row.getCell(1).getNumericCellValue();
                     idx++;
                 }
 
-                Extract_Stimulus.getPeaks(values, 3);
-                TimeSeries stim = Extract_Stimulus.getStimulusArray(Extract_Stimulus.getPeaks(values, 3), values.length);
+                double[] detr_sig = CalciumSignal.DetrendSignal(values, 0.001);
+                TimeSeries stim = Extract_Stimulus.getStimulusArray(Extract_Stimulus.getPeaks(detr_sig, 2), values.length);
                 stim.show();
             }
             catch (FileNotFoundException e) {

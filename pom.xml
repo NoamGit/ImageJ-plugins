@@ -65,6 +65,12 @@
 			<artifactId>Trainable_Segmentation</artifactId>
 		</dependency>
 
+		<!--&lt;!&ndash;Auto Threshold&ndash;&gt;-->
+		<!--<dependency>-->
+			<!--<groupId>sc.fiji</groupId>-->
+			<!--<artifactId>Cell_Magic_Wand_Tool</artifactId>-->
+		<!--</dependency>-->
+
 		<!--Auto Threshold-->
 		<dependency>
 			<groupId>sc.fiji</groupId>
@@ -179,6 +185,51 @@
 			<groupId>org.scijava</groupId>
 			<artifactId>scripting-jython</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>pom-fiji</artifactId>
+			<version>15.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>pal-optimization</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>imagescience</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>VIB-lib</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>fiji-lib</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>Image_5D</artifactId>
+			<version>1.2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>Anisotropic_Diffusion_2D</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>Auto_Threshold</artifactId>
+			<version>1.16.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>pom-fiji</artifactId>
+			<version>15.6.0</version>
 		</dependency>
 	</dependencies>
 

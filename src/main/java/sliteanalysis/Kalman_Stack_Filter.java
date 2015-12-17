@@ -1,3 +1,5 @@
+package sliteanalysis;
+
 import ij.*;
 import ij.plugin.*;
 import ij.plugin.filter.RGBStackSplitter;

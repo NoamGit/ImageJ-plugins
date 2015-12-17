@@ -77,6 +77,30 @@ public class CalciumSignal {
 //        }
     }
 
+    public CalciumSignal(ArrayList<Double> initSig, double dt){
+        initilaize();
+        this.dt = dt;
+//        this.CUTOFF = lpf_param;
+//        this.noisePrecentile = bl_noise_per;
+        Iterator itr = initSig.iterator();
+        double[] sig_double = new double[initSig.size()];
+        float[] sig_float = new float[initSig.size()];
+        int count = 0;
+        while (itr.hasNext()){
+            double temp_val = (Double) itr.next();
+            sig_double[count] = temp_val;
+            sig_float[count] = (float) temp_val;
+            count++;
+        }
+        this.signalRaw = new AlgVector(sig_double);
+        // subtract mean
+        this.mean = average( sig_float );
+        this.sig2Detrend = sig_float;
+//        for (int i = 0; i < this.sig2Detrend.length; i++){
+//            this.sig2Detrend[i] = this.sig2Detrend[i] - this.mean;
+//        }
+    }
+
     private void initilaize(){
         filterCoefficients = new IirFilterCoefficients();
         filterCoefficients.b = new double[]{2.094852E-14,  1.047426E-13, 2.094852E-13,  2.094852E-13, 1.047426E-13, 2.094852E-14}; // default LPF coefficients
@@ -110,7 +134,7 @@ public class CalciumSignal {
         return out;
     }
 
-    private static float[] DoubletoFloat(Double[] array){
+    public static float[] DoubletoFloat(Double[] array){
         float[] out = new float[array.length];
         int i = 0;
         for (Double f : array) {
@@ -119,7 +143,7 @@ public class CalciumSignal {
         return out;
     }
 
-    private float[] DoubletoFloat(double[] array) {
+    public static float[] DoubletoFloat(double[] array) {
         float[] out = new float[array.length];
         int i = 0;
         for (Double f : array) {
@@ -348,6 +372,19 @@ public class CalciumSignal {
         plot.show();
     }
 
+    static public void compareSignal(double[] sig1, double[] sig2) {
+        double[] x = new double[sig1.length];
+        double values[] = new double[sig1.length];
+        for (int i = 0; i < x.length; i++) {
+            x[i] = i;
+        }
+        Plot plot = new Plot("Plot window","x","values",x,sig2);
+        plot.setColor(Color.RED);
+        plot.draw();
+        plot.addPoints(x, sig1, Plot.LINE);
+        plot.show();
+    }
+
     public void showSignal() {
         double[] x = new double[this.signalRaw.numElements()];
         for (int i = 0; i < x.length; i++)
@@ -410,6 +447,47 @@ public class CalciumSignal {
         return trend;
     }
 
+    /* detrend signal by LPF ; Source - http://www.source-code.biz/dsp/java/ */
+    static public double[] DetrendSignal( double[] sig_in, double cutoff){
+        // center the signal
+        int size = sig_in.length;
+        double mean = average(sig_in);
+        for (int i = 0; i <size; i++){
+            sig_in[i] = sig_in[i] - mean;
+        }
+        int order = 5;
+        double[] sig_out = new double[size];
+        IirFilterCoefficients filterCoefficients = IirFilterDesignFisher.design(FilterPassType.lowpass, FilterCharacteristicsType.chebyshev, order, -0.1, cutoff, 1);
+
+        // no phase filtering
+        IirFilter LPF = new IirFilter(filterCoefficients);
+        double[] forwardfilt = new double[size];
+        double[] backfilt = new double[size];
+        ArrayList<Double> trend = new ArrayList<Double>(size);
+        // forward filtering
+        for (int i = 0; i < size; i++ ) {
+            forwardfilt[i] = LPF.step(sig_in[i]);
+        }
+        // backward filtering
+        for (int i = 0; i < size; i++ ) {
+            backfilt[i] = LPF.step(forwardfilt[size-1 - i]);
+        }
+        // reverse signal
+        for (int i = 0; i < size; i++ ) {
+            trend.add(backfilt[size-1 - i]);
+        }
+
+        for (int i = 0; i < sig_in.length; i++ ) {
+            trend.set(i, (trend.get(i)));
+            sig_out[i] = sig_in[i] - trend.get(i);
+        }
+
+        // TEST
+//        compareSignal(sig_in, sig_out);
+//        compareSignal(this.SignalProcessed, this.signalRaw);
+
+        return sig_out;
+    }
 
     private void detrendExp() {
     /* Detrends Raw signal by Exponential fitting with offset*/
