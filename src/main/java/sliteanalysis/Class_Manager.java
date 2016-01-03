@@ -58,6 +58,6 @@ public class Class_Manager implements PlugIn {
         if (IJ.versionLessThan("1.33"))return;
         ImagePlus avr_imp = IJ.openImage("C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\avr_image.tif"); // DEBUG
         Overlay ovr = new Overlay();
-        mm = new CellManager(avr_imp,avr_imp, ovr);
+        mm = new CellManager(avr_imp,avr_imp, ovr, 0.1);
     }
 }

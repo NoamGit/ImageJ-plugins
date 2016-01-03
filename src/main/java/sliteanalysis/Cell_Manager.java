@@ -5,15 +5,18 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import java.awt.List;
+import java.util.stream.Collectors;
 import java.util.zip.*;
 import javax.swing.*;
 import javax.swing.table.*;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 
+import com.sun.tools.classfile.Opcode;
 import com.sun.xml.internal.ws.api.model.ExceptionType;
 import ij.*;
 import ij.measure.Calibration;
+import ij.plugin.PointToolOptions;
 import ij.process.*;
 import ij.gui.*;
 import ij.io.*;
@@ -35,9 +38,9 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
 
     Panel panel;
     static Frame instance;
-    //java.awt.List list;
-    //Hashtable rois = new Hashtable();
     ImagePlus avr_imp;
+    ArrayList<Double> stimulus1D = new ArrayList<>();
+    double dt_r = 0;
     Overlay overlay;
     ImagePlus imp;
     JTable table;
@@ -49,7 +52,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     Thread thread;
     JFileChooser fc;
 
-    public CellManager(ImagePlus avr_imp, ImagePlus imp, Overlay pOverlay) {
+    public CellManager(ImagePlus avr_imp, ImagePlus imp, Overlay pOverlay,double dt) {
         super("Cell Manager");
         if (instance!=null) {
             instance.toFront();
@@ -64,7 +67,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         //add(list);
         int twidth = 200;
         int theight = 450;
-
+        this.dt_r = dt;
         this.avr_imp = avr_imp;
         this.overlay = pOverlay;
         this.imp = imp;
@@ -79,15 +82,18 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         statusCol.setHeaderValue("Status");
         table.addColumn(statusCol);*/
 
-        // Set the width of the first and last column
-        table.getColumnModel().getColumn(0).setPreferredWidth(25);
+        // Set the width of the first and last column (here we can decide what data to show in table)
+        table.getColumnModel().getColumn(0).setPreferredWidth(25); // #
         table.getColumnModel().getColumn(2).setMinWidth(0);
         table.getColumnModel().getColumn(2).setMaxWidth(0);
         table.getColumnModel().getColumn(2).setPreferredWidth(0);
         table.getColumnModel().getColumn(3).setMinWidth(0);
         table.getColumnModel().getColumn(3).setMaxWidth(0);
         table.getColumnModel().getColumn(3).setPreferredWidth(0);
-        table.getColumnModel().getColumn(4).setPreferredWidth(25);
+        table.getColumnModel().getColumn(4).setPreferredWidth(25); // Var
+        table.getColumnModel().getColumn(5).setMinWidth(0); // stimulus
+        table.getColumnModel().getColumn(5).setMaxWidth(0);
+        table.getColumnModel().getColumn(5).setPreferredWidth(0);
 
 
         JScrollPane scrollPane = new JScrollPane(table);
@@ -121,6 +127,117 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         addButton("Save DF");
         addButton("Toggle Select All");// was 'Select All'
         addButton("Add Cell");
+        addButton("Magic Add Cell");
+        addButton("RAW Signal");
+        addButton("DF/F");
+        addButton("Multi");
+        addButton("Label All ROIs");
+        addButton("Copy List");
+
+        //Checkboxes
+
+        labelType = new CheckboxGroup();
+        panel.add(new Label("Labels:"));
+
+        center = new Checkbox("Center");
+        center.setCheckboxGroup(labelType);
+        panel.add(center);
+
+        coordinates = new Checkbox("Coord.");
+        coordinates.setCheckboxGroup(labelType);
+        panel.add(coordinates);
+        center.setState(Prefs.get("multimeasure.center", true));
+        coordinates.setState(!Prefs.get("multimeasure.center", true));
+
+        panel.add(new Label("Multi Option:"));
+        slices = new Checkbox("Label Slices");
+        panel.add(slices);
+        slices.setState(Prefs.get("multimeasure.slices", false));
+
+
+        add(panel);
+
+        pack();
+        //list.delItem(0);
+        GUI.center(this);
+        show();
+        thread = new Thread(this, "Multi_Measure");
+        thread.start();
+    }
+
+    public CellManager(ImagePlus avr_imp, ImagePlus imp, Overlay pOverlay, ArrayList<Double> stimulus1D, double dt) {
+        super("Cell Manager");
+        if (instance!=null) {
+            instance.toFront();
+            return;
+        }
+        instance = this;
+        setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+        int twidth = 200;
+        int theight = 450;
+
+        this.dt_r = dt;
+        this.avr_imp = avr_imp;
+        this.overlay = pOverlay;
+        this.imp = imp;
+        this.stimulus1D = stimulus1D;
+        tmodel = new CellManagerTableModel();
+        table = new JTable(tmodel);
+        table.setPreferredScrollableViewportSize(new Dimension(twidth, theight));
+        table.setShowGrid(false);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
+
+    /*    // create status colum for activity display
+        TableColumn statusCol = new TableColumn();
+        statusCol.setHeaderValue("Status");
+        table.addColumn(statusCol);*/
+
+        // Set the width of the first and last column
+        table.getColumnModel().getColumn(0).setPreferredWidth(25); // #
+        table.getColumnModel().getColumn(2).setMinWidth(0);
+        table.getColumnModel().getColumn(2).setMaxWidth(0);
+        table.getColumnModel().getColumn(2).setPreferredWidth(0);
+        table.getColumnModel().getColumn(3).setMinWidth(0);
+        table.getColumnModel().getColumn(3).setMaxWidth(0);
+        table.getColumnModel().getColumn(3).setPreferredWidth(0);
+        table.getColumnModel().getColumn(4).setPreferredWidth(25); // Var
+        table.getColumnModel().getColumn(5).setMinWidth(0); // stimulus
+        table.getColumnModel().getColumn(5).setMaxWidth(0);
+        table.getColumnModel().getColumn(5).setPreferredWidth(0);
+
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        add(scrollPane);
+
+        ListSelectionModel rowSM = table.getSelectionModel();
+        rowSM.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+                if (lsm.isSelectionEmpty()) {// Do nothing
+                } else {
+                    int selectedRow = lsm.getMinSelectionIndex();
+                    restore(selectedRow);
+                }
+            }
+        });
+
+        panel = new Panel();
+        panel.setLayout(new GridLayout(21, 1, 1, 1));// was GridLayout(16, 1, 1, 1))
+//        addButton("Add <SP>");
+//        addButton("Add+Draw<CR>");
+//        addButton("Add Particles");
+//        addButton("Update");
+//        addButton("Measure");
+//        addButton("Draw");
+//        addButton("Fill");
+        addButton("Delete");
+        addButton("Open");
+        addButton("Open All");
+        addButton("Save RAW");
+        addButton("Save DF");
+        addButton("Toggle Select All");// was 'Select All'
+        addButton("Add Cell");
+        addButton("Magic Add Cell");
         addButton("RAW Signal");
         addButton("DF/F");
         addButton("Multi");
@@ -184,12 +301,18 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     void addButton(String label) {
         Button b = new Button(label);
         b.addActionListener(this);
-        switch(label) { // TODO repair
+        switch(label) {
             case "Add Cell":
-                b.setBackground(Color.orange);
+                b.setBackground(Color.getHSBColor((float) 0.6212122,(float) 0.36065573, (float) 0.95686275));
                 break;
             case "DF/F":
-                b.setBackground(Color.cyan);
+                b.setBackground(Color.getHSBColor((float) 0,(float) 0.36032388, (float) 0.96862745));
+                break;
+            case "RAW Signal":
+                b.setBackground(Color.getHSBColor((float) 0,(float) 0.36032388, (float) 0.96862745));
+                break;
+            case "Magic Add Cell":
+                b.setBackground(Color.getHSBColor((float) 0.6212122,(float) 0.36065573, (float) 0.95686275));
                 break;
             default:
                 break;
@@ -226,6 +349,8 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             measure();
         else if (command.equals("Add Cell"))
             additionalCell();
+        else if (command.equals("Magic Add Cell"))
+            addWithMagicWandCell();
         else if (command.equals("RAW Signal"))
             dfOverF("raw");
         else if (command.equals("DF/F"))
@@ -241,6 +366,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         else if (command.equals("Copy List"))
             copyList();
     }
+
 
     public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange()==ItemEvent.SELECTED
@@ -272,6 +398,49 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
 
     }
 
+    /*Add Cell with Magic wand*/
+    public void addWithMagicWandCell() throws MissingResourceException {
+
+        // get Roi Selection
+        float[] xpoints ,ypoints;
+        xpoints = ypoints = null;
+        try {
+            xpoints = IJ.getImage().getRoi().getFloatPolygon().xpoints;
+            ypoints = IJ.getImage().getRoi().getFloatPolygon().ypoints;
+            if( !IJ.getImage().getRoi().getTypeAsString().equals("Point") )
+                throw new DataFormatException();
+        }
+        catch(NullPointerException e){
+            IJ.error("No Roi is selected...");
+            return;
+        }
+        catch (DataFormatException e) {
+            IJ.error("Roi type is not poit/multipoints...");
+            return;
+        }
+        Cell_Magic_Wand_Tool cmw = new Cell_Magic_Wand_Tool();
+        for (int i = 0; i <xpoints.length; i++) {
+            PolygonRoi roi = cmw.makeRoi((int) xpoints[i], (int) ypoints[i], avr_imp);
+            // extract Ca signal from roi and process
+            float[] values = getRoiSignal(roi);
+            CalciumSignal ca_sig = new CalciumSignal(values,this.dt_r);
+            ca_sig.DeltaF();
+
+            // add cell location and signal to list
+            try{
+                this.addCell(ca_sig, roi);
+                this.overlay.add(roi);
+                this.overlay.setLabelColor(Color.WHITE);
+//                this.overlay.setStrokeColor(Color.GREEN);
+                this.overlay.setStrokeColor(Color.getHSBColor((float) 0.1666,(float) 0.651,(float) 1));
+                this.avr_imp.setOverlay(this.overlay);
+            } catch(Exception e){
+                IJ.showMessage(e.getMessage());
+            }
+            this.avr_imp.show();
+        }
+    }
+
     public void additionalCell(){
     /* Add's Selection based ROI cell to table*/
 
@@ -287,7 +456,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
 
         // extract Ca signal from roi and process
         float[] values = getRoiSignal(roi);
-        CalciumSignal ca_sig = new CalciumSignal(values);
+        CalciumSignal ca_sig = new CalciumSignal(values,this.dt_r);
         ca_sig.DeltaF();
 
         // add cell location and signal to list
@@ -295,7 +464,8 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             this.addCell(ca_sig, roi);
             this.overlay.add(roi);
             this.overlay.setLabelColor(Color.WHITE);
-            this.overlay.setStrokeColor(Color.YELLOW);
+//            this.overlay.setStrokeColor(Color.GREEN);
+            this.overlay.setStrokeColor(Color.getHSBColor((float) 0.1666,(float) 0.651,(float) 1));
             this.avr_imp.setOverlay(this.overlay);
             this.avr_imp.show();
         } catch(Exception e){
@@ -399,17 +569,108 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     }
 
     boolean delete() {
-        if(table.getRowCount() == 0)
+
+        // first delete from point rois
+        float[] xpoints ,ypoints;
+        xpoints = ypoints = null;
+        try {
+            if( IJ.getImage().getRoi().getTypeAsString().equals("Point") ) { // equals("Rectangle")
+                xpoints = IJ.getImage().getRoi().getFloatPolygon().xpoints;
+                ypoints = IJ.getImage().getRoi().getFloatPolygon().ypoints;
+                int x, y;
+//                ArrayList<Roi> roiArray  = new ArrayList<>();
+//                ArrayList<Integer> indArray = new ArrayList<>();
+//                for (int i = 0; i < this.tmodel.getRowCount(); i++) {
+//                    roiArray.add((Roi) this.tmodel.getValueAt(i, 2));
+//                    indArray.add((Integer) this.tmodel.getValueAt(i,0));
+//                }
+//                for (int j = 0; j < xpoints.length; j++) { // for each Roi Point
+//                    x = (int) xpoints[j];
+//                    y = (int) ypoints[j];
+//                    Collections.reverse(roiArray);
+//                    Collections.reverse(indArray);
+//                    Iterator itrRoi = roiArray.iterator();
+//                    Iterator itrInd = indArray.iterator();
+//                    while (itrRoi.hasNext() & itrInd.hasNext()) {
+//                        if (((Roi) itrRoi.next()).contains(x, y)) {
+//                            int indx = (Integer) itrInd.next();
+//                            this.overlay.remove(this.overlay.get(indx));
+//                            this.avr_imp.setOverlay(this.overlay);
+//                            tmodel.removeRoi(indx);
+//                            itrRoi.remove();
+//                            itrInd.remove();
+//                        }
+//                        else // skip this sample
+//                            itrInd.next();
+//                    }
+//                }
+//                this.avr_imp.show();
+//                return true; // deleted from image
+
+                Roi[] roiArray = new Roi[this.tmodel.getRowCount()];
+                for (int i = 0; i < this.tmodel.getRowCount(); i++) {
+                    roiArray[i] = (Roi) this.tmodel.getValueAt(i, 2);
+                }
+                ArrayList<Integer> indx2remove = new ArrayList<>();
+                for (int j = 0; j < xpoints.length; j++) { // for each Roi Point
+                    x = (int) xpoints[j];
+                    y = (int) ypoints[j];
+                    for (int i = roiArray.length - 1; i >= 0 ; i--) {
+                        if (roiArray[i].contains(x, y)) { // clears all selected x, y that are in a roi bottom up
+                            indx2remove.add(i);
+                        }
+                    }
+                }
+
+                // Create a list with the distinct elements using stream.
+                Collections.sort(indx2remove);
+                Iterator itr_ind = indx2remove.iterator();
+                ArrayList<Integer> unique_list = new ArrayList<>();
+                while (itr_ind.hasNext()){
+                    Integer k = (Integer) itr_ind.next();
+                    if(!unique_list.contains(k))
+                        unique_list.add(k);
+                }
+                Collections.reverse(unique_list);
+                Iterator itr_unq = unique_list.iterator();
+                while (itr_unq.hasNext()){
+                    int k = (int) itr_unq.next();
+                    this.overlay.remove(this.overlay.get(k));
+                    this.avr_imp.setOverlay(this.overlay);
+                    tmodel.removeRoi(k);
+                    roiArray[k] =  new Roi(new Rectangle(0,0,0,0)); // "nullifies" roi
+                }
+
+//                this.overlay.remove(this.overlay.get(i));
+//                this.avr_imp.setOverlay(this.overlay);
+//                tmodel.removeRoi(i);
+//                roiArray[i] =  new Roi(new Rectangle(0,0,0,0)); // "nullifies" roi
+
+                this.avr_imp.show();
+                return true; // deleted from image
+
+            }
+            else
+                throw new NullPointerException();
+        }
+        catch(NullPointerException e){
+            IJ.showStatus("No Point ROIs, deleting only from Jtable...");
+        }
+
+        // if no point rois delete from table
+        if(table.getRowCount() == 0) {
             // was if (list.getItemCount()==0)
-            return error("The ROI list is empty.");
+            IJ.showStatus("The ROI list is empty.");
+            return false;
+        }
         int index[] = table.getSelectedRows(); // was list.getSelectedIndexes();
         if (index.length==0)
-            return error("At least one ROI in the list must be selected.");
+            return error("At least one ROI in the list or on the Image must be selected.");
         for (int i=index.length-1; i>=0; i--) {
             String label = (String)tmodel.getValueAt(index[i],1);
             //rois.remove(label);
             //list.delItem(index[i]);
-            this.overlay.remove(this.overlay.get(index[i])); // TODO check if works
+            this.overlay.remove(this.overlay.get(index[i]));
             this.avr_imp.setOverlay(this.overlay);
             this.avr_imp.show();
             tmodel.removeRoi(index[i]);
@@ -431,6 +692,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         avr_imp.setRoi(roi);
         return true;
     }
+
 	/* These open and save methods are replaced by the methods of the integrated ROI manager of ImageJ.
 	 * They provide better functionality and should ease merging this manager into ImageJ
 	 */
@@ -819,7 +1081,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
                     cell.setCellValue((rowNum-1) * cas.getdt()); // set time
                     cell = row.createCell(cellnum++);
                     // TODO insert stimulus
-                    cell.setCellValue(0);
+                    cell.setCellValue(this.stimulus1D.get(rowNum)); //set stimulus
                     for (int colNum=0; colNum<indexes.length; colNum++) { // for number of cells
                         cell = row.createCell(cellnum++);
                         CalciumSignal currentCas = (CalciumSignal) tmodel.getValueAt(indexes[colNum],3);
@@ -841,7 +1103,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
                         cell.setCellValue("Time");
                         cell = row.createCell(cellnum++);
                         cell.setCellValue("Stim");
-                        for (int colNum=0; colNum<indexes.length; colNum++) { // for number of cells
+                        for (int colNum=0; colNum<indexes.length; colNum++) { // for number of cells - sets all Ca signals in the row
                             cell = row.createCell(cellnum++);
                             cell.setCellValue((String)tmodel.getValueAt(indexes[colNum],1));
                         }
@@ -854,8 +1116,8 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
                     cell.setCellValue((rowNum-1) * cas.getdt()); // set time
                     cell = row.createCell(cellnum++);
                     // TODO insert stimulus
-                    cell.setCellValue(0);
-                    for (int colNum=0; colNum<indexes.length; colNum++) { // for number of cells
+                    cell.setCellValue(this.stimulus1D.get(rowNum)); //set stimulus
+                    for (int colNum=0; colNum<indexes.length; colNum++) { // for number of cells - sets all Ca signals in the row
                         cell = row.createCell(cellnum++);
                         CalciumSignal currentCas = (CalciumSignal) tmodel.getValueAt(indexes[colNum],3);
                         cell.setCellValue(currentCas.signalRaw.getElement(rowNum));
@@ -1237,6 +1499,8 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             additionalCell();
         else if(keyCode == KeyEvent.VK_D)
             dfOverF("df");
+        else if(keyCode == KeyEvent.VK_M)
+            addWithMagicWandCell();
         else if (keyCode == CR)
             addAndDraw();
     }
@@ -1253,7 +1517,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
 
 /* CMT class */
 class CellManagerTableModel extends AbstractTableModel{
-    protected static int NUM_COLUMNS = 5;
+    protected static int NUM_COLUMNS = 6;
     protected static int START_NUM_ROWS = 0;
     protected int nextEmptyRow = 0;
     protected int numRows = 0;
@@ -1262,6 +1526,7 @@ class CellManagerTableModel extends AbstractTableModel{
     static final public String LABEL = "Label";
     static final public String ROI  = "Roi";
     static final public String CASIG  = "CaSignal";
+    static final public String STIM = "Stimulus";
     static final public String STATUS  = "Var";
 
 
@@ -1283,6 +1548,8 @@ class CellManagerTableModel extends AbstractTableModel{
                 return CASIG;
             case 4:
                 return STATUS;
+            case 5:
+                return STIM;
         }
         return "";
     }
@@ -1313,6 +1580,8 @@ class CellManagerTableModel extends AbstractTableModel{
                     return mmr.getCaSignal();
                 case 4:
                     return mmr.getCaVar();
+                case 5:
+                    return mmr.getStimulus();
             }
         } catch (Exception e) {
             IJ.showMessage(" ERROR: getVal of CMT  is out of bound");
@@ -1447,6 +1716,7 @@ class CellManagerRoi{
     private Object _roi = null;
     private CalciumSignal _caSignal = new CalciumSignal();
     private double _casVar = 0;
+    private TimeSeries _stimulus = new TimeSeries();
 
     public CellManagerRoi(int labelindex, String label){
         _labelindex = labelindex;
@@ -1468,6 +1738,16 @@ class CellManagerRoi{
         _casVar  = cas.activityVariance;
     }
 
+    public CellManagerRoi(int labelindex, String label, Object roi, CalciumSignal cas, TimeSeries stimulus){
+        _labelindex = labelindex;
+        _label = label;
+        _activeFlag = cas.isactiveFlag;
+        _roi = roi;
+        _caSignal = cas;
+        _casVar  = cas.activityVariance;
+        _stimulus = stimulus;
+    }
+
     public CellManagerRoi(String label){
         _label = label;
     }
@@ -1483,10 +1763,12 @@ class CellManagerRoi{
     public Object getRoi(){ return _roi; }
     public boolean getStatus(){ return _activeFlag; }
     public double getCaVar(){ return _casVar;}
+    public TimeSeries getStimulus(){return _stimulus;}
 
     public void set_casVar( double var ){ _casVar = var; }
     public void setLabelindex(int labelindex){ _labelindex = labelindex; }
     public void setLabel(String label){ _label = label; }
     public void setStatus(boolean status){ _activeFlag = status; }
     public void setRoi(Object roi){ _roi = roi; }
+    public void setStim(TimeSeries stim) {_stimulus = stim;}
 }

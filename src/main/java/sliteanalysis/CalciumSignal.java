@@ -4,7 +4,9 @@ import biz.source_code.dsp.filter.*;
 import biz.source_code.dsp.util.ArrayUtils;
 import com.sun.org.glassfish.external.statistics.Statistic;
 import ij.IJ;
+import ij.Prefs;
 import ij.gui.Plot;
+import ij.gui.Roi;
 import ij.plugin.frame.Fitter;
 import org.apache.commons.math3.stat.descriptive.StatisticalSummary;
 import org.apache.commons.math3.stat.descriptive.StatisticalSummaryValues;
@@ -37,6 +39,7 @@ public class CalciumSignal {
     private float[] sig2Detrend;
     private float mean;
     private double CUTOFF = 0.002;
+    private static int ORDER = 5;
     private IirFilterCoefficients filterCoefficients;
     private float noisePrecentile; //30% percentile
     private float detectionVariance; // over this threshold there is a good chance for cell's activity
@@ -48,7 +51,8 @@ public class CalciumSignal {
     // Default constructer with filter's coeff initialization
     /* Filters details are - Chebychev 1 :: ripple dB = -0.1 :: filterCutoffFreq = frequencyInHz/samplingRateInHz = 0.0007 :: order ~ 5 */
     public CalciumSignal(){
-        initilaize();
+//        initilaize();
+        loadPrefs();
     }
 
     public CalciumSignal(float[] initSig){
@@ -59,12 +63,14 @@ public class CalciumSignal {
         for (int i = 0; i < this.sig2Detrend.length; i++){
             this.sig2Detrend[i] = this.sig2Detrend[i] - this.mean;
         }
-        initilaize();
+//        initilaize();
+        loadPrefs();
     }
 
 //    public CalciumSignal(float[] initSig, double dt, float bl_noise_per, double lpf_param){
     public CalciumSignal(float[] initSig, double dt){
-        initilaize();
+//        initilaize();
+        loadPrefs();
         this.dt = dt;
 //        this.CUTOFF = lpf_param;
 //        this.noisePrecentile = bl_noise_per;
@@ -78,7 +84,8 @@ public class CalciumSignal {
     }
 
     public CalciumSignal(ArrayList<Double> initSig, double dt){
-        initilaize();
+//        initilaize();
+        loadPrefs();
         this.dt = dt;
 //        this.CUTOFF = lpf_param;
 //        this.noisePrecentile = bl_noise_per;
@@ -99,6 +106,13 @@ public class CalciumSignal {
 //        for (int i = 0; i < this.sig2Detrend.length; i++){
 //            this.sig2Detrend[i] = this.sig2Detrend[i] - this.mean;
 //        }
+    }
+
+    private void loadPrefs() {
+        CUTOFF = Prefs.get("sliteanalysis.cCUTOFF", AAP_Constants.cCUTOFF);
+        noisePrecentile = (float) Prefs.get("sliteanalysis.cNOISEPERCENTILE",AAP_Constants.cNOISEPERCENTILE);
+        detectionVariance = (int) Prefs.get("sliteanalysis.cDETECTIONVARIANCE",AAP_Constants.cDETECTIONVARIANCE);
+        ORDER = (int) Prefs.get("sliteanalysis.cORDER",AAP_Constants.cORDER);
     }
 
     private void initilaize(){
@@ -429,8 +443,7 @@ public class CalciumSignal {
 
     /* detrend signal by LPF ; Source - http://www.source-code.biz/dsp/java/ */
     public ArrayList<Double> DetrendSignal(){
-        int order = 5;
-        IirFilterCoefficients filterCoefficients = IirFilterDesignFisher.design(FilterPassType.lowpass, FilterCharacteristicsType.chebyshev, order, -0.1, this.CUTOFF, 1);
+        IirFilterCoefficients filterCoefficients = IirFilterDesignFisher.design(FilterPassType.lowpass, FilterCharacteristicsType.chebyshev, this.ORDER, -0.1, this.CUTOFF, 1);
         ArrayList<Double> trend = filtfiltwithLPF(filterCoefficients);
         for (int i = 0; i < this.signalSize(); i++ ) {
             trend.set(i, (trend.get(i)));

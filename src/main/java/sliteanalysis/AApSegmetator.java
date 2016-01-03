@@ -4,6 +4,7 @@ import fiji.threshold.Auto_Local_Threshold;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.Prefs;
 import ij.blob.Blob;
 import ij.blob.ManyBlobs;
 import ij.gui.Overlay;
@@ -21,6 +22,7 @@ import trainableSegmentation.WekaSegmentation;
 import cellMagicWand.Constants;
 import cellMagicWand.PolarTransform;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -77,6 +79,7 @@ public class AApSegmetator {
     /*-------------------------------------- Methods --------------------------------------*/
 
     AApSegmetator(ImagePlus t_imp){
+        loadPrefs();
         this.imp = t_imp;
     }
 
@@ -87,6 +90,14 @@ public class AApSegmetator {
 
     public void setupBlobFiltering(){
 
+    }
+
+    private void loadPrefs() {
+        this.FM_TOL = Prefs.get("sliteanalysis.cFM_TOL", AAP_Constants.cFM_TOL);
+        this.CM_MAX = (int) Prefs.get("sliteanalysis.cCM_MAX",AAP_Constants.cCM_MAX);
+        this.ENLARGEROI = (int) Prefs.get("sliteanalysis.cENLARGEROI",AAP_Constants.cENLARGEROI);
+        this.ELLIPSE_a = (int) Prefs.get("sliteanalysis.cELLIPSE_a",AAP_Constants.cELLIPSE_a);
+        this.ELLIPSE_b = (int) Prefs.get("sliteanalysis.cELLIPSE_b",AAP_Constants.cELLIPSE_b);
     }
 
     /**
@@ -219,10 +230,16 @@ public class AApSegmetator {
             try{
                 PolygonRoi t_roi = cmwt.makeRoi(maxPoints.xpoints[i],maxPoints.ypoints[i],imp);
                 if(t_roi!=null){
+                    PolygonRoi enlarge_roi = (PolygonRoi) RoiEnlarger.enlarge(t_roi,this.ENLARGEROI );
+                    Point left_rect_corner = enlarge_roi.getBounds().getLocation();
+                    if(left_rect_corner.x == 0 | left_rect_corner.y == 0 |  // checks if the surrounding ROI gets out frame limits
+                        left_rect_corner.x >= (imp.getWidth() - enlarge_roi.getBounds().getWidth()) |
+                        left_rect_corner.y >= (imp.getHeight() - enlarge_roi.getBounds().getHeight()))
+                                continue;
                     cell_rois.add((PolygonRoi) RoiEnlarger.enlarge(t_roi,this.ENLARGEROI ));}
     }
             catch(StackOverflowError e){
-                continue; // TODO - figure out whats the error - probabily out of bound rMax in the func
+                continue;
             }
         }
         return cell_rois;

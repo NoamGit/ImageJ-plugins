@@ -186,7 +186,7 @@ public class Activity_Analysis implements PlugInFilter {
         MyBlobFeature myOwnFeature = new MyBlobFeature();
         Blob.addCustomFeature(myOwnFeature);
         int size = cellLocation.size();
-        CellManager cm = new CellManager(avr_img, imp, this.overLay);
+        CellManager cm = new CellManager(avr_img, imp, this.overLay, this.DT);
 
                               /*  avr_img.show();
                                 IJ.run("In [+]", "");

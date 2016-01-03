@@ -43,6 +43,7 @@ public class Stimulus_API {
     private ArrayList<Roi> rois = new ArrayList<>();
     private ImagePlus imp;
     private double dt = 1/60D; // 60 Hz default movie sr
+    private double EXTRACTSTIM_THRES;
     private AffineTransform aft = new AffineTransform();
     private int ENLARGEROI;
 
@@ -160,8 +161,8 @@ public class Stimulus_API {
     * */
     public TimeSeriesMatrix FindRoisMeanSignals(AffineTransform aft){
         // for debbuging
-        String path = "D:\\# Projects (Noam)\\# SLITE\\# DATA\\301115Retina - DATA\\Loc 3\\post\\s_r_reg\\";  // REMOVE
-        ImagePlus test_imp = IJ.openImage(path + "niel_source.tif"); // REMOVE
+//        String path = "D:\\# Projects (Noam)\\# SLITE\\# DATA\\301115Retina - DATA\\Loc 3\\post\\s_r_reg\\";  // REMOVE
+//        ImagePlus test_imp = IJ.openImage(path + "niel_source.tif"); // REMOVE
 
         // Step 0 - Initializations
         ImageStack stack = this.imp.getStack();
@@ -183,8 +184,8 @@ public class Stimulus_API {
         for (int i = 0; i < rois.size(); i++) {
             Roi roi_iter = rois.get(i);
 
-            test_imp.setRoi(roi_iter); // REMOVE
-            test_imp.show(); // REMOVE
+//            test_imp.setRoi(roi_iter); // REMOVE
+//            test_imp.show(); // REMOVE
 
             for (int j=1; j<=size; j++) {
                 ip = stack.getProcessor(j);

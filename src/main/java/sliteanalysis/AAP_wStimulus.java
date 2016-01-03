@@ -1,9 +1,7 @@
 package sliteanalysis;
 
-import ij.IJ;
-import ij.ImagePlus;
-import ij.ImageStack;
-import ij.WindowManager;
+import cellMagicWand.Constants;
+import ij.*;
 import ij.gui.*;
 import ij.measure.Calibration;
 import ij.plugin.AVI_Reader;
@@ -12,13 +10,17 @@ import ij.plugin.SubstackMaker;
 import ij.plugin.filter.Analyzer;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
+import net.imagej.Main;
 import org.apache.commons.math3.filter.KalmanFilter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.io.File;
@@ -33,27 +35,31 @@ import java.util.*;
 public class AAP_wStimulus implements PlugIn {
 
     /* Class Variabels*/
-    private ImagePlus imp_r;
-    private ImagePlus imp_s;
-    private int[] imp_s_index;
-    private ArrayList<PolygonRoi> cells_roi = new ArrayList<>();
-    private double dt_r;
-    private double DT_S = 1/60D; // 60 Hz default stimulus sr
+    protected ImagePlus imp_r;
+    protected ImagePlus imp_s;
+    protected int[] imp_s_index;
+    protected ArrayList<PolygonRoi> cells_roi = new ArrayList<>();
+    protected double dt_r;
+    protected double DT_S;
 
     /* UI parameters */
-    private boolean removeFirst = true;
-    private Overlay ovr = new Overlay();
+    protected boolean removeFirst;
+    protected Overlay ovr = new Overlay();
 
     /* Dark noise Parameters*/
-    Roi NOISE_ROI = new Roi(0,0,20,20);
+    Roi NOISE_ROI;
 
     /* Kalman Param*/
-    private static final double KM_GAIN = 0.8;
-    private double KL_PRECVAR = 0.05;
-    private boolean useArtifact = true;
-    private CellManager cm;
+    protected static double KM_GAIN;
+    protected double KL_PRECVAR;
+    protected boolean useArtifact;
+    protected CellManager cm;
+
+    /* stimulus parameter */
+    protected double GETPEAKSCONST;
 
     /* Methods */
+    @Override
     public void run(String argv) {
         if(this.setup()) { // validates conditions
             IJ.showStatus(" Dark noise removal...");
@@ -79,14 +85,14 @@ public class AAP_wStimulus implements PlugIn {
             //Resample stimulus
             ArrayList<Double> stim_vector = new ArrayList<>();
             if(!this.useArtifact){
-                    IJ.showStatus(" Stimulus srtifact removal....");
+                    IJ.showStatus(" Stimulus artifact removal....");
                     Stimulus_API sapi = new Stimulus_API();
                     sapi.setup("", this.imp_s, this.cells_roi, 0);
                     stim_vector = sapi.ResampleStimulus(this.dt_r, imp_r.getStackSize(), this.imp_s_index[0], this.imp_s_index[1]);
             }
             else {
                 double[] var1 = Activity_Analysis.getAverageSignal(imp_r);
-                Object[] var2 = Extract_Stimulus.getPeaks(var1, 1);
+                Object[] var2 = Extract_Stimulus.getPeaks(var1, GETPEAKSCONST);
                 TimeSeries var3 = Extract_Stimulus.getStimulusArray(var2, imp_r.getStackSize());
                 for (int i = 0; i < var3.Signal.length; i++) {
                     stim_vector.add(var3.Signal[i]);
@@ -111,13 +117,25 @@ public class AAP_wStimulus implements PlugIn {
             imp_r.setStack(ims);
 
             // wrap everything with the Cell manager
-            this.cm = toCellManager(this.imp_r, this.cells_roi,avr_imp);
-
-            System.out.print("Success!!");
+            this.cm = toCellManager(this.imp_r, this.cells_roi,avr_imp, stim_vector );
+//            this.cm = toCellManager(this.imp_r, this.cells_roi,avr_imp);
         }
 
         // run local method
 
+    }
+
+    protected void loadPrefs() {
+        GETPEAKSCONST  = Prefs.get("sliteanalysis.cGETPEAKSCONST", AAP_Constants.cGETPEAKSCONST);
+        double Fs  = Prefs.get("sliteanalysis.cSTIMULUS_FR", AAP_Constants.cSTIMULUS_FR);
+        DT_S = 1/Fs;
+        removeFirst =Prefs.get("sliteanalysis.cREMOVEFIRST",AAP_Constants.cREMOVEFIRST);
+        int nrl_u = (int) Prefs.get("sliteanalysis.cNOISE_ROI_UP",AAP_Constants.cNOISE_ROI_UP);
+        int nrl_l = (int) Prefs.get("sliteanalysis.cNOISE_ROI_LOW",AAP_Constants.cNOISE_ROI_LOW);
+        NOISE_ROI = new Roi(nrl_u,nrl_u,nrl_l,nrl_l);
+        KM_GAIN = Prefs.get("sliteanalysis.cKM_GAIN",AAP_Constants.cKM_GAIN);
+        KL_PRECVAR = Prefs.get("sliteanalysis.cKM_PRECVAR",AAP_Constants.cKM_PRECVAR);
+        useArtifact = Prefs.get("sliteanalysis.cUSEARTIFACT",AAP_Constants.cUSEARTIFACT);
     }
 
     /* Replaces all sample index in imp with neighbor sample*/
@@ -154,9 +172,9 @@ public class AAP_wStimulus implements PlugIn {
         return (double) mean/ip_slice.getPixelCount();
     }
 
-    /* Wraps everything into a Cell Manager Class*/
-    private CellManager toCellManager(ImagePlus imp, ArrayList<PolygonRoi> rois, ImagePlus av_imp) {
-        CellManager cm = new CellManager(av_imp, imp, this.ovr);
+    /* Wraps everything into a Cell Manager Class. stimulus is 1D ArrayList*/
+    protected CellManager toCellManager(ImagePlus imp, ArrayList<PolygonRoi> rois, ImagePlus av_imp, ArrayList<Double> stim) {
+        CellManager cm = new CellManager(av_imp, imp, this.ovr, stim, this.dt_r );
         Iterator itr = rois.iterator();
         ArrayList<Double> av_sig = new ArrayList<>();
         PolygonRoi roi;
@@ -174,7 +192,38 @@ public class AAP_wStimulus implements PlugIn {
 //        }
         ovr.setLabelColor(Color.WHITE);
 //        ovr.setFillColor(Color.GREEN);
-        ovr.setStrokeColor(Color.getHSBColor(100,30,87));
+//        ovr.setStrokeColor(Color.getHSBColor((float) 0.29710147,(float) 0.4509804,(float) 1));
+        ovr.setStrokeColor(Color.getHSBColor((float) 0.1666,(float) 0.651,(float) 1));
+        av_imp.setOverlay(ovr);
+        av_imp.show();
+        IJ.run("In [+]", "");
+        IJ.run("In [+]", "");
+        return cm;
+    }
+
+    /* Wraps everything into a Cell Manager Class*/
+    protected CellManager toCellManager(ImagePlus imp, ArrayList<PolygonRoi> rois, ImagePlus av_imp) {
+        CellManager cm = new CellManager(av_imp, imp, this.ovr, this.dt_r );
+        Iterator itr = rois.iterator();
+        ArrayList<Double> av_sig = new ArrayList<>();
+        PolygonRoi roi;
+        while(itr.hasNext()){
+            roi = (PolygonRoi) itr.next();
+            av_sig = Activity_Analysis.getAverageSignal(imp, roi);
+            CalciumSignal ca_sig = new CalciumSignal(av_sig, this.dt_r);
+            ovr.add(roi);
+            ca_sig.DeltaF();
+            cm.addCell(ca_sig, roi);
+        }
+//            catch(Exception e){
+//                IJ.showMessage(e.getMessage());
+//            }
+//        }
+        ovr.setLabelColor(Color.WHITE);
+//        ovr.setFillColor(Color.GREEN);
+//        ovr.setStrokeColor(Color.getHSBColor((float) 0.29710147,(float) 0.4509804,(float) 1));
+        ovr.setStrokeColor(Color.getHSBColor((float) 0.1666,(float) 0.651,(float) 1));
+
         av_imp.setOverlay(ovr);
         av_imp.show();
         IJ.run("In [+]", "");
@@ -209,7 +258,7 @@ public class AAP_wStimulus implements PlugIn {
     }
 
     /* Setup GUI */
-    protected final boolean setup() {
+    protected boolean setup() {
         if(IJ.versionLessThan("1.40c")) {
             return false;
         } else {
@@ -239,18 +288,30 @@ public class AAP_wStimulus implements PlugIn {
                     }
                     SubstackMaker sm = new SubstackMaker();
                     GenericDialog gd = new GenericDialog("AAP - 1.1.0");
-                    // gd.setInsets(10, 45, 0);
+                    gd.setLayout(new BoxLayout(gd, BoxLayout.Y_AXIS)); // check
                     gd.addChoice("Stimulus stack", var8, currentTitle);
                     gd.addChoice("Response stack", var8, currentTitle.equals(var8[0]) ? var8[1] : var8[0]);
                     String defautltSlices = "1-" + WindowManager.getImage(((Integer) idsList.get(0)).intValue()).getStackSize();
                     gd.addMessage("Enter a range (e.g. 2-14)...", null, Color.darkGray);
+                    gd.add(Box.createRigidArea(new Dimension(0, 2)));
                     gd.addStringField("Slices of Response:", defautltSlices, 40);
-                    gd.addCheckbox("Remove first slice", true);
-                    gd.addCheckbox("Use Artifact from response", true);
+                    gd.add(Box.createRigidArea(new Dimension(0, 10)));
+                    JButton settings = new JButton("settings");
+                    settings.setBackground(Color.lightGray);
+                    settings.setBorderPainted(true);
+                    settings.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            UI_Settings.openSettings();
+                        }
+                    });
+                    gd.add(settings);
+                    gd.add(Box.createRigidArea(new Dimension(0, 10)));
                     gd.showDialog();
                     if(gd.wasCanceled()) {
                         return false;
                     } else {
+                        loadPrefs();
                         this.imp_s = WindowManager.getImage(((Integer) idsList.get(gd.getNextChoiceIndex())).intValue());
                         this.imp_r = WindowManager.getImage(((Integer) idsList.get(gd.getNextChoiceIndex())).intValue());
                         String userInput= gd.getNextString();
@@ -261,10 +322,8 @@ public class AAP_wStimulus implements PlugIn {
                         IJ.showStatus(" Making substack copy of selection...");
                         this.imp_r  = sm.makeSubstack(this.imp_r, userInput);
                         this.imp_s_index = getFirstNLast(this.imp_r, userInput);
-                        if(this.imp_s_index[0] != 1 | !gd.getNextBoolean())
+                        if(this.imp_s_index[0] != 1)
                             this.removeFirst = false;
-                        if(gd.getNextBoolean())
-                            this.useArtifact = true;
                         //this.imp_s = makeStimSubstack(this.imp_s , userInput);
                         return true;
                     }
@@ -318,7 +377,7 @@ public class AAP_wStimulus implements PlugIn {
     }
 
     /* Extracts indexes of first and last indexes of stim imp that match response imp*/
-    private int[] getFirstNLast(ImagePlus imp, String userInput){
+    protected int[] getFirstNLast(ImagePlus imp, String userInput){
         String stackTitle = "Substack ("+userInput+")";
         if (stackTitle.length()>25) {
             int idxA = stackTitle.indexOf(",",18);
@@ -397,8 +456,10 @@ public class AAP_wStimulus implements PlugIn {
             path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\"; //HOME
         }
 
-        aap.imp_r = IJ.openImage(path + "TEXT_20msON_10Hz_SLITE_2.tif"); // DEBUG
-        aap.imp_s = AVI_Reader.open(path + "OLEDstim_ON0.02_OFF9.98_FlashingText 21.avi", true);
+        aap.imp_r = IJ.openImage(path + "test_TEXT_10Hz.tif"); // DEBUG
+        aap.imp_s = AVI_Reader.open(path + "test_OLED.avi", true);
+//        aap.imp_r = IJ.openImage(path + "TEXT_20msON_10Hz_SLITE_2.tif"); // DEBUG
+//        aap.imp_s = AVI_Reader.open(path + "OLEDstim_ON0.02_OFF9.98_FlashingText 21.avi", true);
         aap.imp_r.show();
         aap.imp_s.show();
         String argv = "";
