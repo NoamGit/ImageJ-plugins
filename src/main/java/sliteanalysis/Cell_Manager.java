@@ -17,6 +17,7 @@ import com.sun.xml.internal.ws.api.model.ExceptionType;
 import ij.*;
 import ij.measure.Calibration;
 import ij.plugin.PointToolOptions;
+import ij.plugin.RoiEnlarger;
 import ij.process.*;
 import ij.gui.*;
 import ij.io.*;
@@ -39,8 +40,12 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     Panel panel;
     static Frame instance;
     ImagePlus avr_imp;
+    ImageCanvas can;
+    Mouse_Listener m_lis;
     ArrayList<Double> stimulus1D = new ArrayList<>();
-    double dt_r = 0;
+    double dt_r = 1;
+    int MAXDIAM;
+    double ENLARGEROI;
     Overlay overlay;
     ImagePlus imp;
     JTable table;
@@ -54,6 +59,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
 
     public CellManager(ImagePlus avr_imp, ImagePlus imp, Overlay pOverlay,double dt) {
         super("Cell Manager");
+        loadPrefs();
         if (instance!=null) {
             instance.toFront();
             return;
@@ -64,11 +70,16 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         //list = new List(rows, true);
         //list.add("012345678901234567");
         //list.addItemListener(this);
-        //add(list);
+        //add(list)
+
+        this.stimulus1D = new ArrayList<>(Collections.nCopies(imp.getNSlices(), Double.valueOf(0)));
         int twidth = 200;
         int theight = 450;
         this.dt_r = dt;
         this.avr_imp = avr_imp;
+        this.can = new ImageCanvas(avr_imp);
+        m_lis = new Mouse_Listener(this.avr_imp, this);
+        can.addMouseListener(this.m_lis);
         this.overlay = pOverlay;
         this.imp = imp;
         tmodel = new CellManagerTableModel();
@@ -121,7 +132,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
 //        addButton("Draw");
 //        addButton("Fill");
         addButton("Delete");
-        addButton("Open");
+        addButton("Load ROI zip");
         addButton("Open All");
         addButton("Save RAW");
         addButton("Save DF");
@@ -132,7 +143,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         addButton("DF/F");
         addButton("Multi");
         addButton("Label All ROIs");
-        addButton("Copy List");
+        addButton("Recalc DF");
 
         //Checkboxes
 
@@ -167,6 +178,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
 
     public CellManager(ImagePlus avr_imp, ImagePlus imp, Overlay pOverlay, ArrayList<Double> stimulus1D, double dt) {
         super("Cell Manager");
+        loadPrefs();
         if (instance!=null) {
             instance.toFront();
             return;
@@ -178,6 +190,9 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
 
         this.dt_r = dt;
         this.avr_imp = avr_imp;
+        this.can = new ImageCanvas(avr_imp);
+        m_lis = new Mouse_Listener(this.avr_imp, this);
+        can.addMouseListener(this.m_lis);
         this.overlay = pOverlay;
         this.imp = imp;
         this.stimulus1D = stimulus1D;
@@ -231,7 +246,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
 //        addButton("Draw");
 //        addButton("Fill");
         addButton("Delete");
-        addButton("Open");
+        addButton("Load ROI zip");
         addButton("Open All");
         addButton("Save RAW");
         addButton("Save DF");
@@ -242,7 +257,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         addButton("DF/F");
         addButton("Multi");
         addButton("Label All ROIs");
-        addButton("Copy List");
+        addButton("Recalc DF");
 
         //Checkboxes
 
@@ -314,6 +329,9 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             case "Magic Add Cell":
                 b.setBackground(Color.getHSBColor((float) 0.6212122,(float) 0.36065573, (float) 0.95686275));
                 break;
+            case "Recalc DF":
+                b.setBackground(Color.getHSBColor((float) 0.30,(float) 0.18, (float) 0.99));
+                break;
             default:
                 break;
         }
@@ -335,7 +353,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             updateActiveRoi();
         else if (command.equals("Delete"))
             delete();
-        else if (command.equals("Open"))
+        else if (command.equals("Load ROI zip"))
             open(null);
         else if (command.equals("Open All"))
             openAll();
@@ -363,8 +381,8 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             fill();
         else if (command.equals("Label All ROIs"))
             labelROIs();
-        else if (command.equals("Copy List"))
-            copyList();
+        else if (command.equals("Recalc DF"))
+            recalcDF();
     }
 
 
@@ -419,8 +437,18 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             return;
         }
         Cell_Magic_Wand_Tool cmw = new Cell_Magic_Wand_Tool();
+        cmw.maxDiameter = this.MAXDIAM;
         for (int i = 0; i <xpoints.length; i++) {
             PolygonRoi roi = cmw.makeRoi((int) xpoints[i], (int) ypoints[i], avr_imp);
+
+        PolygonRoi enlarge_roi = (PolygonRoi) RoiEnlarger.enlarge(roi, this.ENLARGEROI);
+        Point left_rect_corner = enlarge_roi.getBounds().getLocation();
+        if(left_rect_corner.x == 0 | left_rect_corner.y == 0 |  // checks if the surrounding ROI gets out frame limits
+                left_rect_corner.x >= (this.avr_imp.getWidth() - enlarge_roi.getBounds().getWidth()) |
+                left_rect_corner.y >= (this.avr_imp.getHeight() - enlarge_roi.getBounds().getHeight()))
+            continue;
+
+        else{
             // extract Ca signal from roi and process
             float[] values = getRoiSignal(roi);
             CalciumSignal ca_sig = new CalciumSignal(values,this.dt_r);
@@ -438,6 +466,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
                 IJ.showMessage(e.getMessage());
             }
             this.avr_imp.show();
+            }
         }
     }
 
@@ -452,6 +481,34 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         if(roi == null){
                 IJ.log("No ROI was selected...");
                 return;
+        }
+
+        // extract Ca signal from roi and process
+        float[] values = getRoiSignal(roi);
+        CalciumSignal ca_sig = new CalciumSignal(values,this.dt_r);
+        ca_sig.DeltaF();
+
+        // add cell location and signal to list
+        try{
+            this.addCell(ca_sig, roi);
+            this.overlay.add(roi);
+            this.overlay.setLabelColor(Color.WHITE);
+//            this.overlay.setStrokeColor(Color.GREEN);
+            this.overlay.setStrokeColor(Color.getHSBColor((float) 0.1666,(float) 0.651,(float) 1));
+            this.avr_imp.setOverlay(this.overlay);
+            this.avr_imp.show();
+        } catch(Exception e){
+            IJ.showMessage(e.getMessage());
+        }
+    }
+
+    public void additionalCell(Roi roi){
+    /* Add's Selection based ROI cell to table*/
+
+        // get Roi Selection
+        if(roi == null){
+            IJ.log("No ROI was selected...");
+            return;
         }
 
         // extract Ca signal from roi and process
@@ -800,6 +857,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             name = getUniqueName(name);
             //list.add(name);
             //rois.put(name, roi);
+            //additionalCell(roi);
             tmodel.addRoi(name, roi);
         }
     }
@@ -814,6 +872,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
      * If we delete the current entries one cannot open rois from different sources (co-workers and such)
      */
     void openZip(String path) {
+        IJ.showStatus("Loading Rois, please wait...");
         ZipInputStream in = null;
         ByteArrayOutputStream out;
         boolean noFilesOpened = true; // we're pessimistic and expect that the zip file dosent contain any .roi
@@ -845,15 +904,13 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
                     RoiDecoder rd = new RoiDecoder(bytes, name);
                     Roi roi = rd.getRoi();
                     if (roi!=null) {
-                        name = name.substring(0, name.length()-4);
-
-                        name = getUniqueName(name);
-                        tmodel.addRoi(name, roi);
+                        additionalCell(roi);
                         noFilesOpened = false; // We just added a .roi
                     }
                 }
                 entry = in.getNextEntry();
             }
+            IJ.showStatus("Loading Rois success!");
             in.close();
         } catch (IOException e) { error(e.toString()); }
         if(noFilesOpened){ error("This ZIP archive does not appear to contain \".roi\" files"); }
@@ -979,8 +1036,13 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             nameData = sd.getFileName();
 //            int returnVal = fc.showSaveDialog(CellManager.this);
 //            saveMultiple(indexes, fc.getSelectedFile().getPath());
-            saveMultiple(indexes, dir, nameRoi, nameData, saveType);
-            return true;
+            if(dir == null){
+                return false;
+            }
+            else {
+                saveMultiple(indexes, dir, nameRoi, nameData, saveType);
+                return true;
+            }
         }
 //
 //        String name = (String) tmodel.getValueAt(indexes[0],1); // was list.getItem(indexes[0]);
@@ -1058,7 +1120,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             if(saveType.compareTo("processed") == 0){
                 cas = (CalciumSignal) tmodel.getValueAt(indexes[0],3);
                 int signalSize = cas.signalSize();
-                for (int rowNum =0; rowNum<signalSize; rowNum++) { // for signal size
+                for (int rowNum =0; rowNum<=signalSize; rowNum++) { // for signal size
                     Row row = mySheet.createRow(rownum++); // create row
                     int cellnum = 0;
 
@@ -1080,12 +1142,11 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
                     cell = row.createCell(cellnum++);
                     cell.setCellValue((rowNum-1) * cas.getdt()); // set time
                     cell = row.createCell(cellnum++);
-                    // TODO insert stimulus
-                    cell.setCellValue(this.stimulus1D.get(rowNum)); //set stimulus
+                    cell.setCellValue(this.stimulus1D.get(rowNum-1)); //set stimulus
                     for (int colNum=0; colNum<indexes.length; colNum++) { // for number of cells
                         cell = row.createCell(cellnum++);
                         CalciumSignal currentCas = (CalciumSignal) tmodel.getValueAt(indexes[colNum],3);
-                        cell.setCellValue(currentCas.SignalProcessed.get(rowNum));
+                        cell.setCellValue(currentCas.SignalProcessed.get(rowNum-1));
                     }
                 }
             }
@@ -1093,7 +1154,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             else if(saveType.compareTo("raw") == 0){
                 cas = (CalciumSignal) tmodel.getValueAt(indexes[0],3);
                 int signalSize = cas.signalSize();
-                for (int rowNum =0; rowNum<signalSize; rowNum++) { // for signal size
+                for (int rowNum =0; rowNum<=signalSize; rowNum++) { // for signal size
                     Row row = mySheet.createRow(rownum++); // create row
                     int cellnum = 0;
 
@@ -1116,11 +1177,11 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
                     cell.setCellValue((rowNum-1) * cas.getdt()); // set time
                     cell = row.createCell(cellnum++);
                     // TODO insert stimulus
-                    cell.setCellValue(this.stimulus1D.get(rowNum)); //set stimulus
+                    cell.setCellValue(this.stimulus1D.get(rowNum-1)); //set stimulus
                     for (int colNum=0; colNum<indexes.length; colNum++) { // for number of cells - sets all Ca signals in the row
                         cell = row.createCell(cellnum++);
                         CalciumSignal currentCas = (CalciumSignal) tmodel.getValueAt(indexes[colNum],3);
-                        cell.setCellValue(currentCas.signalRaw.getElement(rowNum));
+                        cell.setCellValue(currentCas.signalRaw.getElement(rowNum-1));
                     }
                 }
             }
@@ -1272,7 +1333,37 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         return true;
     }
 
-    boolean copyList(){
+    boolean recalcDF(){
+        // open pre processing GUI
+        UI_Settings.openSettingsNow();
+
+        // copy rois, delete all cells and ad new ones
+        IJ.showStatus("Recalculating DF, please wait...");
+        Roi[] roiArray = new Roi[this.tmodel.getRowCount()];
+        for (int i = 0; i < this.tmodel.getRowCount(); i++) {
+            roiArray[i] = (Roi) this.tmodel.getValueAt(i, 2);
+        }
+        for (int i=roiArray.length-1; i>=0; i--) {
+            String label = (String)tmodel.getValueAt(i,1);
+            //rois.remove(label);
+            //list.delItem(index[i]);
+            this.overlay.remove(this.overlay.get(i));
+            this.avr_imp.setOverlay(this.overlay);
+            this.avr_imp.show();
+            tmodel.removeRoi(i);
+
+        }
+
+        for (int i=0; i<=roiArray.length-1; i++) {
+            // add the ROIs to the table
+            additionalCell(roiArray[i]);
+        }
+
+        IJ.showStatus("Recalculating DF success!");
+        return true;
+    }
+
+    /*boolean copyList(){
         String s="";
         if(table.getRowCount() == 0)
             //was if (list.getItemCount()==0)
@@ -1302,7 +1393,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         StringSelection cont = new StringSelection(s);
         clip.setContents(cont, this);
         return true;
-    }
+    }*/
 
     public void lostOwnership (Clipboard clip, Transferable cont) {}
 
@@ -1487,7 +1578,34 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
     //	return list;
     //}
 
+    // Mouse cell selection
+    public void mouseClicked(MouseEvent e){
+        /* This function enbales to select a ROI by clicking the mouse on the average image */
+        if(e.getClickCount() == 2 ) {
+            //if (ij==null) return;
+            ImageWindow win = this.can.getImage().getWindow();
+            if (win != null && win.running2) {
+                if (win instanceof StackWindow)
+                    ((StackWindow) win).setAnimate(false);
+                else
+                    win.running2 = false;
+                return;
+            }
 
+            int x = e.getX();
+            int y = e.getY();
+            int flags = e.getModifiers();
+            //IJ.log("Mouse pressed: " + e.isPopupTrigger() + "  " + ij.modifiers(flags));
+            //if (toolID!=Toolbar.MAGNIFIER && e.isPopupTrigger()) {
+
+            int ox = can.offScreenX(x);
+            int oy = can.offScreenY(y);
+            int xMouse = ox;
+            int yMouse = oy;
+        }
+    }
+
+    // Keyboard Shortcuts
     public void keyPressed(KeyEvent e) {
         /* This method is for keyboard event handling */
         final int SPACE = 32;
@@ -1497,8 +1615,12 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             additionalCell();
         else if(keyCode == KeyEvent.VK_A)
             additionalCell();
-        else if(keyCode == KeyEvent.VK_D)
+        else if(keyCode == KeyEvent.VK_U)
+            delete();
+        else if(keyCode == KeyEvent.VK_Q)
             dfOverF("df");
+        else if(keyCode == KeyEvent.VK_R)
+            dfOverF("raw");
         else if(keyCode == KeyEvent.VK_M)
             addWithMagicWandCell();
         else if (keyCode == CR)
@@ -1507,6 +1629,11 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
 
     public void keyReleased (KeyEvent e) {}
     public void keyTyped (KeyEvent e) {}
+
+    protected void loadPrefs() {
+        ENLARGEROI  = Prefs.get("sliteanalysis.cENLARGEROI", AAP_Constants.cENLARGEROI);
+        MAXDIAM = (int) Prefs.get("sliteanalysis.cCM_MAX", AAP_Constants.cCM_MAX);
+    }
 
     /** Tests the class. */
     public static void main(final String... args) {
@@ -1771,4 +1898,70 @@ class CellManagerRoi{
     public void setStatus(boolean status){ _activeFlag = status; }
     public void setRoi(Object roi){ _roi = roi; }
     public void setStim(TimeSeries stim) {_stimulus = stim;}
+}
+
+
+/**
+ This plugin implements the MouseListener and MouseMotionListener interfaces
+ and listens for mouse events generated by the current image.
+ */
+class Mouse_Listener implements MouseListener, MouseMotionListener {
+    ImagePlus img;
+    ImageCanvas canvas;
+    CellManager cm;
+    static Vector images = new Vector();
+    private final static int clickInterval = (Integer)Toolkit.getDefaultToolkit().
+            getDesktopProperty("awt.multiClickInterval");
+
+    public Mouse_Listener(ImagePlus imp, CellManager cellmanager){
+        img = imp;
+        cm = cellmanager;
+        IJ.register(Mouse_Listener.class);
+    }
+
+    public void listen() {
+        Integer id = new Integer(img.getID());
+        if (images.contains(id)) {
+//            IJ.log("Already listening to this image");
+            return;
+        } else {
+            ImageWindow win = img.getWindow();
+            canvas = win.getCanvas();
+            canvas.addMouseListener(this);
+            canvas.addMouseMotionListener(this);
+            //int tool = Toolbar.getInstance().addTool("Test Tool");
+            //Toolbar.getInstance().setTool(tool);
+            images.addElement(id);
+        }
+    }
+
+    public void mousePressed(MouseEvent e) {
+        if(e.getClickCount() > 0 ) {
+            int x = e.getX();
+            int y = e.getY();
+            int offscreenX = canvas.offScreenX(x);
+            int offscreenY = canvas.offScreenY(y);
+//            IJ.log("Mouse pressed: " + offscreenX + "," + offscreenY);
+
+            Roi[] roiArray = new Roi[cm.tmodel.getRowCount()];
+            for (int i = 0; i < cm.tmodel.getRowCount(); i++) {
+                roiArray[i] = (Roi) cm.tmodel.getValueAt(i, 2);
+            }
+            for (int i = roiArray.length - 1; i >= 0; i--) {
+                if (roiArray[i].contains(x, y)) { // clears all selected x, y that are in a roi bottom up
+                    cm.table.setRowSelectionInterval(i,i);
+                }
+            }
+            //IJ.log("Right button: "+((e.getModifiers()&Event.META_MASK)!=0));
+        }
+    }
+
+    public void mouseReleased(MouseEvent e){}
+    public void mouseDragged(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {}
+    public void mouseMoved(MouseEvent e) {}
+
+
 }

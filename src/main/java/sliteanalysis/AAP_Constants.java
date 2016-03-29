@@ -23,7 +23,9 @@ public class AAP_Constants {
         public static final int cNOISE_ROI_LOW = 20;
         public static final double cKM_GAIN = 0.8;
         public static final double cKM_PRECVAR = 0.05;
-        public static final boolean cUSEARTIFACT = true;
+        public static final boolean cUSEARTIFACT = false;
+        public static boolean cUSEKALMAN = true;
+        public static boolean cREPLACEARTIFACT = false;
 
     //Segmentation Constants
     
@@ -36,10 +38,10 @@ public class AAP_Constants {
         public static final int cMORPH_ITER = 1;
         public static final int cMORPH_COUNT = 5;
         // Parameters - Find Maxima and Cell Magic Wand Param
-        public static final double cFM_TOL = 8;
+        public static final double cFM_TOL = 12;
         public static final int cFM_OUT = 1; // IN_TOLERANCE
         public static final int cCM_MAX = 16;
-        public static final int cCM_MIN = 3;
+        public static final int cCM_MIN = 4;
         public static final double cENLARGEROI = 2;
         // Parameters -  Threshold
         public static final String cTHRESH_METHOD = "Mean"; // Midgray
@@ -68,5 +70,4 @@ public class AAP_Constants {
         public static final float cNOISEPERCENTILE = (float)0.3;; //30% percentile
         public static final float cDETECTIONVARIANCE = (float)2;; // over this threshold there is a good chance for cell's activity
         public static final double activityVariance = 0;
-    
 }

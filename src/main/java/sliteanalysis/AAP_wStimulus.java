@@ -53,17 +53,18 @@ public class AAP_wStimulus implements PlugIn {
     protected static double KM_GAIN;
     protected double KL_PRECVAR;
     protected boolean useArtifact;
-    protected CellManager cm;
+    public boolean useKalman;
+    public boolean replaceArtifact;
 
     /* stimulus parameter */
     protected double GETPEAKSCONST;
+    protected CellManager cm;
 
     /* Methods */
     @Override
     public void run(String argv) {
         if(this.setup()) { // validates conditions
-            IJ.showStatus(" Dark noise removal...");
-            imp_r = DarkNoiseRemoval(imp_r, NOISE_ROI);
+            // remove first slice
             if(removeFirst){
                 ImageStack t_stack = imp_r.getStack(); // deletes first slice
                 t_stack.deleteSlice(1);
@@ -73,7 +74,6 @@ public class AAP_wStimulus implements PlugIn {
                 // if first slice wasn't removed we must move the first index of the stim in binSize
                 this.imp_s_index[0] -= Math.round( (float) (this.dt_r/this.DT_S) );
             }
-            //imp_r.show();
 
             // get Cells by segmentation;
             IJ.showStatus(" Cell Segmentation...");
@@ -85,14 +85,16 @@ public class AAP_wStimulus implements PlugIn {
             //Resample stimulus
             ArrayList<Double> stim_vector = new ArrayList<>();
             if(!this.useArtifact){
-                    IJ.showStatus(" Stimulus artifact removal....");
-                    Stimulus_API sapi = new Stimulus_API();
-                    sapi.setup("", this.imp_s, this.cells_roi, 0);
-                    stim_vector = sapi.ResampleStimulus(this.dt_r, imp_r.getStackSize(), this.imp_s_index[0], this.imp_s_index[1]);
+                IJ.showStatus(" Stimulus artifact removal....");
+                Stimulus_API sapi = new Stimulus_API();
+                sapi.setup("", this.imp_s, this.cells_roi, 0);
+                stim_vector = sapi.ResampleStimulus(this.dt_r, imp_r.getStackSize(), this.imp_s_index[0], this.imp_s_index[1]);
             }
             else {
                 double[] var1 = Activity_Analysis.getAverageSignal(imp_r);
-                Object[] var2 = Extract_Stimulus.getPeaks(var1, GETPEAKSCONST);
+                double cutoff = Prefs.get("sliteanalysis.cCUTOFF", AAP_Constants.cCUTOFF);
+                double[] var1_5 = CalciumSignal.DetrendSignal(var1, cutoff);
+                Object[] var2 = Extract_Stimulus.getPeaks(var1_5, GETPEAKSCONST);
                 TimeSeries var3 = Extract_Stimulus.getStimulusArray(var2, imp_r.getStackSize());
                 for (int i = 0; i < var3.Signal.length; i++) {
                     stim_vector.add(var3.Signal[i]);
@@ -100,24 +102,39 @@ public class AAP_wStimulus implements PlugIn {
             }
 
             // Remove stimulus slices
-            ArrayList<Integer> stim_sampels = new ArrayList<>();
-            for (int i = 0; i < stim_vector.size(); i++) {
-                if (stim_vector.get(i) > 0)
-                    stim_sampels.add(i);
+            if(this.replaceArtifact) {
+                ArrayList<Integer> stim_sampels = new ArrayList<>();
+                for (int i = 0; i < stim_vector.size(); i++) {
+                    if (stim_vector.get(i) > 0) {
+                        stim_sampels.add(i);
+                    }
+                }
+                this.imp_r = ReplaceSlices(this.imp_r, stim_sampels);
             }
-            this.imp_r = ReplaceSlices(this.imp_r,stim_sampels);
-//            this.imp_r.show();
-//            IJ.run("In [+]", "");
-//            IJ.run("In [+]", "");
+
+            // Dark noise
+            if (NOISE_ROI.getBounds().getWidth() != 1 || NOISE_ROI.getBounds().getHeight()!= 1){
+                IJ.showStatus(" Dark noise removal...");
+                imp_r = DarkNoiseRemoval(imp_r, NOISE_ROI);
+            }
+            //imp_r.show();
 
             // Kalman filter
-            ImageStack ims = imp_r.getStack();
-            Kalman_Stack_Filter kl = new Kalman_Stack_Filter();
-            kl.filter(ims, this.KL_PRECVAR, this.KM_GAIN);
-            imp_r.setStack(ims);
+            if(this.useKalman) {
+                ImageStack ims = imp_r.getStack();
+                Kalman_Stack_Filter kl = new Kalman_Stack_Filter();
+                kl.filter(ims, this.KL_PRECVAR, this.KM_GAIN);
+                imp_r.setStack(ims);
+            }
+
+            CalciumSignal.showSignal(stim_vector);
+            this.imp_r.show();
+//            IJ.run("In [+]", "");
+//            IJ.run("In [+]", "");
 
             // wrap everything with the Cell manager
             this.cm = toCellManager(this.imp_r, this.cells_roi,avr_imp, stim_vector );
+            this.cm.m_lis.listen();
 //            this.cm = toCellManager(this.imp_r, this.cells_roi,avr_imp);
         }
 
@@ -136,6 +153,8 @@ public class AAP_wStimulus implements PlugIn {
         KM_GAIN = Prefs.get("sliteanalysis.cKM_GAIN",AAP_Constants.cKM_GAIN);
         KL_PRECVAR = Prefs.get("sliteanalysis.cKM_PRECVAR",AAP_Constants.cKM_PRECVAR);
         useArtifact = Prefs.get("sliteanalysis.cUSEARTIFACT",AAP_Constants.cUSEARTIFACT);
+        useKalman = Prefs.get("sliteanalysis.cUSEKALMAN",AAP_Constants.cUSEKALMAN);
+        replaceArtifact = Prefs.get("sliteanalysis.cREPLACEARTIFACT",AAP_Constants.cREPLACEARTIFACT);
     }
 
     /* Replaces all sample index in imp with neighbor sample*/
@@ -227,7 +246,7 @@ public class AAP_wStimulus implements PlugIn {
         av_imp.setOverlay(ovr);
         av_imp.show();
         IJ.run("In [+]", "");
-        IJ.run("In [+]", "");
+//        IJ.run("In [+]", "");
         return cm;
     }
 
@@ -244,8 +263,9 @@ public class AAP_wStimulus implements PlugIn {
         ImageStack stack = imp_in.getStack();
         for (int i=1; i<=size; i++) {
             ip = stack.getProcessor(i);
-            if (minThreshold!=ImageProcessor.NO_THRESHOLD)
-                ip.setThreshold(minThreshold,maxThreshold,ImageProcessor.NO_LUT_UPDATE);
+            if (minThreshold!=ImageProcessor.NO_THRESHOLD) {
+                ip.setThreshold(minThreshold,maxThreshold, ImageProcessor.NO_LUT_UPDATE);
+            }
             ip.setRoi(noise_roi);
             ImageStatistics stats = ImageStatistics.getStatistics(ip, measurements, cal);
             ip.resetRoi();
@@ -254,6 +274,7 @@ public class AAP_wStimulus implements PlugIn {
         }
 
         imp_out.setStack(stack);
+        imp_out.setTitle(imp_in.getTitle());
         return imp_out;
     }
 

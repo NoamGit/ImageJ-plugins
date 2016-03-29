@@ -262,10 +262,10 @@ public class Stimulus_API {
             }
             try {
                 double value = CalciumSignal.average(Arrays.copyOfRange(mean_sig_wz, binSize * (i - 1), binSize * i));    // extract mean for each bin
-                stim_resampled.set(i - 1,value);                                    // register value to correct location in output
+                stim_resampled.add(value);                                    // register value to correct location in output
             }
             catch(Exception e){
-                e.getMessage();
+                System.out.print(e.getMessage());
             }
         }
         return stim_resampled;

@@ -1,9 +1,6 @@
 package sliteanalysis;
 
-import ij.IJ;
-import ij.ImagePlus;
-import ij.ImageStack;
-import ij.WindowManager;
+import ij.*;
 import ij.gui.GenericDialog;
 import ij.plugin.AVI_Reader;
 import ij.plugin.PlugIn;
@@ -24,12 +21,70 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
     @Override
     public void run(String argv) {
         if(this.setup()) { // validates conditions
-            IJ.showStatus(" Dark noise removal...");
-            imp_r = DarkNoiseRemoval(imp_r, NOISE_ROI);
             if(removeFirst){
                 ImageStack t_stack = imp_r.getStack(); // deletes first slice
                 t_stack.deleteSlice(1);
                 imp_r.setStack(t_stack);
+            }
+
+            //Resample stimulus
+            if(this.useArtifact) {
+                IJ.showStatus(" Obtaining artifact ...");
+                ArrayList<Double> stim_vector = new ArrayList<>();
+                double[] var1 = Activity_Analysis.getAverageSignal(imp_r);
+                double cutoff = Prefs.get("sliteanalysis.cCUTOFF", AAP_Constants.cCUTOFF);
+                double[] var1_5 = CalciumSignal.DetrendSignal(var1, cutoff);
+                Object[] var2 = Extract_Stimulus.getPeaks(var1_5, GETPEAKSCONST);
+                TimeSeries var3 = Extract_Stimulus.getStimulusArray(var2, imp_r.getStackSize());
+                for (int i = 0; i < var3.Signal.length; i++) {
+                    stim_vector.add(var3.Signal[i]);
+                }
+                if (NOISE_ROI.getBounds().getWidth() != 1 || NOISE_ROI.getBounds().getHeight()!= 1){
+                    IJ.showStatus(" Dark noise removal...");
+                    imp_r = DarkNoiseRemoval(imp_r, NOISE_ROI);
+                }
+
+                // get Cells by segmentation;
+                IJ.showStatus(" Cell Segmentation...");
+                ImagePlus avr_imp = AApSegmetator.getAverageIm(imp_r);
+                AApSegmetator segmentator = new AApSegmetator(avr_imp);
+                this.cells_roi = segmentator.SegmentCellsCWT();
+                //this.cells_roi = segmentator.SegmentCellsML();
+
+                // Remove stimulus slices
+                if(this.replaceArtifact) {
+                    ArrayList<Integer> stim_sampels = new ArrayList<>();
+                    for (int i = 0; i < stim_vector.size(); i++) {
+                        if (stim_vector.get(i) > 0)
+                            stim_sampels.add(i);
+                    }
+                    this.imp_r = ReplaceSlices(this.imp_r, stim_sampels);
+                }
+
+                this.imp_r.show();
+//                IJ.run("In [+]", "");
+//                IJ.run("In [+]", "");
+
+                // Kalman filter
+                if(this.useKalman) {
+                    ImageStack ims = imp_r.getStack();
+                    Kalman_Stack_Filter kl = new Kalman_Stack_Filter();
+                    kl.filter(ims, this.KL_PRECVAR, this.KM_GAIN);
+                    imp_r.setStack(ims);
+                }
+
+                CalciumSignal.showSignal(stim_vector);
+
+
+                // wrap everything with the Cell manager
+                this.cm = toCellManager(this.imp_r, this.cells_roi,avr_imp, stim_vector);
+                this.cm.m_lis.listen();
+                return;
+            }
+
+            if (NOISE_ROI.getBounds().getWidth() != 1 || NOISE_ROI.getBounds().getHeight()!= 1){
+                IJ.showStatus(" Dark noise removal...");
+                imp_r = DarkNoiseRemoval(imp_r, NOISE_ROI);
             }
 
             // get Cells by segmentation;
@@ -39,43 +94,21 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
             this.cells_roi = segmentator.SegmentCellsCWT();
             //this.cells_roi = segmentator.SegmentCellsML();
 
-            //Resample stimulus
-            if(this.useArtifact) {
-                ArrayList<Double> stim_vector = new ArrayList<>();
-                double[] var1 = Activity_Analysis.getAverageSignal(imp_r);
-                Object[] var2 = Extract_Stimulus.getPeaks(var1, GETPEAKSCONST);
-                TimeSeries var3 = Extract_Stimulus.getStimulusArray(var2, imp_r.getStackSize());
-                for (int i = 0; i < var3.Signal.length; i++) {
-                    stim_vector.add(var3.Signal[i]);
-                }
-
-                // Remove stimulus slices
-                ArrayList<Integer> stim_sampels = new ArrayList<>();
-                for (int i = 0; i < stim_vector.size(); i++) {
-                    if (stim_vector.get(i) > 0)
-                        stim_sampels.add(i);
-                }
-                this.imp_r = ReplaceSlices(this.imp_r,stim_sampels);
-
-                // Kalman filter
+            // Kalman filter
+            if(this.useKalman) {
                 ImageStack ims = imp_r.getStack();
                 Kalman_Stack_Filter kl = new Kalman_Stack_Filter();
                 kl.filter(ims, this.KL_PRECVAR, this.KM_GAIN);
                 imp_r.setStack(ims);
-
-                // wrap everything with the Cell manager
-                this.cm = toCellManager(this.imp_r, this.cells_roi,avr_imp, stim_vector);
-                return;
             }
 
-            // Kalman filter
-            ImageStack ims = imp_r.getStack();
-            Kalman_Stack_Filter kl = new Kalman_Stack_Filter();
-            kl.filter(ims, this.KL_PRECVAR, this.KM_GAIN);
-            imp_r.setStack(ims);
+            this.imp_r.show();
+//            IJ.run("In [+]", "");
+//            IJ.run("In [+]", "");
 
             // wrap everything with the Cell manager
             this.cm = toCellManager(this.imp_r, this.cells_roi,avr_imp);
+            this.cm.m_lis.listen();
         }
 
         // run local method
@@ -85,7 +118,7 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
     @Override
     /* Setup GUI */
     protected final boolean setup() {
-        if(IJ.versionLessThan("1.40c")) {
+        if (IJ.versionLessThan("1.40c")) {
             return false;
         } else {
             int[] ids = WindowManager.getIDList();
@@ -93,11 +126,13 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
                 ArrayList idsList = new ArrayList();
                 String currentTitle = null;
 
-                ImagePlus var1 = WindowManager.getImage(ids[0]);
-                titlesList.add(var1.getTitle());
-                idsList.add(Integer.valueOf(ids[0]));
-                if(var1 == WindowManager.getCurrentImage()) {
-                    currentTitle = var1.getTitle();
+                for(int titles = 0; titles < ids.length; ++titles) {
+                    ImagePlus var1 = WindowManager.getImage(ids[titles]);
+                    titlesList.add(var1.getTitle());
+                    idsList.add(Integer.valueOf(ids[titles]));
+                    if(var1 == WindowManager.getCurrentImage()) {
+                        currentTitle = var1.getTitle();
+                    }
                 }
 
                 String[] var8 = new String[titlesList.size()];
@@ -124,6 +159,7 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
                     }
                 });
                 gd.add(settings);
+                gd.pack();
                 gd.add(Box.createRigidArea(new Dimension(0, 10)));
                 gd.showDialog();
                 if(gd.wasCanceled()) {
@@ -137,7 +173,11 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
                         return false;
                     }
                     IJ.showStatus(" Making substack copy of selection...");
-                    this.imp_r  = sm.makeSubstack(this.imp_r, userInput);
+                    String imp_title = this.imp_r.getTitle();
+                    int indx = imp_title.indexOf(".");
+                    imp_title =  imp_title.substring(0,indx);
+                    this.imp_r  = sm.makeSubstack(this.imp_r, userInput );
+                    this.imp_r.setTitle(imp_title + "_sub" +userInput);
                     return true;
                 }
 
@@ -159,8 +199,8 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
         }
 
         //aap.imp_r = IJ.openImage(path + "TEXT_20msON_10Hz_SLITE_2.tif"); // DEBUG
-        aap.imp_r = IJ.openImage(path + "test_TEXT_10Hz.tif"); // DEBUG
-
+//        aap.imp_r = IJ.openImage(path + "test_TEXT_10Hz.tif"); // DEBUG
+        aap.imp_r = IJ.openImage(path + "FLS_10Hz_5.tif"); // DEBUG
         aap.imp_r.show();
         String argv = "";
         aap.run(argv);

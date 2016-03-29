@@ -520,7 +520,7 @@ public class CalciumSignal {
 //        compareSignal(this.signalRaw, expTrend);
     }
 
-    /* Estimate baseline by linear regression to perecntile*/
+    /* Estimate baseline by linear regression to percentile*/
     protected double[] EstimateBaseline() {
 //        Double val1[] = new Double[this.SignalProcessed.size()];
 //        val1 = this.SignalProcessed.toArray(val1);

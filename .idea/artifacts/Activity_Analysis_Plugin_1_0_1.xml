@@ -38,6 +38,7 @@
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/CellManager$2.class" />
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/UI_Settings$1.class" />
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/AAP_woStimulus$1.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Mouse_Listener.class" />
       </element>
       <element id="file-copy" path="$PROJECT_DIR$/test_save/plugins.config" />
     </root>

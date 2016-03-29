@@ -247,7 +247,7 @@ public class Activity_Analysis implements PlugInFilter {
             return 1/Double.valueOf(str);
         }
         else{
-            return 0; // Hz
+            return 1; // Hz
         }
     }
 
