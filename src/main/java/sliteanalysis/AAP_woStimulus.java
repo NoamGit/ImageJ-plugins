@@ -2,6 +2,12 @@ package sliteanalysis;
 
 import ij.*;
 import ij.gui.GenericDialog;
+import ij.gui.MessageDialog;
+import ij.gui.PolygonRoi;
+import ij.gui.Roi;
+import ij.io.OpenDialog;
+import ij.io.Opener;
+import ij.io.RoiDecoder;
 import ij.plugin.AVI_Reader;
 import ij.plugin.PlugIn;
 import ij.plugin.SubstackMaker;
@@ -10,8 +16,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Created by noambox on 12/20/2015.
@@ -115,6 +123,94 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
 
     }
 
+    /* This is an implementation for run except it preformed without any user interface and parameters are prefixed */
+    public void run_auto(File file_iter, ij.io.DirectoryChooser output_dir, OpenDialog roi_dir){
+
+        // load image and set default parameters according to name
+        super.loadPrefs();
+        this.imp_r =  IJ.openImage(file_iter.getPath());
+        this.dt_r = Activity_Analysis.findSignalDt(this.imp_r.getTitle());
+
+        // remove first frame
+        if(removeFirst){
+            ImageStack t_stack = imp_r.getStack(); // deletes first slice
+            t_stack.deleteSlice(1);
+            imp_r.setStack(t_stack);
+        }
+
+        // load cells from file apply recentering and Kalman if needed
+        ImagePlus avr_imp = AApSegmetator.getAverageIm(imp_r);
+        this.cells_roi = loadROIZip(roi_dir.getPath());
+        if(!file_iter.getPath().contains("Artif")){ //recenter ROIs according to image
+            Stimulus_API.recenterRois(this.cells_roi, avr_imp);
+        }
+        if(this.useKalman) {
+            IJ.showStatus(file_iter.getName() + " Kalman filterirng...");
+            ImageStack ims = imp_r.getStack();
+            Kalman_Stack_Filter kl = new Kalman_Stack_Filter();
+            kl.filter(ims, this.KL_PRECVAR, this.KM_GAIN);
+            imp_r.setStack(ims);
+        }
+
+        // wrap to Cell manager select all and save
+        if(file_iter.getPath().contains("Artif")){
+            imp_r.setTitle("Artif_"+imp_r.getTitle());
+        }
+        this.cm = toCellManager(this.imp_r, this.cells_roi,avr_imp);
+        IJ.showStatus(file_iter.getName() + " saving to *.xlsx...");
+        cm.selectAll();
+        cm.save("raw", output_dir);
+
+        // clears workspace
+        imp_r.close();
+        avr_imp.close();
+        cm.close();
+        cm.avr_imp.close();
+        cm.instance = null;
+        cm = null;
+        imp_r = null;
+        avr_imp = null;
+        }
+
+    /*
+     * This method enables to load a zip file with ROI's into a Array<PolygonRoi> array
+     */
+    static public ArrayList<PolygonRoi> loadROIZip(String path) {
+        ArrayList<PolygonRoi> roi_list = new ArrayList<>();
+        ZipInputStream in = null;
+        ByteArrayOutputStream out;
+        boolean noFilesOpened = true; // we're pessimistic and expect that the zip file dosent contain any .roi
+        try {
+            in = new ZipInputStream(new FileInputStream(path));
+            byte[] buf = new byte[1024];
+            int len;
+            // The original while was: while(true) do something which is not very good
+            ZipEntry entry = in.getNextEntry();
+            while (entry!=null) {
+                String name = entry.getName();
+                if (name.endsWith(".roi")) {
+                    out = new ByteArrayOutputStream();
+                    while ((len = in.read(buf)) > 0)
+                        out.write(buf, 0, len);
+                    out.close();
+                    byte[] bytes = out.toByteArray();
+                    RoiDecoder rd = new RoiDecoder(bytes, name);
+                    Roi roi = rd.getRoi();
+                    if (roi!=null) {
+                        roi_list.add((PolygonRoi) roi);
+                        noFilesOpened = false; // We just added a .roi
+                    }
+                }
+                entry = in.getNextEntry();
+            }
+            IJ.showStatus("Loading Rois success!");
+            in.close();
+            return roi_list;
+        } catch (IOException e) { IJ.log(e.toString()); }
+        if(noFilesOpened){  IJ.log("This ZIP archive does not appear to contain \".roi\" files"); }
+        return null;
+    }
+
     @Override
     /* Setup GUI */
     protected final boolean setup() {
@@ -184,6 +280,7 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
         }
     }
 
+
     public static void main(final String... args) throws FileNotFoundException {
         AAP_woStimulus aap = new AAP_woStimulus();
         String path;
@@ -204,5 +301,20 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
         aap.imp_r.show();
         String argv = "";
         aap.run(argv);
+    }
+}
+// TODO: implement abortion of the plugin
+class runOnThread implements Runnable{
+
+    public void run(){
+
+        if (Thread.interrupted()) {
+            // We've been interrupted
+            return;
+        }
+    }
+
+    public static void main(String args[]){
+        (new Thread(new runOnThread())).start();
     }
 }

@@ -5,9 +5,7 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMsg;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.gui.FreehandRoi;
-import ij.gui.PolygonRoi;
-import ij.gui.Roi;
+import ij.gui.*;
 import ij.measure.Calibration;
 import ij.plugin.RoiEnlarger;
 import ij.plugin.filter.Analyzer;
@@ -29,10 +27,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Created by noambox on 12/7/2015.
@@ -153,6 +148,143 @@ public class Stimulus_API {
         }
         return rois_out;
     }
+
+    // TODO:  use Time Analyser instead
+    /**
+     * @param r_in input rois
+     * @param avr_imp average image */
+    public static ArrayList<PolygonRoi> recenterRois( ArrayList<PolygonRoi> r_in, ImagePlus avr_imp ) {
+        // TSA parameters
+        int MaxIteration = 15; //default value
+        double CLimit = 0.1; // default value
+        int Width = 10; //width and height of a ROI
+        int Height = 10;
+        double Scale = 0.5;
+        ShapeRoi all = new ShapeRoi(new OvalRoi(0, 0, Width, Height));
+
+        ArrayList<PolygonRoi> r_out = new ArrayList<>(r_in.size());
+        Roi[] roi_out2 = new Roi[0];
+        if (avr_imp != null) {
+            Roi[] rois = r_in.toArray(new Roi[r_in.size()]);
+            if (rois.length == 0) {
+                IJ.showMessage("ROI file is empty...");
+                return null;
+            }
+
+            int CurROIWidth = Width;
+            int CurROIHeight = Height;
+            int Width_temp = (int) (Width * Scale);
+            int Height_temp = (int) (Height * Scale);
+            Roi[] roi_out1 = ScaleROIS(Width_temp, Height_temp, rois);
+            rois = roi_out1;
+
+            ImageStatistics stat = new ImageStatistics();
+            ij.measure.Calibration calib = avr_imp.getCalibration();
+            double xScale = calib.pixelWidth;
+            double yScale = calib.pixelHeight;
+            ShapeRoi temp = null;
+            boolean Converge = false;
+            int New_x = 0;
+            int New_y = 0;
+            double xMovement = 0, yMovement = 0;
+            java.awt.Rectangle Boundary;
+            int i;
+            for (i = 0; i < rois.length; i++) {
+                Roi CurRoi = rois[i];
+
+//                // Resize/Scale ROI (replaces 'ScaleROI')
+//                Width = (int) (Width * Scale);
+//                Height = (int) (Height * Scale);
+//                Rectangle BRect = CurRoi.getBounds();
+//                int new_x_scale = Math.round(BRect.x + (BRect.width - Width) / 2);
+//                int new_y_scale = Math.round(BRect.y + (BRect.height - Height) / 2);
+//                CurRoi.setLocation(new_x_scale, new_y_scale);
+
+//                CurRoi.setName(CurRoi.getName());
+
+                Boundary = CurRoi.getBounds();
+                Converge = false;
+                avr_imp.setRoi(CurRoi);
+                double OldDiff = 0, NewDiff = 0;
+                int Old_x, Old_y;
+                int Iteration;
+                for (Iteration = 1; Iteration <= MaxIteration && !Converge; Iteration++) {
+                    stat = avr_imp.getStatistics(64 + 32); //Calculate center of Mass and Centroid;
+                    // Calculate movements
+                    xMovement = (stat.xCentroid - stat.xCenterOfMass) / xScale;
+                    yMovement = (stat.yCentroid - stat.yCenterOfMass) / yScale;
+                    if (Math.abs(xMovement) < 1 && xMovement != 0 && yMovement != 0 && Math.abs(yMovement) < 1) { //Now search nearby;
+                        if (Math.abs(xMovement) > Math.abs(yMovement)) {
+                            New_x = (xMovement > 0) ? (int) Math.round(stat.xCentroid / xScale - (Boundary.getWidth() / 2.0) - 1) : (int) Math.round(stat.xCentroid / xScale - (Boundary.getWidth() / 2.0) + 1);
+                            New_y = (int) Math.round(stat.yCentroid / yScale - (Boundary.getHeight() / 2.0));
+                        } else {
+                            New_y = (yMovement > 0) ? (int) Math.round(stat.yCentroid / yScale - (Boundary.getHeight() / 2.0) - 1) : (int) Math.round(stat.yCentroid / yScale - (Boundary.getHeight() / 2.0) + 1);
+                            New_x = (int) Math.round(stat.xCentroid / xScale - (Boundary.getWidth() / 2.0));
+                        }
+                    } else {
+                        New_x = (int) Math.round(((stat.xCenterOfMass / xScale) - (Boundary.getWidth() / 2.0)));
+                        New_y = (int) Math.round(((stat.yCenterOfMass / yScale) - (Boundary.getHeight() / 2.0)));
+
+                    }
+                    Converge = (Math.abs(xMovement) < CLimit && Math.abs(yMovement) < CLimit) ? true : false;
+                    CurRoi.setLocation(New_x, New_y);
+                    avr_imp.setRoi(CurRoi);
+                }
+                temp = new ShapeRoi(CurRoi);
+                all = (i == 0) ? new ShapeRoi(CurRoi) : all.xor(temp);
+//                }
+
+//                // Resize/Scale ROI back (replaces 'ScaleROIS')
+//                int Width_back = CurROIWidth;
+//                int Height_back = CurROIHeight;
+//                BRect = CurRoi.getBounds();
+//                new_x_scale = Math.round(BRect.x + (BRect.width - Width_back) / 2);
+//                new_y_scale = Math.round(BRect.y + (BRect.height - Height_back) / 2);
+//                CurRoi.setLocation(new_x_scale, new_y_scale);
+//                CurRoi.setName(CurRoi.getName());
+//                r_out.add((PolygonRoi) CurRoi);
+
+                // Debug
+
+//                temp = new ShapeRoi(CurRoi);
+//                all = (i == 0) ? new ShapeRoi(CurRoi) : all.xor(temp);
+
+                       /* if(!Converge)
+                                IJ.log(indexes[i] + "\t ROI did not converge" );*/
+                       /* else
+                               IJ.log(indexes[i] + "\t ROI converged" );*/
+
+            }
+
+            roi_out2 = ScaleROIS(CurROIWidth, CurROIHeight, rois);
+            for (int j = 0; j < roi_out2.length; j++) {
+                r_out.add((PolygonRoi) roi_out2[j]);
+            }
+//            System.out.print("\nNum iter - " + Iteration);
+        }
+//        avr_imp.setRoi(all);
+        return r_out;
+    }
+
+
+    public static  Roi[] ScaleROIS(int Width, int Height, Roi[] rois){
+
+        java.awt.Rectangle BRect ;
+        Roi[] roiout = new Roi[rois.length];
+        Roi CurRoi,tmpRoi;
+        int NewX, NewY;
+        for(int i = 0 ; i < rois.length ; i++){
+            CurRoi = rois[i];
+            BRect = CurRoi.getBounds();
+            NewX = Math.round(BRect.x + (BRect.width - Width) / 2);
+            NewY = Math.round(BRect.y + (BRect.height - Height)/2);
+            CurRoi.setLocation(NewX,NewY);
+            CurRoi.setName(CurRoi.getName());
+            roiout[i] = CurRoi;
+        }
+        return roiout;
+    }
+
 
     /**
      *  finds te signals that are the means of the ROIs and stores them as TimeSeries Array
@@ -321,33 +453,45 @@ public class Stimulus_API {
     public static void main(final String... args) {
         String path;
         ImagePlus imp, stim_stack = null;
-        try {
-//            path = "C:\\Users\\Noam\\Dropbox\\# graduate studies m.sc\\# SLITE\\ij - plugin data\\"; // LAB
-//            imp = IJ.openImage(path + "FLASH_20msON_20Hz_SLITE_1.tif");
+//        try {
+////            path = "C:\\Users\\Noam\\Dropbox\\# graduate studies m.sc\\# SLITE\\ij - plugin data\\"; // LAB
+////            imp = IJ.openImage(path + "FLASH_20msON_20Hz_SLITE_1.tif");
+//
+//            path = "D:\\# Projects (Noam)\\# SLITE\\# DATA\\301115Retina - DATA\\Loc 3\\post\\s_r_reg\\";
+//            imp = IJ.openImage(path + "niel_pre2chan.tif"); // DEBUG
+//            stim_stack = IJ.openVirtual(path + "Flashing4 (1-9000).tif"); // DEBUG
+//            //stim_stack = IJ.openVirtual(path + "stack_test.tif"); // DEBUG
+//            if(imp == null){
+//                throw new FileNotFoundException("Your not in Lab....");
+//            }
+//        }
+//        catch(FileNotFoundException error){
+//            path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\"; //HOME
+//            imp = IJ.openImage(path + "FLASH_20msON_20Hz_SLITE_1.tif"); // DEBUG
+//
+//        }
 
-            path = "D:\\# Projects (Noam)\\# SLITE\\# DATA\\301115Retina - DATA\\Loc 3\\post\\s_r_reg\\";
-            imp = IJ.openImage(path + "niel_pre2chan.tif"); // DEBUG
-            stim_stack = IJ.openVirtual(path + "Flashing4 (1-9000).tif"); // DEBUG
-            //stim_stack = IJ.openVirtual(path + "stack_test.tif"); // DEBUG
-            if(imp == null){
-                throw new FileNotFoundException("Your not in Lab....");
-            }
-        }
-        catch(FileNotFoundException error){
-            path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\"; //HOME
-            imp = IJ.openImage(path + "FLASH_20msON_20Hz_SLITE_1.tif"); // DEBUG
-
-        }
-
-
+        path = "C:\\Users\\noambox\\Documents\\Sync\\Neural data analysis\\Test ED out\\for recenter test"; // LAB
+        imp = IJ.openImage(path + "\\image2.tif");
+        String roi_path = "C:\\Users\\noambox\\Documents\\Sync\\Neural data analysis\\Test ED out\\for recenter test\\RoiSet_input.zip";
         Stimulus_API sapi = new Stimulus_API();
 
         imp.show();
-        // single roi implementation
-        //IJ.open(path + "0101-0091.roi");
-        //roi = imp.getRoi();
-        //IJ.run("In [+]", "");
-        //sapi.setup("", imp, roi);
+        IJ.run("In [+]", "");
+        IJ.run("In [+]", "");
+
+        // Recenter Test implementation
+        ArrayList<PolygonRoi> rois = AAP_woStimulus.loadROIZip(roi_path);
+        ArrayList<PolygonRoi> roi_out = sapi.recenterRois(rois, imp);
+
+
+ /*        single roi implementation
+        IJ.open(path + "0101-0091.roi");
+        roi = imp.getRoi();
+        IJ.run("In [+]", "");
+        sapi.setup("", imp, roi);*/
+
+/*
 
         // multiRoi_test implementation
         File dir_roiset = new File(path + "RoiSet\\");
@@ -370,7 +514,7 @@ public class Stimulus_API {
 
         double dt_dest = 1/10D;
         int signal_length = 3000;
-        TimeSeriesMatrix stim_mean_resampled = sapi.ResampleAllStimulus(stim_mean_mat, dt_dest, signal_length);
+        TimeSeriesMatrix stim_mean_resampled = sapi.ResampleAllStimulus(stim_mean_mat, dt_dest, signal_length);*/
     }
 
 }

@@ -1025,8 +1025,9 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             error("At least one ROI must be selected from the list.");
             return false;
         } else {
-            String nameData = "DataProcessed_" + imp.getTitle().subSequence(0, imp.getTitle().length() - 4) + ".xlsx";;
-            if (saveType.compareTo("raw") == 0){
+            String nameData = "DataProcessed_" + imp.getTitle().subSequence(0, imp.getTitle().length() - 4) + ".xlsx";
+            ;
+            if (saveType.compareTo("raw") == 0) {
                 nameData = "DataRaw_" + imp.getTitle().subSequence(0, imp.getTitle().length() - 4) + ".xlsx";
             }
             String nameRoi = "RoiSet_" + imp.getTitle().subSequence(0, imp.getTitle().length() - 4) + ".zip";
@@ -1036,14 +1037,49 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             nameData = sd.getFileName();
 //            int returnVal = fc.showSaveDialog(CellManager.this);
 //            saveMultiple(indexes, fc.getSelectedFile().getPath());
-            if(dir == null){
+            if (dir == null) {
                 return false;
-            }
-            else {
+            } else {
                 saveMultiple(indexes, dir, nameRoi, nameData, saveType);
                 return true;
             }
         }
+    }
+    /*
+    * Save function for Exctract Data
+    * */
+    boolean save(String saveType, DirectoryChooser dir_chooser) {
+        table.selectAll();
+        if (table.getRowCount() == 0) // was if (list.getItemCount()==0)
+            return error("The list is empty."); // was "The selection list is empty"
+        int indexes[] = table.getSelectedRows();//list.getSelectedIndexes();
+        // I dont get this - first we say: if nothing is selected, say so and then we select all items.
+        // what is the point in that?
+        // if (indexes.length==0)
+        //	indexes = getAllIndexes();
+        if (indexes.length == 0) {
+            error("At least one ROI must be selected from the list.");
+            return false;
+        } else {
+            String nameData = "DataProcessed_" + imp.getTitle().subSequence(0, imp.getTitle().length() - 4) + ".xlsx";
+            ;
+            if (saveType.compareTo("raw") == 0) {
+                nameData = "DataRaw_" + imp.getTitle().subSequence(0, imp.getTitle().length() - 4) + ".xlsx";
+            }
+            String nameRoi = "RoiSet_" + imp.getTitle().subSequence(0, imp.getTitle().length() - 4) + ".zip";
+            Macro.setOptions(null);
+//            SaveDialog sd = new SaveDialog("Save Signals...", nameData, ".xlsx");
+            String dir = dir_chooser.getDirectory();
+//            int returnVal = fc.showSaveDialog(CellManager.this);
+//            saveMultiple(indexes, fc.getSelectedFile().getPath());
+            if (dir == null) {
+                return false;
+            } else {
+                saveMultiple(indexes, dir, nameRoi, nameData, saveType);
+                return true;
+            }
+        }
+    }
 //
 //        String name = (String) tmodel.getValueAt(indexes[0],1); // was list.getItem(indexes[0]);
 //        Macro.setOptions(null);
@@ -1075,7 +1111,6 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
 //        if (restore(indexes[0]))
 //            IJ.run("Selection...", "path='"+dir+newName+".roi'");
 //        return true;
-    }
 
     void saveMultiple(int[] indexes, String path, String nameRoi, String nameData, String saveType) {
         Macro.setOptions(null);
@@ -1177,7 +1212,16 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
                     cell.setCellValue((rowNum-1) * cas.getdt()); // set time
                     cell = row.createCell(cellnum++);
                     // TODO insert stimulus
-                    cell.setCellValue(this.stimulus1D.get(rowNum-1)); //set stimulus
+//                    System.out.print("\nSize of stimulus 1D is - " + this.stimulus1D.size() );
+//                    System.out.print("\nAccessing element - " + rowNum);
+//                    CalciumSignal currentCas_temp = (CalciumSignal) tmodel.getValueAt(indexes[1],3);
+//                    System.out.print("\nSize of Ca- " + currentCas_temp.signalRaw.numElements());
+                    if(stimulus1D.size() > 1) {
+                        cell.setCellValue(this.stimulus1D.get(rowNum - 1)); //set stimulus
+                    }else{
+                        cell.setCellValue(0); //set stimulus
+//                        System.out.print("\ntest");
+                    }
                     for (int colNum=0; colNum<indexes.length; colNum++) { // for number of cells - sets all Ca signals in the row
                         cell = row.createCell(cellnum++);
                         CalciumSignal currentCas = (CalciumSignal) tmodel.getValueAt(indexes[colNum],3);

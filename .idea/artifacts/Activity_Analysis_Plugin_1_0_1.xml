@@ -39,6 +39,18 @@
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/UI_Settings$1.class" />
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/AAP_woStimulus$1.class" />
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Mouse_Listener.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Dialog_Extract_Data$1.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Dialog_Extract_Data$2.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Dialog_Extract_Data$3.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Dialog_Extract_Data$4.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Dialog_Extract_Data$5.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Dialog_Extract_Data$6.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Dialog_Extract_Data$7.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Dialog_Extract_Data.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Extract_Data.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Dialog_Extract_Data$8.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Dialog_Extract_Data$9.class" />
+        <element id="dir-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis" />
       </element>
       <element id="file-copy" path="$PROJECT_DIR$/test_save/plugins.config" />
     </root>

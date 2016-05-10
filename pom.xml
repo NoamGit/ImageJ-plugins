@@ -231,6 +231,11 @@
 			<artifactId>pom-fiji</artifactId>
 			<version>15.6.0</version>
 		</dependency>
+		<dependency>
+			<groupId>cisd</groupId>
+			<artifactId>jhdf5</artifactId>
+			<version>14.12.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
