@@ -11,6 +11,8 @@ import ij.io.RoiDecoder;
 import ij.plugin.AVI_Reader;
 import ij.plugin.PlugIn;
 import ij.plugin.SubstackMaker;
+import mpicbg.models.IllDefinedDataPointsException;
+import mpicbg.models.NotEnoughDataPointsException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -124,7 +126,7 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
     }
 
     /* This is an implementation for run except it preformed without any user interface and parameters are prefixed */
-    public void run_auto(File file_iter, ij.io.DirectoryChooser output_dir, OpenDialog roi_dir){
+    public void run_auto(File file_iter, ij.io.DirectoryChooser output_dir, OpenDialog roi_dir) throws NotEnoughDataPointsException, IllDefinedDataPointsException {
 
         // load image and set default parameters according to name
         super.loadPrefs();
@@ -142,7 +144,7 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
         ImagePlus avr_imp = AApSegmetator.getAverageIm(imp_r);
         this.cells_roi = loadROIZip(roi_dir.getPath());
         if(!file_iter.getPath().contains("Artif")){ //recenter ROIs according to image
-            Stimulus_API.recenterRois(this.cells_roi, avr_imp);
+            Stimulus_API.fitRois(this.cells_roi, avr_imp);
         }
         if(this.useKalman) {
             IJ.showStatus(file_iter.getName() + " Kalman filterirng...");
@@ -165,12 +167,118 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
         imp_r.close();
         avr_imp.close();
         cm.close();
-        cm.avr_imp.close();
-        cm.instance = null;
+        imp_r.flush();
+        avr_imp.flush();
+        cm.imp.flush();
+        cm.avr_imp.flush();
+        this.cm = new CellManager(null, null, null, null, 0);
         cm = null;
-        imp_r = null;
-        avr_imp = null;
+    }
+
+    /* This is an implementation for run except it preformed without any user interface and parameters are prefixed */
+    public void run_auto(File file_iter, String output_dir, String roi_dir, String fName) {
+
+        // load image and set default parameters according to name
+        super.loadPrefs();
+        this.imp_r =  IJ.openImage(file_iter.getPath());
+        this.dt_r = Activity_Analysis.findSignalDt(this.imp_r.getTitle());
+
+        // remove first frame
+        if(removeFirst){
+            ImageStack t_stack = imp_r.getStack(); // deletes first slice
+            t_stack.deleteSlice(1);
+            imp_r.setStack(t_stack);
         }
+
+        // load cells from file apply recentering and Kalman if needed
+        ImagePlus avr_imp = AApSegmetator.getAverageIm(imp_r);
+        this.cells_roi = loadROIZip(roi_dir);
+        if(!file_iter.getPath().contains("Artif")){ //recenter ROIs according to image
+//            Stimulus_API.fitRois(this.cells_roi, avr_imp);
+        }
+        if(this.useKalman) {
+            IJ.showStatus(file_iter.getName() + " Kalman filterirng...");
+            ImageStack ims = imp_r.getStack();
+            Kalman_Stack_Filter kl = new Kalman_Stack_Filter();
+            kl.filter(ims, this.KL_PRECVAR, this.KM_GAIN);
+            imp_r.setStack(ims);
+        }
+
+        // wrap to Cell manager select all and save
+        if(file_iter.getPath().contains("Artif")){
+            imp_r.setTitle("Artif_"+fName);
+        }
+        this.cm = toCellManager(this.imp_r, this.cells_roi,avr_imp);
+        IJ.showStatus(file_iter.getName() + " saving to *.xlsx...");
+        cm.selectAll();
+        cm.save("raw", output_dir);
+
+        // clears workspace
+        imp_r.close();
+        avr_imp.close();
+        cm.close();
+        imp_r.flush();
+        avr_imp.flush();
+        cm.imp.flush();
+        cm.avr_imp.flush();
+        cm.tmodel.flush();
+        this.cm = new CellManager(null, null, null, null, 0);
+        this.cm.resetInstance();
+        this.cm = null;
+    }
+
+    /*Same implementation with differet input*/
+    public void run_auto(File file_iter, String output_dir, String roi_dir) throws NotEnoughDataPointsException, IllDefinedDataPointsException {
+
+        // load image and set default parameters according to name
+        super.loadPrefs();
+        this.imp_r =  IJ.openImage(file_iter.getPath());
+        this.dt_r = Activity_Analysis.findSignalDt(this.imp_r.getTitle());
+
+        // remove first frame
+        if(removeFirst){
+            ImageStack t_stack = imp_r.getStack(); // deletes first slice
+            t_stack.deleteSlice(1);
+            imp_r.setStack(t_stack);
+        }
+
+        // load cells from file apply recentering and Kalman if needed
+        ImagePlus avr_imp = AApSegmetator.getAverageIm(imp_r);
+        this.cells_roi = loadROIZip(roi_dir);
+        if(!file_iter.getPath().contains("Artif")){ //recenter ROIs according to image
+            Stimulus_API.fitRois(this.cells_roi, avr_imp);
+        }
+        if(this.useKalman) {
+            IJ.showStatus(file_iter.getName() + " Kalman filterirng...");
+            ImageStack ims = imp_r.getStack();
+            Kalman_Stack_Filter kl = new Kalman_Stack_Filter();
+            kl.filter(ims, this.KL_PRECVAR, this.KM_GAIN);
+            imp_r.setStack(ims);
+        }
+
+        // wrap to Cell manager select all and save
+        if(file_iter.getPath().contains("Artif")){
+            imp_r.setTitle("Artif_"+imp_r.getTitle());
+        }
+        this.cm = toCellManager(this.imp_r, this.cells_roi,avr_imp);
+        IJ.showStatus(file_iter.getName() + " saving to *.xlsx...");
+        cm.selectAll();
+        cm.save("raw", output_dir);
+
+        // clears workspace
+        imp_r.close();
+        avr_imp.close();
+        cm.close();
+        imp_r.flush();
+        avr_imp.flush();
+        cm.imp.flush();
+        cm.avr_imp.flush();
+        cm.tmodel.flush();
+        this.cm = new CellManager(null, null, null, null, 0);
+        this.cm.resetInstance();
+        this.cm = null;
+    }
+
 
     /*
      * This method enables to load a zip file with ROI's into a Array<PolygonRoi> array
@@ -209,6 +317,10 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
         } catch (IOException e) { IJ.log(e.toString()); }
         if(noFilesOpened){  IJ.log("This ZIP archive does not appear to contain \".roi\" files"); }
         return null;
+    }
+
+    public void finalize() throws Throwable {
+        super.finalize();
     }
 
     @Override
@@ -303,6 +415,7 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
         aap.run(argv);
     }
 }
+
 // TODO: implement abortion of the plugin
 class runOnThread implements Runnable{
 

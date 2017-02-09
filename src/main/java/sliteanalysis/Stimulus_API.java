@@ -5,19 +5,25 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMsg;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.Prefs;
 import ij.gui.*;
 import ij.measure.Calibration;
 import ij.plugin.RoiEnlarger;
 import ij.plugin.filter.Analyzer;
+import ij.plugin.filter.MaximumFinder;
 import ij.process.FloatPolygon;
 import ij.process.ImageProcessor;
 import ij.process.ImageStatistics;
 import imagescience.feature.Statistics;
+import mpicbg.models.*;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.ml.distance.DistanceMeasure;
 import vib.app.ImageMetaData;
+import weka.core.DistanceFunction;
 
 import java.awt.*;
+import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.AffineTransformOp;
@@ -144,22 +150,171 @@ public class Stimulus_API {
                 y_float[j] = y_float[j] > image_bounds[1] ? image_bounds[1] : y_float[j];
             }
             PolygonRoi t_roi = new PolygonRoi(x_float,y_float,Roi.FREEROI);
-            rois_out.set(i,RoiEnlarger.enlarge(t_roi,enlarge_factor));
+            rois_out.add(i, RoiEnlarger.enlarge(t_roi, enlarge_factor));
         }
         return rois_out;
     }
 
+    public static ArrayList<PolygonRoi> TransformPolygonRois( ArrayList<PolygonRoi> rois_in, AffineTransform atf, int enlarge_factor, int[] image_bounds){
+        ArrayList<PolygonRoi> rois_out = new ArrayList<>(rois_in.size());
+        AffineTransform aT = new AffineTransform(atf);
+        for (int i = 0; i < rois_in.size(); i++) {
+            FloatPolygon floatp = rois_in.get(i).getFloatPolygon();
+            Point2D[] roi_coord_src = float2PointArray(floatp.xpoints, floatp.ypoints);
+            Point2D[] roi_coord_dest = new Point2D[roi_coord_src.length];
+            aT.transform(roi_coord_src, 0, roi_coord_dest, 0, roi_coord_dest.length);
+            RealMatrix xy_dest = PointArr2float(roi_coord_dest);
+            float[] x_float = CalciumSignal.DoubletoFloat(xy_dest.getColumn(0));
+            float[] y_float = CalciumSignal.DoubletoFloat(xy_dest.getColumn(1));
+            for (int j = 0; j < x_float.length; j++) {
+                x_float[j] = x_float[j] < 0 ? 0 : x_float[j];
+                x_float[j] = x_float[j] > image_bounds[0] ? image_bounds[0] : x_float[j];
+                y_float[j] = y_float[j] < 0 ? 0 : y_float[j];
+                y_float[j] = y_float[j] > image_bounds[1] ? image_bounds[1] : y_float[j];
+            }
+            PolygonRoi t_roi = new PolygonRoi(x_float,y_float,Roi.FREEROI);
+            rois_out.add(i, (PolygonRoi) RoiEnlarger.enlarge(t_roi, enlarge_factor));
+        }
+        return rois_out;
+    }
+
+//    public static ArrayList<PolygonRoi> TransformPolygonRois( ArrayList<PolygonRoi> rois_in, AffineTransform atf, int enlarge_factor, int[] image_bounds){
+//        ArrayList<PolygonRoi> rois_out = new ArrayList<>(rois_in.size());
+//        AffineTransform aT = new AffineTransform(atf);
+//        for (int i = 0; i < rois_in.size(); i++) {
+//            FloatPolygon floatp = rois_in.get(i).getFloatPolygon();
+//            Point2D[] roi_coord_src = float2PointArray(floatp.xpoints, floatp.ypoints);
+//            Point2D[] roi_coord_dest = new Point2D[roi_coord_src.length];
+//            aT.transform(roi_coord_src, 0, roi_coord_dest, 0, roi_coord_dest.length);
+//            RealMatrix xy_dest = PointArr2float(roi_coord_dest);
+//            float[] x_float = CalciumSignal.DoubletoFloat(xy_dest.getColumn(0));
+//            float[] y_float = CalciumSignal.DoubletoFloat(xy_dest.getColumn(1));
+//            for (int j = 0; j < x_float.length; j++) {
+//                x_float[j] = x_float[j] < 0 ? 0 : x_float[j];
+//                x_float[j] = x_float[j] > image_bounds[0] ? image_bounds[0] : x_float[j];
+//                y_float[j] = y_float[j] < 0 ? 0 : y_float[j];
+//                y_float[j] = y_float[j] > image_bounds[1] ? image_bounds[1] : y_float[j];
+//            }
+//            PolygonRoi t_roi = new PolygonRoi(x_float,y_float,Roi.FREEROI);
+//            rois_out.set(i, (PolygonRoi) RoiEnlarger.enlarge(t_roi,enlarge_factor));
+//        }
+//        return rois_out;
+//    }
+
     // TODO:  use Time Analyser instead
+    /**
+     * @param rois input rois
+     * @param imp average image */
+    public static void fitRois( ArrayList<PolygonRoi> rois, ImagePlus imp ) throws NotEnoughDataPointsException, IllDefinedDataPointsException {
+        // find maxima in image as data set (ds)
+        int tolarance = 5;
+        MaximumFinder mf = new MaximumFinder();
+        Polygon imp_mp = mf.getMaxima(imp.getProcessor(),tolarance, true); // imp max points
+        int max_points = imp_mp.xpoints.length > 15 ? 15 : imp_mp.ypoints.length;
+        PointRoi point_roi = new PointRoi(imp_mp.xpoints, imp_mp.ypoints, max_points);
+
+        // compare ds to existing centers and extract best correspondences
+        ArrayList<Point2D> corresp_point = new ArrayList();
+        double dist = 0;
+        int closest = 0;
+        double shortest_length = 0;
+        for (int i = 0; i <point_roi.getXCoordinates().length; i++) {
+            for (int j = 0; j < rois.size(); j++) {
+                int[] roi_centroid = findCentroid(rois.get(j));
+                dist = Point2D.distance(imp_mp.xpoints[i], imp_mp.ypoints[i], roi_centroid[0],roi_centroid[1]);
+                if(j == 0) {
+                    closest = j;
+                    shortest_length = dist;
+                }
+                else{
+                    if(dist < shortest_length){
+                        closest = j;
+                        shortest_length = dist;
+                    }
+                }
+            }
+            int[] near_neighb = findCentroid(rois.get(closest));
+            corresp_point.add(new Point2D.Double(near_neighb[0],near_neighb[1]));
+        }
+
+        // find transformations
+        double[] corr_dest;
+        double[] corr_source;
+        ArrayList<double[]> destArray = new ArrayList<>();
+        ArrayList<double[]> sourceArray = new ArrayList<>();
+        ArrayList matches = new ArrayList();
+        for(int mapping = 0; mapping < corresp_point.size(); ++mapping) {
+            corr_dest = new double[]{(double)imp_mp.xpoints[mapping], (double)imp_mp.ypoints[mapping]};
+            corr_source = new double[]{corresp_point.get(mapping).getX(), corresp_point.get(mapping).getY()};
+            matches.add(new PointMatch(new mpicbg.models.Point(corr_source), new mpicbg.models.Point(corr_dest)));
+            destArray.add(corr_dest);
+            sourceArray.add(corr_source);
+        }
+        SimilarityModel2D afm = new SimilarityModel2D();
+        try {
+            (afm).fit(matches);
+            System.out.printf("\nfit-transformation cost - %.3f MSE",findCost(destArray, sourceArray, afm));
+            if(findCost(destArray, sourceArray, afm) > 5){
+                System.out.print("\n!WARNING! Transformation had high MSE! ");
+            }
+        } catch (NotEnoughDataPointsException e) {
+            e.printStackTrace();
+        }
+        double[] trans_matrix = new double[6];
+        (afm).toArray(trans_matrix);
+
+        // apply on all Roi's
+        int enlarge_factor = 0;
+        int[] image_bounds = {imp.getWidth(), imp.getHeight()};
+        AffineTransform aft = new AffineTransform();
+        aft.setTransform(trans_matrix[0], trans_matrix[1], trans_matrix[2], trans_matrix[3], trans_matrix[4], trans_matrix[5]);
+        ArrayList<PolygonRoi> roi_trans = Stimulus_API.TransformPolygonRois(rois, aft, enlarge_factor, image_bounds);
+        for (int i = 0; i < rois.size(); i++) {
+            String name = "Cell_"+(i+1)+"_"+(int)rois.get(i).getXBase()+"_"+(int)rois.get(i).getYBase();
+            rois.set(i, roi_trans.get(i));
+            rois.get(i).setName(name);
+        }
+    }
+
+    static double findCost(ArrayList<double[]> dest,ArrayList<double[]> source, SimilarityModel2D model){
+        double MSE = 0;
+        for (int i = 0; i < dest.size(); i++) {
+            double[] xy_dest = model.apply(source.get(i));
+            double[] xy_src = source.get(i);
+            MSE += Math.sqrt(Math.pow((xy_src[0] - xy_dest[0]), 2) + Math.pow((xy_src[1]-xy_dest[1]), 2));
+        }
+        return MSE/dest.size();
+    }
+
+    // define functions
+    static int[] findCentroid(Roi roi){
+        Polygon roi_poly = roi.getPolygon();
+        double x_cent =0 ,y_cent = 0;
+        int x_cent_size = roi_poly.xpoints.length;
+        for (int j = 0; j < x_cent_size; j++) {
+            x_cent += roi_poly.xpoints[j];
+            y_cent += roi_poly.ypoints[j];
+        }
+        int[] out = {(int)(x_cent/x_cent_size), (int)(y_cent/x_cent_size)};
+        return out;
+    }
+
     /**
      * @param r_in input rois
      * @param avr_imp average image */
     public static ArrayList<PolygonRoi> recenterRois( ArrayList<PolygonRoi> r_in, ImagePlus avr_imp ) {
         // TSA parameters
-        int MaxIteration = 15; //default value
+        double Fs  = Prefs.get("sliteanalysis.cSTIMULUS_FR", AAP_Constants.cSTIMULUS_FR);
+        int MaxIteration = (int) Prefs.get("sliteanalysis.cMAXITER_ED", AAP_Constants.cMAXITER_ED);
+        double CLimit = Prefs.get("sliteanalysis.cCLIMIT_ED", AAP_Constants.cCLIMIT_ED);
+        int Width = (int) Prefs.get("sliteanalysis.cWIDTH_ED", AAP_Constants.cWIDTH_ED); //width and height of a ROI
+        int Height = (int) Prefs.get("sliteanalysis.cHEIGHT_ED", AAP_Constants.cHEIGHT_ED);
+        double Scale = Prefs.get("sliteanalysis.cSCALE_ED", AAP_Constants.cSCALE_ED);
+    /*    int MaxIteration = 15; //default value
         double CLimit = 0.1; // default value
         int Width = 10; //width and height of a ROI
         int Height = 10;
-        double Scale = 0.5;
+        double Scale = 0.5;*/
         ShapeRoi all = new ShapeRoi(new OvalRoi(0, 0, Width, Height));
 
         ArrayList<PolygonRoi> r_out = new ArrayList<>(r_in.size());

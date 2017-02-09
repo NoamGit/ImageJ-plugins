@@ -17,6 +17,7 @@ import ij.plugin.filter.Analyzer;
 import ij.plugin.filter.MaximumFinder;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.*;
+import mpicbg.models.NotEnoughDataPointsException;
 import net.imagej.Main;
 import trainableSegmentation.WekaSegmentation;
 
@@ -388,7 +389,7 @@ public class Activity_Analysis implements PlugInFilter {
         return values;
     }
 
-    static public ArrayList<Double> getAverageSignal(ImagePlus imp, Roi roi) {
+    static public ArrayList<Double> getAverageSignal(ImagePlus imp, Roi roi) throws IllegalArgumentException{
         ImageProcessor ip = imp.getProcessor();
         ImageStack imp_stack = imp.getStack();
         double minThreshold = ip.getMinThreshold();
@@ -403,6 +404,9 @@ public class Activity_Analysis implements PlugInFilter {
                 ip.setThreshold(minThreshold,maxThreshold,ImageProcessor.NO_LUT_UPDATE);
             ip.setRoi(roi);
             ImageStatistics stats = ImageStatistics.getStatistics(ip, measurements, cal);
+            if(((Double)stats.mean).isNaN()){
+                throw new IllegalArgumentException();
+            }
             values.add(stats.mean);
         }
         return values;

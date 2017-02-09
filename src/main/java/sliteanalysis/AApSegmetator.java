@@ -18,6 +18,7 @@ import ij.process.ByteProcessor;
 import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 import jdk.internal.org.objectweb.asm.tree.analysis.Analyzer;
+import net.imagej.Main;
 import trainableSegmentation.WekaSegmentation;
 import cellMagicWand.Constants;
 import cellMagicWand.PolarTransform;
@@ -128,11 +129,11 @@ public class AApSegmetator {
         segmentator.loadClassifier(this.CLASSIFPATH + this.CLASSI);
         ImagePlus imp_prob = segmentator.applyClassifier(avr_img, 0, true); // get probabilities image
 
-//                                ImagePlus imp_temp_0 = new ImagePlus();
-//                                imp_temp_0.setImage(imp_prob);
-//                                imp_temp_0.show();
-//                                IJ.run("In [+]", "");
-//                                IJ.run("In [+]", "");
+                                ImagePlus imp_temp_0 = new ImagePlus();
+                                imp_temp_0.setImage(imp_prob);
+                                imp_temp_0.show();
+                                IJ.run("In [+]", "");
+                                IJ.run("In [+]", "");
 
         // Threshold ,Binary & Erode
         ImageStack probStack = imp_prob.getStack();
@@ -151,29 +152,29 @@ public class AApSegmetator {
         maxmask.erode(1, 255);
         max_imp.setProcessor(maxmask);
 
-//                                imp.show();
-//                                IJ.run("In [+]", "");
-//                                IJ.run("In [+]", "");
+                                imp.show();
+                                IJ.run("In [+]", "");
+                                IJ.run("In [+]", "");
 
-//                                ImagePlus imp_temp_1 = new ImagePlus();
-//                                imp_temp_1.setImage(imp_prob);
-//                                imp_temp_1.show();
-//                                IJ.run("In [+]", "");
-//                                IJ.run("In [+]", "");
-//
-//                                max_imp.show();
-//                                IJ.run("In [+]", "");
-//                                IJ.run("In [+]", "");
+                                ImagePlus imp_temp_1 = new ImagePlus();
+                                imp_temp_1.setImage(imp_prob);
+                                imp_temp_1.show();
+                                IJ.run("In [+]", "");
+                                IJ.run("In [+]", "");
+
+                                max_imp.show();
+                                IJ.run("In [+]", "");
+                                IJ.run("In [+]", "");
 
         IJ.run(imp_prob, "Options...", "iterations=" + MORPH_ITER + " count=" + MORPH_COUNT + " black do=" + MORPH_PROC);
         ImageCalculator impcalculator = new ImageCalculator();
         imp_prob = impcalculator.run("OR create", imp_prob, max_imp);
 
-//                                ImagePlus imp_temp_3 = new ImagePlus();
-//                                imp_temp_3.setImage(imp_prob);
-//                                imp_temp_3.show();
-//                                IJ.run("In [+]", "");
-//                                IJ.run("In [+]", "");
+                                ImagePlus imp_temp_3 = new ImagePlus();
+                                imp_temp_3.setImage(imp_prob);
+                                imp_temp_3.show();
+                                IJ.run("In [+]", "");
+                                IJ.run("In [+]", "");
 
         IJ.run(imp_prob, "Watershed", "");
 
@@ -192,17 +193,17 @@ public class AApSegmetator {
         }
         IJ.run(imp_prob, "Set Scale...", "distance=250 known="+scale_string+" pixel=1 unit=um"); // moves to [um] scale
 
-//                                ImagePlus imp_temp_2 = new ImagePlus();
-//                                imp_temp_2.setImage(imp_prob);
-//                                imp_temp_2.show();
-//                                IJ.run("In [+]", "");
-//                                IJ.run("In [+]", "");
+                                ImagePlus imp_temp_2 = new ImagePlus();
+                                imp_temp_2.setImage(imp_prob);
+                                imp_temp_2.show();
+                                IJ.run("In [+]", "");
+                                IJ.run("In [+]", "");
 
         ManyBlobs cellLocation = FilterAndGetCells(imp_prob);
 
-//                                cellLocation.getLabeledImage().show();
-//                                IJ.run("In [+]", "");
-//                                IJ.run("In [+]", "");
+                                cellLocation.getLabeledImage().show();
+                                IJ.run("In [+]", "");
+                                IJ.run("In [+]", "");
 
         for (int i = 0; i < cellLocation.size(); i++) {
             Polygon blobContour = cellLocation.get(i).getOuterContour();
@@ -289,26 +290,33 @@ public class AApSegmetator {
 
     /* Main function for debugging */
     public static void main(final String... args) throws FileNotFoundException {
-        String path;
-        try {
-            path = "C:\\Users\\noambox\\Desktop\\AAP plugin\\ClassifierTrain\\151206TRAIN\\"; // LAB
-            ImagePlus imp_test = IJ.openImage(path + "av1.tif");
-            if(imp_test == null){
-                throw new FileNotFoundException("Your not in Lab....");
-            }
-        }
-        catch(FileNotFoundException error){
-            path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\"; //HOME
-        }
+//        String path;
+//        try {
+//            path = "C:\\Users\\noambox\\Desktop\\AAP plugin\\ClassifierTrain\\151206TRAIN\\"; // LAB
+//            ImagePlus imp_test = IJ.openImage(path + "av1.tif");
+//            if(imp_test == null){
+//                throw new FileNotFoundException("Your not in Lab....");
+//            }
+//        }
+//        catch(FileNotFoundException error){
+//            path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\"; //HOME
+//        }
+//        String im_path = "av1rotate.tif";
 
-        ImagePlus imp = IJ.openImage(path + "av1rotate.tif"); // DEBUG
+        // Debugging
+        ij.ImageJ.main(new String[] {"temp"});
+        String path = "D:\\Noam\\Data to show";
+//        String im_path =  "\\AVG_ORI_10Hz_1_160314_l2.tif";
+        String im_path = "\\AVG_ORI_10Hz_1_160420_L2.tif";
+
+        ImagePlus imp = IJ.openImage(path + im_path); // DEBUG
 //        ImagePlus imp = IJ.openImage(path + "av1.tif"); // DEBUG
 
         AApSegmetator aap_seg = new AApSegmetator(imp);
       ArrayList<PolygonRoi> rois;
 
-        //rois = aap_seg.SegmentCellsML();
-        rois = aap_seg.SegmentCellsCWT();
+        rois = aap_seg.SegmentCellsML();
+//        rois = aap_seg.SegmentCellsCWT();
 
         RoiManager rm = new RoiManager();
         for (int i = 0; i < rois.size(); i++) {

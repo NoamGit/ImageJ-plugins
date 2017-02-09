@@ -48,5 +48,6 @@ public class Extract_Data implements PlugIn {
         String argv = "";
 //        ij.ImageJ.main(new String[] {"temp"});
         pt.run(argv);
+
     }
 }

@@ -308,6 +308,10 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         }
     }
 
+    public void resetInstance(){
+        instance = null;
+    }
+
     public void windowClosing(WindowEvent e) {
         super.windowClosing(e);
         done = true;
@@ -405,6 +409,26 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         String label = null;
         if(center.getState())
             label = type+(r.x+r.width/2)+"-"+(r.y+r.height/2);
+        else
+            label =  type+".x"+ (r.x)+".y"+(r.y)+".w"+(r.width)+".h"+(r.height);
+        //list.add(label);
+        //rois.put(label, roi.clone());
+        tmodel.addRoi(label, roi.clone(), cas);
+
+//        table.setValueAt(Double.toString(cas.activityVariance), tmodel.numRows - 1, 4);
+//        table.setValueAt("test", tmodel.numRows - 1,4);
+
+    }
+
+    public void addCell(CalciumSignal cas, Roi roi, int index){
+    /* Adds the roi of an calcium singal with its properties*/
+        String type = "Cell ";
+        Rectangle r = roi.getBoundingRect();
+        //String label = type+" ("+(r.x+r.width/2)+","+(r.y+r.height/2)+")";
+
+        String label = null;
+        if(center.getState())
+            label = type+"_"+index+"_"+(r.x+r.width/2)+"_"+(r.y+r.height/2);
         else
             label =  type+".x"+ (r.x)+".y"+(r.y)+".w"+(r.width)+".h"+(r.height);
         //list.add(label);
@@ -1080,6 +1104,38 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
             }
         }
     }
+
+    boolean save(String saveType, String dir_chooser) {
+        table.selectAll();
+        if (table.getRowCount() == 0) // was if (list.getItemCount()==0)
+            return error("The list is empty."); // was "The selection list is empty"
+        int indexes[] = table.getSelectedRows();//list.getSelectedIndexes();
+        // I dont get this - first we say: if nothing is selected, say so and then we select all items.
+        // what is the point in that?
+        // if (indexes.length==0)
+        //	indexes = getAllIndexes();
+        if (indexes.length == 0) {
+            error("At least one ROI must be selected from the list.");
+            return false;
+        } else {
+            String nameData = "DataProcessed_" + imp.getTitle().subSequence(0, imp.getTitle().length() - 4) + ".xlsx";
+            ;
+            if (saveType.compareTo("raw") == 0) {
+                nameData = "DataRaw_" + imp.getTitle().subSequence(0, imp.getTitle().length() - 4) + ".xlsx";
+            }
+            String nameRoi = "RoiSet_" + imp.getTitle().subSequence(0, imp.getTitle().length() - 4) + ".zip";
+            Macro.setOptions(null);
+//            SaveDialog sd = new SaveDialog("Save Signals...", nameData, ".xlsx");
+//            int returnVal = fc.showSaveDialog(CellManager.this);
+//            saveMultiple(indexes, fc.getSelectedFile().getPath());
+            if (dir_chooser == null) {
+                return false;
+            } else {
+                saveMultiple(indexes, dir_chooser, nameRoi, nameData, saveType);
+                return true;
+            }
+        }
+    }
 //
 //        String name = (String) tmodel.getValueAt(indexes[0],1); // was list.getItem(indexes[0]);
 //        Macro.setOptions(null);
@@ -1114,6 +1170,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
 
     void saveMultiple(int[] indexes, String path, String nameRoi, String nameData, String saveType) {
         Macro.setOptions(null);
+        ArrayList<Integer> skip_list = new ArrayList<>();
         if (path==null) {
             SaveDialog sd = new SaveDialog("Save ROIs...", "RoiSet", ".zip");
             String name = sd.getFileName();
@@ -1140,11 +1197,21 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
                 // Get the name of the roi and the roi
                 name = (String)tmodel.getValueAt(indexes[i],1);
                 roi = (Roi)tmodel.getValueAt(indexes[i],2);
-                zos.putNextEntry(new ZipEntry(name + ".roi"));
-                re.write(roi);
-                out.flush();
+                try {
+                    zos.putNextEntry(new ZipEntry(name + ".roi"));
+                    re.write(roi);
+                    out.flush();
+                }
+                catch(ZipException e){
+                    System.out.print(" ## skipping existing ROI " + indexes[i]);
+                    indexes[i] = -1;
+                    continue;
+                }
             }
             out.close();
+
+            // updating index list
+            indexes = clean(indexes, -1);
 
             // Save signals with apache POI
             File myFile = new File(path+nameData);
@@ -1232,7 +1299,7 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
 
             FileOutputStream fos = new FileOutputStream(myFile);
             myWorkBook.write(fos);
-            System.out.println("Writing on XLSX file Finished ...");
+            System.out.println("\nWriting on XLSX file Finished ...");
 
         }
         catch (IOException e) {
@@ -1375,6 +1442,18 @@ class CellManager extends PlugInFrame implements ActionListener, ItemListener,
         if (index.length>1)
             IJ.run("Select None");
         return true;
+    }
+
+    public static int[] clean(final int[] v,int  value) {
+        int r, w;
+        final int n = r = w = v.length;
+        while (r > 0) {
+            final Integer s = v[--r];
+            if (!s.equals(value)) {
+                v[--w] = s;
+            }
+        }
+        return Arrays.copyOfRange(v, w, n);
     }
 
     boolean recalcDF(){
@@ -1705,6 +1784,10 @@ class CellManagerTableModel extends AbstractTableModel{
 
     public CellManagerTableModel(){
         data = new Vector();
+    }
+
+    public void flush(){
+        this.data.clear();
     }
 
     public String getColumnName(int column) {

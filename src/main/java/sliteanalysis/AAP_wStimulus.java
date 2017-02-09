@@ -222,17 +222,34 @@ public class AAP_wStimulus implements PlugIn {
 
     /* Wraps everything into a Cell Manager Class*/
     protected CellManager toCellManager(ImagePlus imp, ArrayList<PolygonRoi> rois, ImagePlus av_imp) {
-        CellManager cm = new CellManager(av_imp, imp, this.ovr, this.dt_r );
+        this.cm = new CellManager(av_imp, imp, this.ovr, this.dt_r );
         Iterator itr = rois.iterator();
         ArrayList<Double> av_sig = new ArrayList<>();
         PolygonRoi roi;
+        int index = 1;
+        CalciumSignal ca_sig;
         while(itr.hasNext()){
+
+            // remove duplicate regions
+
             roi = (PolygonRoi) itr.next();
-            av_sig = Activity_Analysis.getAverageSignal(imp, roi);
-            CalciumSignal ca_sig = new CalciumSignal(av_sig, this.dt_r);
+            try{
+                av_sig = Activity_Analysis.getAverageSignal(imp, roi);
+                ca_sig = new CalciumSignal(av_sig, this.dt_r);
+            }
+            catch(IllegalArgumentException e){
+                System.out.print("\n!WARNING! Problem to extract signal of ROI - "+roi.getName());
+                System.out.print("\n!WARNING! with center x - " + roi.getXBase() + " y - " + roi.getYBase());
+                continue;
+            }
+            if(ovr.contains(roi)){
+                System.out.print("\n!WARNING! Problem to include ROI - "+roi.getName()+" already included!");
+                continue;
+            }
             ovr.add(roi);
             ca_sig.DeltaF();
-            cm.addCell(ca_sig, roi);
+            cm.addCell(ca_sig, roi, index);
+            index++;
         }
 //            catch(Exception e){
 //                IJ.showMessage(e.getMessage());

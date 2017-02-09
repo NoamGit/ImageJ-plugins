@@ -2,6 +2,7 @@ package sliteanalysis;
 
 import biz.source_code.dsp.filter.IirFilterCoefficients;
 import ij.ImagePlus;
+import ij.Prefs;
 import ij.blob.ManyBlobs;
 import ij.gui.Overlay;
 import ij.gui.PolygonRoi;
@@ -20,11 +21,11 @@ public class AAP_Constants {
         public static final double cSTIMULUS_FR = 1/60D; // 60 Hz default stimulus sr
         public static final boolean cREMOVEFIRST = true;
         public static final int cNOISE_ROI_UP = 0;
-        public static final int cNOISE_ROI_LOW = 20;
+        public static final int cNOISE_ROI_LOW = 0;
         public static final double cKM_GAIN = 0.8;
         public static final double cKM_PRECVAR = 0.05;
         public static final boolean cUSEARTIFACT = false;
-        public static boolean cUSEKALMAN = true;
+        public static boolean cUSEKALMAN = false;
         public static boolean cREPLACEARTIFACT = false;
 
     //Segmentation Constants
@@ -70,4 +71,12 @@ public class AAP_Constants {
         public static final float cNOISEPERCENTILE = (float)0.3;; //30% percentile
         public static final float cDETECTIONVARIANCE = (float)2;; // over this threshold there is a good chance for cell's activity
         public static final double activityVariance = 0;
+
+    // Automatic Recenter Constant
+        public static final int cMAXITER_ED = 10;
+        public static final double cCLIMIT_ED = 5;
+        public static final double cSCALE_ED = 1;
+        public static final int  cWIDTH_ED = 10;
+        public static final int  cHEIGHT_ED = 10;
+
 }

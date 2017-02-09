@@ -51,6 +51,45 @@ public class UI_Settings {
 
     }
 
+    public static void openSettings_ED() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                int out = 0;
+                JFrame frame = new JFrame("Settings");
+                GenericDialog gd = new GenericDialog("settings",frame);
+                gd.setLayout(new BoxLayout(gd, BoxLayout.PAGE_AXIS));
+
+                // UI components
+                JComponent panel1 = makeStackPanel("Stack Settings");
+                JComponent panel2 = makeSegPanel("Cell Detection");
+                JComponent panel3 = makeProcessingPanel("Calcium Signal Processing");
+                JComponent panel4 = makeRecenterPanel("Recenter parameters");
+                gd.pack();
+
+                JTabbedPane tabbedPane = new JTabbedPane();
+                tabbedPane.addTab("Stack", panel1);
+                tabbedPane.addTab("Segmentation", panel2);
+                tabbedPane.addTab("Processing", panel3);
+                tabbedPane.addTab("Recenter", panel4);
+                gd.add(tabbedPane);
+
+                gd.pack();
+                gd.showDialog();
+                ArrayList<String> text_value = readStringsFromPanel(panel1);
+                text_value.addAll(readStringsFromPanel(panel2));
+                text_value.addAll(readStringsFromPanel(panel3));
+                text_value.addAll(readStringsFromPanel(panel4));
+
+                ArrayList<Boolean> chk_value = readCheckBoxFromPanel(panel1);
+                chk_value.addAll(readCheckBoxFromPanel(panel2));
+                chk_value.addAll(readCheckBoxFromPanel(panel3));
+
+                savePrefs_ED(text_value, chk_value);
+            }
+        });
+
+    }
+
     public static void openSettingsNow() {
 //        try {
 //            SwingUtilities.invokeAndWait(new Runnable() {
@@ -232,6 +271,45 @@ public class UI_Settings {
         return panel;
     }
 
+    protected static JComponent makeRecenterPanel(String text) {
+        int maxiter = (int) Prefs.get("sliteanalysis.cMAXITER_ED", AAP_Constants.cMAXITER_ED);
+        double limit = Prefs.get("sliteanalysis.cCLIMIT_ED",AAP_Constants.cCLIMIT_ED);
+        double scale = Prefs.get("sliteanalysis.cSCALE_ED",AAP_Constants.cSCALE_ED);
+        int width  = (int) Prefs.get("sliteanalysis.cWIDTH_ED",AAP_Constants.cWIDTH_ED);
+        int height = (int) Prefs.get("sliteanalysis.cHEIGHT_ED",AAP_Constants.cHEIGHT_ED);
+
+        JPanel panel = new JPanel();
+        BoxLayout box = new BoxLayout(panel, BoxLayout.PAGE_AXIS);
+        panel.setLayout(box);
+
+        JPanel entry1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        entry1.add(new JLabel("Max iterations:"));
+        entry1.add(new JTextField(Double.toString(maxiter), 4));
+        panel.add(entry1);
+
+        JPanel entry2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        entry2.add(new JLabel("Convergence limit:"));
+        entry2.add(new JTextField(Double.toString(limit), 4));
+        panel.add(entry2);
+
+        JPanel entry3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        entry3.add(new JLabel("Roi Scale:"));
+        entry3.add(new JTextField(Double.toString(scale), 4));
+        panel.add(entry3);
+
+        JPanel entry4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        entry4.add(new JLabel("Roi width:"));
+        entry4.add(new JTextField(Double.toString(width), 4));
+        panel.add(entry4);
+
+        JPanel entry5 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        entry5.add(new JLabel("Roi height:"));
+        entry5.add(new JTextField(Double.toString(height), 4));
+        panel.add(entry5);
+
+        return panel;
+    }
+
     protected static JComponent makeProcessingPanel(String text) {
         JPanel panel = new JPanel();
         BoxLayout box = new BoxLayout(panel, BoxLayout.PAGE_AXIS);
@@ -305,6 +383,38 @@ public class UI_Settings {
         Prefs.set("sliteanalysis.cUSEARTIFACT", chk_value.get(1));
         Prefs.set("sliteanalysis.cREPLACEARTIFACT",chk_value.get(2));
         Prefs.set("sliteanalysis.cUSEKALMAN",chk_value.get(3));
+        Prefs.savePreferences(); // Throws error probabely because the ij is not initialized
+    }
+
+    private static void savePrefs_ED(ArrayList<String> text_value, ArrayList<Boolean> chk_value) {
+        Prefs.set("sliteanalysis.cGETPEAKSCONST", text_value.get(0));
+        Prefs.set("sliteanalysis.cSTIMULUS_FR", text_value.get(1));
+        Prefs.set("sliteanalysis.cKM_GAIN", text_value.get(2));
+        Prefs.set("sliteanalysis.cKM_PRECVAR", text_value.get(3));
+        Prefs.set("sliteanalysis.cNOISE_ROI_UP", text_value.get(4));
+
+        Prefs.set("sliteanalysis.cFM_TOL", text_value.get(6));
+        Prefs.set("sliteanalysis.cCM_MAX", text_value.get(7));
+        Prefs.set("sliteanalysis.cENLARGEROI", text_value.get(8));
+        Prefs.set("sliteanalysis.cELLIPSE_a", text_value.get(9));
+        Prefs.set("sliteanalysis.cELLIPSE_b", text_value.get(10));
+
+        Prefs.set("sliteanalysis.cCUTOFF", text_value.get(11));
+        Prefs.set("sliteanalysis.cORDER", text_value.get(12));
+        Prefs.set("sliteanalysis.cNOISEPERCENTILE", text_value.get(13));
+        Prefs.set("sliteanalysis.cDETECTIONVARIANCE", text_value.get(14));
+
+        Prefs.set("sliteanalysis.cREMOVEFIRST", chk_value.get(0));
+        Prefs.set("sliteanalysis.cUSEARTIFACT", chk_value.get(1));
+        Prefs.set("sliteanalysis.cREPLACEARTIFACT",chk_value.get(2));
+        Prefs.set("sliteanalysis.cUSEKALMAN",chk_value.get(3));
+
+        Prefs.set("sliteanalysis.cMAXITER_ED", text_value.get(15));
+        Prefs.set("sliteanalysis.cCLIMIT_ED", text_value.get(16));
+        Prefs.set("sliteanalysis.cSCALE_ED", text_value.get(17));
+        Prefs.set("sliteanalysis.cWIDTH_ED", text_value.get(18));
+        Prefs.set("sliteanalysis.cHEIGHT_ED", text_value.get(19));
+
         Prefs.savePreferences(); // Throws error probabely because the ij is not initialized
     }
 

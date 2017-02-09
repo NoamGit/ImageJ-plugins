@@ -22,7 +22,6 @@
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/CellManagerRoi.class" />
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/CalciumSignal.class" />
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/TimeSeries.class" />
-        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Extract_Stimulus.class" />
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/UI_Settings.class" />
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/AAP_wStimulus.class" />
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Cell_Magic_Wand_Tool.class" />
@@ -51,6 +50,9 @@
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Dialog_Extract_Data$8.class" />
         <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Dialog_Extract_Data$9.class" />
         <element id="dir-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Extract_Stimulus.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Extract_Data_noUI$1.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/classes/sliteanalysis/Extract_Data_noUI.class" />
       </element>
       <element id="file-copy" path="$PROJECT_DIR$/test_save/plugins.config" />
     </root>
