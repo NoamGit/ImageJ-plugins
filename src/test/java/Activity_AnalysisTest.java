@@ -6,6 +6,7 @@ import org.junit.*;
 import sliteanalysis.Activity_Analysis;
 import sliteanalysis.MyBlobFeature;
 
+import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertEquals;
 
 public class Activity_AnalysisTest {

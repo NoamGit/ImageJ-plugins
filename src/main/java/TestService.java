@@ -31,8 +31,8 @@ public interface TestService extends ImageJService {
             System.out.println("Starting test");
             // Launch ImageJ as usual.
             final ImageJ ij = net.imagej.Main.launch(args);
-
-            ij.command().run(Test.class, true);
+            ij.update();
+//            ij.command().run(Test.class, true);
         }
 
     }

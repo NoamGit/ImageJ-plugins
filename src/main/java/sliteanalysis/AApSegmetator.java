@@ -70,8 +70,8 @@ public class AApSegmetator {
     private ManyBlobs allBlobs;
 
     // Parameters - Segmentation
-    private String CLASSIFPATH = "C:\\Users\\niel\\Documents\\Noam\\Repos\\Fiji\\Fiji"; // SS version
-    private String CLASSI = "\\Self Customized Parameters\\Classifiers\\classifier1-12.model";
+    private String CLASSIFPATH = System.getProperty("user.dir") + "\\data";; // SS version
+    private String CLASSI = "\\classifier\\classifier1-12.model";
 
     // Parameters Visualization and scale
     private Overlay overLay = new Overlay();
@@ -129,11 +129,6 @@ public class AApSegmetator {
         segmentator.loadClassifier(this.CLASSIFPATH + this.CLASSI);
         ImagePlus imp_prob = segmentator.applyClassifier(avr_img, 0, true); // get probabilities image
 
-                                ImagePlus imp_temp_0 = new ImagePlus();
-                                imp_temp_0.setImage(imp_prob);
-                                imp_temp_0.show();
-                                IJ.run("In [+]", "");
-                                IJ.run("In [+]", "");
 
         // Threshold ,Binary & Erode
         ImageStack probStack = imp_prob.getStack();
@@ -141,95 +136,114 @@ public class AApSegmetator {
         imp_prob.setStack(probStack);
         ImageConverter converter = new ImageConverter(imp_prob);
         converter.convertToGray8();
-        Auto_Local_Threshold thresholder = new Auto_Local_Threshold();
-        Object[] result = thresholder.exec(imp_prob, THRESH_METHOD, THRESH_RADIUS, THRESH_P1, 0, true);        // Better to use auto local threshold than auto-threshold
-        imp_prob = ((ImagePlus) result[0]);
 
-        // Find maxima implementation
-        MaximumFinder maximumFinder = new MaximumFinder();
-        ByteProcessor maxmask = maximumFinder.findMaxima(avr_img.getProcessor(), this.FM_TOL, ImageProcessor.NO_THRESHOLD, this.FM_OUT, true, false);
-        ImagePlus max_imp = new ImagePlus();
-        maxmask.erode(1, 255);
-        max_imp.setProcessor(maxmask);
+        // use non-local mean segmentation to find cells
+        cell_rois = SegmentCellsCWT_engine(imp_prob);
+        return cell_rois;
 
-                                imp.show();
-                                IJ.run("In [+]", "");
-                                IJ.run("In [+]", "");
+//        Auto_Local_Threshold thresholder = new Auto_Local_Threshold();
+//        Object[] result = thresholder.exec(imp_prob, THRESH_METHOD, THRESH_RADIUS, THRESH_P1, 0, true);        // Better to use auto local threshold than auto-threshold
+//        imp_prob = ((ImagePlus) result[0]);
+//
+//        // Find maxima implementation
+//        MaximumFinder maximumFinder = new MaximumFinder();
+//        ByteProcessor maxmask = maximumFinder.findMaxima(avr_img.getProcessor(), this.FM_TOL, ImageProcessor.NO_THRESHOLD, this.FM_OUT, true, false);
+//        ImagePlus max_imp = new ImagePlus();
+//        maxmask.erode(1, 255);
+//        max_imp.setProcessor(maxmask);
+//
+////                                imp.show();
+////                                IJ.run("In [+]", "");
+////                                IJ.run("In [+]", "");
+//
+////                                ImagePlus imp_temp_1 = new ImagePlus();
+////                                imp_temp_1.setImage(imp_prob);
+////                                imp_temp_1.show();
+////                                IJ.run("In [+]", "");
+////                                IJ.run("In [+]", "");
+////
+////                                max_imp.show();
+////                                IJ.run("In [+]", "");
+////                                IJ.run("In [+]", "");
+//
+//        IJ.run(imp_prob, "Options...", "iterations=" + MORPH_ITER + " count=" + MORPH_COUNT + " black do=" + MORPH_PROC);
+//        ImageCalculator impcalculator = new ImageCalculator();
+//        imp_prob = impcalculator.run("OR create", imp_prob, max_imp);
+//
+////                                ImagePlus imp_temp_3 = new ImagePlus();
+////                                imp_temp_3.setImage(imp_prob);
+////                                imp_temp_3.show();
+////                                IJ.run("In [+]", "");
+////                                IJ.run("In [+]", "");
+//
+//        IJ.run(imp_prob, "Watershed", "");
+//
+//        // scale
+//        String scale_string = "250";
+//        switch(this.ObjectiveM){
+//            case(10):
+//                scale_string = "1000";
+//                break;
+//            case(20):
+//                scale_string = "490";
+//                break;
+//            case(40):
+//                scale_string = "250";
+//                break;
+//        }
+//        IJ.run(imp_prob, "Set Scale...", "distance=250 known="+scale_string+" pixel=1 unit=um"); // moves to [um] scale
+//
+//                                ImagePlus imp_temp_2 = new ImagePlus();
+//                                imp_temp_2.setImage(imp_prob);
+//                                imp_temp_2.show();
+//                                IJ.run("In [+]", "");
+//                                IJ.run("In [+]", "");
+//        ManyBlobs cellLocation = FilterAndGetCells(imp_prob);
+//
+////                                cellLocation.getLabeledImage().show();
+////                                IJ.run("In [+]", "");
+////                                IJ.run("In [+]", "");
+//
+//        for (int i = 0; i < cellLocation.size(); i++) {
+//            Polygon blobContour = cellLocation.get(i).getOuterContour();
+//            if (cell_rois != null)
+//                cell_rois.add(new PolygonRoi(blobContour.xpoints, blobContour.ypoints, blobContour.npoints, Roi.FREELINE));
+//        }
+//            return cell_rois;
+    }
 
-                                ImagePlus imp_temp_1 = new ImagePlus();
-                                imp_temp_1.setImage(imp_prob);
-                                imp_temp_1.show();
-                                IJ.run("In [+]", "");
-                                IJ.run("In [+]", "");
-
-                                max_imp.show();
-                                IJ.run("In [+]", "");
-                                IJ.run("In [+]", "");
-
-        IJ.run(imp_prob, "Options...", "iterations=" + MORPH_ITER + " count=" + MORPH_COUNT + " black do=" + MORPH_PROC);
-        ImageCalculator impcalculator = new ImageCalculator();
-        imp_prob = impcalculator.run("OR create", imp_prob, max_imp);
-
-                                ImagePlus imp_temp_3 = new ImagePlus();
-                                imp_temp_3.setImage(imp_prob);
-                                imp_temp_3.show();
-                                IJ.run("In [+]", "");
-                                IJ.run("In [+]", "");
-
-        IJ.run(imp_prob, "Watershed", "");
-
-        // scale
-        String scale_string = "250";
-        switch(this.ObjectiveM){
-            case(10):
-                scale_string = "1000";
-                break;
-            case(20):
-                scale_string = "490";
-                break;
-            case(40):
-                scale_string = "250";
-                break;
-        }
-        IJ.run(imp_prob, "Set Scale...", "distance=250 known="+scale_string+" pixel=1 unit=um"); // moves to [um] scale
-
-                                ImagePlus imp_temp_2 = new ImagePlus();
-                                imp_temp_2.setImage(imp_prob);
-                                imp_temp_2.show();
-                                IJ.run("In [+]", "");
-                                IJ.run("In [+]", "");
-
-        ManyBlobs cellLocation = FilterAndGetCells(imp_prob);
-
-                                cellLocation.getLabeledImage().show();
-                                IJ.run("In [+]", "");
-                                IJ.run("In [+]", "");
-
-        for (int i = 0; i < cellLocation.size(); i++) {
-            Polygon blobContour = cellLocation.get(i).getOuterContour();
-            if (cell_rois != null)
-                cell_rois.add(new PolygonRoi(blobContour.xpoints, blobContour.ypoints, blobContour.npoints, Roi.FREELINE));
-        }
-            return cell_rois;
+    /**
+     * Wrapper for non-local mean segmentation
+     * @return
+     */
+    public ArrayList<PolygonRoi> SegmentCellsCWT() {
+        return SegmentCellsCWT_engine(imp);
     }
 
     /**
      * Segments using Cell wand tool and find maxima*/
-    public ArrayList<PolygonRoi> SegmentCellsCWT(){
+    public ArrayList<PolygonRoi> SegmentCellsCWT_engine(ImagePlus image){
         ArrayList<PolygonRoi> cell_rois = new ArrayList<PolygonRoi>();
 
         // Remove Scale
-        IJ.run(imp, "Set Scale...", "distance=0");
+        IJ.run(image, "Set Scale...", "distance=0");
 
         // Find maxima implementation
         MaximumFinder mf = new MaximumFinder();
         Cell_Magic_Wand_Tool cmwt = new Cell_Magic_Wand_Tool();
         cmwt.minDiameter = this.CM_MIN; // TODO move to Constant parameters and allow settings
         cmwt.maxDiameter = this.CM_MAX;
-        Polygon maxPoints = mf.getMaxima(imp.getProcessor(), this.FM_TOL, true);
+
+//        ImagePlus imp_temp_0 = new ImagePlus();
+//        imp_temp_0.setImage(image);
+//        imp_temp_0.show();
+//        IJ.run("In [+]", "");
+//        IJ.run("In [+]", "");
+
+        Polygon maxPoints = mf.getMaxima(image.getProcessor(), this.FM_TOL, true);
         for (int i = 0; i < maxPoints.npoints; i++) {
             try{
-                PolygonRoi t_roi = cmwt.makeRoi(maxPoints.xpoints[i],maxPoints.ypoints[i],imp);
+                PolygonRoi t_roi = cmwt.makeRoi(maxPoints.xpoints[i],maxPoints.ypoints[i],image);
                 if(t_roi!=null){
                     PolygonRoi enlarge_roi = (PolygonRoi) RoiEnlarger.enlarge(t_roi,this.ENLARGEROI );
                     Point left_rect_corner = enlarge_roi.getBounds().getLocation();
@@ -290,7 +304,8 @@ public class AApSegmetator {
 
     /* Main function for debugging */
     public static void main(final String... args) throws FileNotFoundException {
-//        String path;
+        String path = System.getProperty("user.dir") + "\\data";
+        System.out.print(path + '\n');
 //        try {
 //            path = "C:\\Users\\noambox\\Desktop\\AAP plugin\\ClassifierTrain\\151206TRAIN\\"; // LAB
 //            ImagePlus imp_test = IJ.openImage(path + "av1.tif");
@@ -301,19 +316,12 @@ public class AApSegmetator {
 //        catch(FileNotFoundException error){
 //            path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\"; //HOME
 //        }
-//        String im_path = "av1rotate.tif";
 
-        // Debugging
-        ij.ImageJ.main(new String[] {"temp"});
-        String path = "D:\\Noam\\Data to show";
-//        String im_path =  "\\AVG_ORI_10Hz_1_160314_l2.tif";
-        String im_path = "\\AVG_ORI_10Hz_1_160420_L2.tif";
-
-        ImagePlus imp = IJ.openImage(path + im_path); // DEBUG
+        ImagePlus imp = IJ.openImage(path + "\\noam\\ca_av_1.tif"); // DEBUG
 //        ImagePlus imp = IJ.openImage(path + "av1.tif"); // DEBUG
 
         AApSegmetator aap_seg = new AApSegmetator(imp);
-      ArrayList<PolygonRoi> rois;
+        ArrayList<PolygonRoi> rois;
 
         rois = aap_seg.SegmentCellsML();
 //        rois = aap_seg.SegmentCellsCWT();

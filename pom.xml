@@ -102,6 +102,13 @@
 			<artifactId>scifio</artifactId>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/net.imagej/ij -->
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>ij</artifactId>
+			<version>1.51h</version>
+		</dependency>
+
 		<!-- SciJava dependencies -->
 		<dependency>
 			<groupId>org.scijava</groupId>
@@ -228,8 +235,28 @@
 		</dependency>
 		<dependency>
 			<groupId>sc.fiji</groupId>
-			<artifactId>pom-fiji</artifactId>
-			<version>15.6.0</version>
+			<artifactId>bUnwarpJ_</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/sc.fiji/pom-fiji -->
+		<!--<dependency>-->
+			<!--<groupId>sc.fiji</groupId>-->
+			<!--<artifactId>pom-fiji</artifactId>-->
+			<!--<version>27.0.0</version>-->
+		<!--</dependency>-->
+
+		<dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>Calculator_Plus</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>cisd</groupId>
@@ -273,7 +300,15 @@
 					<hideTransitive>false</hideTransitive>
 				</configuration>
 			</plugin>
-		</plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
 	</build>
 
 	<profiles>
@@ -296,16 +331,22 @@
 					<artifactId>imagej-ui-awt</artifactId>
 					<scope>runtime</scope>
 				</dependency>
+
+				<!-- https://mvnrepository.com/artifact/net.imagej/ij-ui-pivot -->
 				<dependency>
 					<groupId>net.imagej</groupId>
-					<artifactId>imagej-ui-pivot</artifactId>
-					<scope>runtime</scope>
+					<artifactId>ij-ui-pivot</artifactId>
+					<version>2.0.0-beta-7</version>
 				</dependency>
+
+				<!-- https://mvnrepository.com/artifact/net.imagej/ij-ui-swt -->
 				<dependency>
 					<groupId>net.imagej</groupId>
-					<artifactId>imagej-ui-swt</artifactId>
-					<scope>runtime</scope>
+					<artifactId>ij-ui-swt</artifactId>
+					<version>2.0.0-beta-7.9</version>
 				</dependency>
+
+
 			</dependencies>
 			<build>
 				<plugins>
