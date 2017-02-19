@@ -16,7 +16,7 @@ public class OpenCellManager {
     /* Class Variabels*/
 
     /* Methods */
-    public void run(String argv) {
+    public void run() {
         openCM();
     }
 
@@ -37,6 +37,7 @@ public class OpenCellManager {
         ImagePlus avg_imp = AApSegmetator.getAverageIm(open_imp);
         avg_imp.show();
         CellManager cm = new CellManager(avg_imp, open_imp,null, 0.1D);
+        cm.m_lis.listen();
 //        System.exit(0);
 
 //        SaveDialog sd = new SaveDialog("Save Signals...", nameData, ".xlsx");
@@ -52,7 +53,7 @@ public class OpenCellManager {
 
         String argv = "";
         OpenCellManager op_cm = new OpenCellManager();
-        op_cm.run(argv);
+        op_cm.run();
 
     }
 

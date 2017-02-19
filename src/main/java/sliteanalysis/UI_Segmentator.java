@@ -25,6 +25,7 @@ import java.util.ArrayList;
  */
 public class UI_Segmentator extends JFrame implements ChangeListener{
     protected ImagePlus imp;
+    protected ImagePlus stack;
     ImagePlus bkg_imp = null;
     protected ImageIcon imcon;
     protected AApSegmetator _segmentator;
@@ -81,6 +82,7 @@ public class UI_Segmentator extends JFrame implements ChangeListener{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // preprocessing image
+        stack = open_imp;
         if(open_imp.getImageStackSize() > 1){
             imp = AApSegmetator.getAverageIm(open_imp);
         }
@@ -142,9 +144,14 @@ public class UI_Segmentator extends JFrame implements ChangeListener{
                     _cells = _segmentator.SegmentForgroundCellsML(_mdl_dialog, bkg_imp);
                 }
 
+                // TODO: Add filter overlapping ROIS step
+
                 if(onlySegmentRadioButton.isSelected())
                 {
                     // show cells in cell manager
+                    if (stack.getStackSize()>1) {
+                        imp.show();
+                    }
                     RoiManager rm = new RoiManager();
                     for (int i = 0; i < _cells.size(); i++) {
                         rm.addRoi(_cells.get(i));
@@ -154,12 +161,13 @@ public class UI_Segmentator extends JFrame implements ChangeListener{
 
                     // Validate data type (Stacks)
                     //ImagePlus imp = IJ.getImage();
-                    if (imp.getStackSize()==1)
+                    if (stack.getStackSize()==1)
                     {IJ.error("Stack required"); return;}
-                    System.out.print("DEBUG\n");
                     AAP_woStimulus aap = new AAP_woStimulus();
-                    aap.run_auto(imp,_cells);
+                    aap.run_auto(stack,_cells);
+//                    aap.aapFlush();
                 }
+//                clearAll();
 
             }
         });
@@ -245,6 +253,14 @@ public class UI_Segmentator extends JFrame implements ChangeListener{
         });
     }
 
+    private void clearAll() {
+        // clears workspace
+        imp.close();
+        stack.close();
+        imp.flush();
+        stack.flush();
+    }
+
     private void savePref() {
 
         Prefs.set("sliteanalysis.cGETPEAKSCONST", Double.parseDouble(thres_TXT.getText()));
@@ -264,58 +280,6 @@ public class UI_Segmentator extends JFrame implements ChangeListener{
         Prefs.set("sliteanalysis.cUSEKALMAN",useKalman_CBX.isSelected());
 
         Prefs.savePreferences(); // Throws error probabely because the ij is not initialized
-    }
-
-    // constructor for invoked UI (not most elegant way but I have no time...)
-    public UI_Segmentator(String argv){
-        pack();
-        this.invoked = true;
-        ImagePlus open_imp = WindowManager.getCurrentImage();
-        setSize(850,500);
-        setTitle("AAP segmentation");
-        setContentPane(rootPanel);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // preprocessing image
-        if(open_imp.getImageStackSize() > 1){
-            imp = AApSegmetator.getAverageIm(open_imp);
-        }
-        else{
-            imp = open_imp;
-        }
-
-        imcon = new ImageIcon();
-        imcon.setImage(imp.getImage());
-        _segmentator = new AApSegmetator(imp);
-        previewBox.setIcon(imcon);
-
-        // findmaxima parameter change
-        fmaxtol_SLD.addChangeListener(this);
-
-        // change in cell size parameter (Cell Magic Wand parameter)
-        cmw_SLD.addChangeListener(this);
-
-        setVisible(true);
-        previewBRButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updatePreview();
-            }
-        });
-        brwmdl_BTN.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                _mdl_dialog = new OpenDialog("Choose classification model...", "");
-                if(_mdl_dialog.getFileName().contains(".model")){
-                    calssipath_LBL.setText(_mdl_dialog.getDirectory());
-                    logTextField.setText("Classification model loaded!");
-                }
-                else{
-                    logTextField.setText("WARNING::Selected file is not a classification model!");
-                    _mdl_dialog = null;
-                }
-            }
-        });
     }
 
     public void stateChanged(ChangeEvent e){
@@ -426,7 +390,7 @@ public class UI_Segmentator extends JFrame implements ChangeListener{
         // open sample image
         String path = System.getProperty("user.dir") + "\\data";
         System.out.print(path + '\n');
-        ImagePlus imp = IJ.openImage(path + "\\noam\\ca_av_1.tif"); // DEBUB
+        ImagePlus imp = IJ.openImage(path + "\\noam\\ca_mov_1.tif"); // DEBUB
 
         imp.show();
 

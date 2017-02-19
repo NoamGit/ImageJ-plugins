@@ -290,17 +290,33 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
         this.cells_roi = rois;
         this.dt_r = Activity_Analysis.findSignalDt(this.imp_r.getTitle());
 
-        // FIXME: finish UI
         if(this.useKalman) {
-            IJ.showStatus(file_iter.getName() + " Kalman filterirng...");
             ImageStack ims = imp_r.getStack();
             Kalman_Stack_Filter kl = new Kalman_Stack_Filter();
             kl.filter(ims, this.KL_PRECVAR, this.KM_GAIN);
             imp_r.setStack(ims);
         }
 
-        // wrap to Cell manager select all and save
-        this.cm = toCellManager(this.imp_r, this.cells_roi,avr_imp);
+        this.imp_r.show();
+
+        // wrap everything with the Cell manager
+        this.cm = toCellManager(this.imp_r, this.cells_roi,AApSegmetator.getAverageIm(imp_r));
+        this.cm.m_lis.listen();
+
+        // clears workspace
+        return;
+    }
+
+    public void aapFlush() {
+        imp_r.close();
+        cm.close();
+        imp_r.flush();
+        cm.imp.flush();
+        cm.avr_imp.flush();
+        cm.tmodel.flush();
+        this.cm = new CellManager(null, null, null, null, 0);
+        this.cm.resetInstance();
+        this.cm = null;
     }
 
     /*
@@ -392,19 +408,6 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
                     }
                 });
                 gd.add(settings);
-
-                // add interactive Segmentation UI
-                JButton interactive = new JButton("interactive");
-                interactive.setBackground(Color.lightGray);
-                interactive.setBorderPainted(true);
-                interactive.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        UI_Segmentator uis = new UI_Segmentator(" ");
-                        AAP_Constants.cBCK_IMP = uis.bkg_imp;
-                    }
-                });
-                gd.add(interactive);
 
                 gd.pack();
                 gd.add(Box.createRigidArea(new Dimension(0, 10)));

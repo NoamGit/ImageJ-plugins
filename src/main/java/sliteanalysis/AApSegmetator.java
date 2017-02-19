@@ -367,7 +367,7 @@ public class AApSegmetator {
 //        }
 
 //        ImagePlus imp = IJ.openImage(path + "\\noam\\ca_av_1.tif"); // DEBUG
-        ImagePlus imp = IJ.openImage(path + "\\noam\\ca_av_1.tif");
+        ImagePlus imp = IJ.openImage(path + "\\noam\\ca_mov_1.tif");
 //        ImagePlus imp = IJ.openImage(path + "av1.tif"); // DEBUG
 
         AApSegmetator aap_seg = new AApSegmetator(imp);
