@@ -279,6 +279,29 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
         this.cm = null;
     }
 
+    /**
+     * Method for the UI_segmentator class
+     */
+    public void run_auto(ImagePlus imp, ArrayList<PolygonRoi> rois){
+
+        // load image and set default parameters according to name
+        super.loadPrefs();
+        this.imp_r = imp;
+        this.cells_roi = rois;
+        this.dt_r = Activity_Analysis.findSignalDt(this.imp_r.getTitle());
+
+        // FIXME: finish UI
+        if(this.useKalman) {
+            IJ.showStatus(file_iter.getName() + " Kalman filterirng...");
+            ImageStack ims = imp_r.getStack();
+            Kalman_Stack_Filter kl = new Kalman_Stack_Filter();
+            kl.filter(ims, this.KL_PRECVAR, this.KM_GAIN);
+            imp_r.setStack(ims);
+        }
+
+        // wrap to Cell manager select all and save
+        this.cm = toCellManager(this.imp_r, this.cells_roi,avr_imp);
+    }
 
     /*
      * This method enables to load a zip file with ROI's into a Array<PolygonRoi> array
@@ -357,6 +380,8 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
                 gd.add(Box.createRigidArea(new Dimension(0, 2)));
                 gd.addStringField("Slices of Response:", defautltSlices, 40);
                 gd.add(Box.createRigidArea(new Dimension(0, 10)));
+
+                // add setting dialog
                 JButton settings = new JButton("settings");
                 settings.setBackground(Color.lightGray);
                 settings.setBorderPainted(true);
@@ -367,6 +392,20 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
                     }
                 });
                 gd.add(settings);
+
+                // add interactive Segmentation UI
+                JButton interactive = new JButton("interactive");
+                interactive.setBackground(Color.lightGray);
+                interactive.setBorderPainted(true);
+                interactive.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        UI_Segmentator uis = new UI_Segmentator(" ");
+                        AAP_Constants.cBCK_IMP = uis.bkg_imp;
+                    }
+                });
+                gd.add(interactive);
+
                 gd.pack();
                 gd.add(Box.createRigidArea(new Dimension(0, 10)));
                 gd.showDialog();
@@ -395,21 +434,9 @@ public class AAP_woStimulus extends AAP_wStimulus implements PlugIn {
 
     public static void main(final String... args) throws FileNotFoundException {
         AAP_woStimulus aap = new AAP_woStimulus();
-        String path;
-        try {
-            path = "D:\\# Projects (Noam)\\# SLITE\\# DATA\\AAP 1.1.0\\"; // LAB
-            ImagePlus imp_test = IJ.openImage(path + "TEXT_20msON_10Hz_SLITE_2.tif");
-            if(imp_test == null){
-                throw new FileNotFoundException("Your not in Lab....");
-            }
-        }
-        catch(FileNotFoundException error){
-            path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\"; //HOME
-        }
-
-        //aap.imp_r = IJ.openImage(path + "TEXT_20msON_10Hz_SLITE_2.tif"); // DEBUG
-//        aap.imp_r = IJ.openImage(path + "test_TEXT_10Hz.tif"); // DEBUG
-        aap.imp_r = IJ.openImage(path + "FLS_10Hz_5.tif"); // DEBUG
+        String path = System.getProperty("user.dir") + "\\data";
+        System.out.print(path + '\n');
+        aap.imp_r = IJ.openImage(path + "\\noam\\ca_mov_1.tif"); // DEBUB
         aap.imp_r.show();
         String argv = "";
         aap.run(argv);

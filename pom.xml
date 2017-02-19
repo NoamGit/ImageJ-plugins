@@ -78,6 +78,12 @@
 			<version>1.16.1-SNAPSHOT</version>
 		</dependency>
 
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>Graph_Cut</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+		</dependency>
+
 		<!-- ImageJ dependencies -->
 		<dependency>
 			<groupId>net.imagej</groupId>
@@ -326,6 +332,13 @@
 				</property>
 			</activation>
 			<dependencies>
+
+				<dependency>
+					<groupId>org.codehaus.groovy</groupId>
+					<artifactId>groovy-all</artifactId>
+					<version>2.4.8</version>
+				</dependency>
+
 				<dependency>
 					<groupId>net.imagej</groupId>
 					<artifactId>imagej-ui-awt</artifactId>

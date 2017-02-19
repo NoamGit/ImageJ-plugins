@@ -1,69 +1,410 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="sliteanalysis.UI_segmentattor">
-  <grid id="27dc6" binding="panel1" default-binding="true" layout-manager="GridLayoutManager" row-count="1" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-    <margin top="0" left="0" bottom="0" right="0"/>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="sliteanalysis.UI_Segmentator">
+  <grid id="27dc6" binding="rootPanel" layout-manager="GridLayoutManager" row-count="2" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
-      <xy x="20" y="20" width="632" height="472"/>
+      <xy x="20" y="20" width="698" height="472"/>
     </constraints>
-    <properties/>
+    <properties>
+      <name value=""/>
+    </properties>
     <border type="none"/>
     <children>
-      <component id="36da" class="javax.swing.JInternalFrame" binding="internalFrame2" default-binding="true">
-        <constraints>
-          <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties/>
-      </component>
       <grid id="4a7c" layout-manager="BorderLayout" hgap="0" vgap="0">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="4" vsize-policy="1" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="9da17" layout-manager="BorderLayout" hgap="0" vgap="0">
-            <constraints border-constraint="East"/>
-            <properties/>
-            <border type="none"/>
-            <children/>
-          </grid>
-          <tabbedpane id="40176" binding="tabbedPane1" default-binding="true">
+          <tabbedpane id="40176" binding="settings_TAB">
             <constraints border-constraint="North"/>
             <properties/>
             <border type="none"/>
             <children>
-              <grid id="d030e" layout-manager="BorderLayout" hgap="0" vgap="0">
+              <grid id="ba251" binding="param_TAB" layout-manager="GridLayoutManager" row-count="8" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <tabbedpane title="Untitled"/>
+                  <tabbedpane title="Segmentation"/>
                 </constraints>
                 <properties/>
                 <border type="none"/>
-                <children/>
+                <children>
+                  <component id="23c16" class="javax.swing.JLabel" binding="fmaxtol_LBL">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="FindMaxima noise tol"/>
+                    </properties>
+                  </component>
+                  <component id="90ab2" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Cell diameter [pix]"/>
+                    </properties>
+                  </component>
+                  <component id="18281" class="javax.swing.JSlider" binding="fmaxtol_SLD">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <valueIsAdjusting value="true"/>
+                    </properties>
+                  </component>
+                  <component id="21734" class="javax.swing.JSlider" binding="cmw_SLD">
+                    <constraints>
+                      <grid row="4" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                  </component>
+                  <component id="718b2" class="javax.swing.JCheckBox" binding="rmvBkg_CHBX">
+                    <constraints>
+                      <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="include"/>
+                    </properties>
+                  </component>
+                  <component id="c3667" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Forground weigth"/>
+                    </properties>
+                  </component>
+                  <component id="46eb5" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Smoothness"/>
+                    </properties>
+                  </component>
+                  <component id="a5c00" class="javax.swing.JSlider" binding="gc_sm_SLD">
+                    <constraints>
+                      <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <maximum value="1000"/>
+                      <value value="150"/>
+                    </properties>
+                  </component>
+                  <component id="99294" class="javax.swing.JButton" binding="previewBRButton" default-binding="true">
+                    <constraints>
+                      <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Preview BR"/>
+                    </properties>
+                  </component>
+                  <component id="a9bfe" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Background Removal (BR)"/>
+                    </properties>
+                  </component>
+                  <component id="b82e5" class="javax.swing.JSlider" binding="gc_fg_SLD">
+                    <constraints>
+                      <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <maximum value="1000"/>
+                      <value value="850"/>
+                      <valueIsAdjusting value="false"/>
+                    </properties>
+                  </component>
+                </children>
               </grid>
-              <tabbedpane id="4d216" binding="tabbedPane2" default-binding="true">
+              <grid id="80915" binding="stack_TAB" layout-manager="GridLayoutManager" row-count="3" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <tabbedpane title="Untitled"/>
+                  <tabbedpane title="Stack"/>
                 </constraints>
                 <properties/>
                 <border type="none"/>
-                <children/>
-              </tabbedpane>
+                <children>
+                  <component id="d8ab6" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Threshold for Peak detection:"/>
+                    </properties>
+                  </component>
+                  <component id="ec39d" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Frame rate (Hz):"/>
+                    </properties>
+                  </component>
+                  <component id="fc01f" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Kalman:"/>
+                    </properties>
+                  </component>
+                  <component id="8fa0d" class="javax.swing.JTextField" binding="framerate_TXT">
+                    <constraints>
+                      <grid row="1" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <text value="60.0"/>
+                    </properties>
+                  </component>
+                  <component id="e8b15" class="javax.swing.JFormattedTextField" binding="thres_TXT">
+                    <constraints>
+                      <grid row="0" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <text value="1.5"/>
+                    </properties>
+                  </component>
+                  <component id="30a2d" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Gain"/>
+                    </properties>
+                  </component>
+                  <component id="a62c1" class="javax.swing.JTextField" binding="kalmangain_TXT">
+                    <constraints>
+                      <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <text value="0.8"/>
+                    </properties>
+                  </component>
+                  <component id="93cb6" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Var"/>
+                    </properties>
+                  </component>
+                  <component id="fa6a5" class="javax.swing.JTextField" binding="kalmanvar_TXT">
+                    <constraints>
+                      <grid row="2" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <text value="0.05"/>
+                    </properties>
+                  </component>
+                  <component id="dc2e3" class="javax.swing.JCheckBox" binding="useKalman_CBX">
+                    <constraints>
+                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="use Kalman"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="1fe59" binding="process_TAB" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints>
+                  <tabbedpane title="Processing"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="3cd64" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Cut Off freq (Hz):"/>
+                    </properties>
+                  </component>
+                  <component id="9f733" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Detection Variance:"/>
+                    </properties>
+                  </component>
+                  <component id="4fdc1" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Filter order:"/>
+                    </properties>
+                  </component>
+                  <component id="63963" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Baseline Noise Percentile:"/>
+                    </properties>
+                  </component>
+                  <component id="327ab" class="javax.swing.JTextField" binding="cutoff_TXT">
+                    <constraints>
+                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <text value="0.001"/>
+                    </properties>
+                  </component>
+                  <component id="5c509" class="javax.swing.JTextField" binding="filterord_TXT">
+                    <constraints>
+                      <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <text value="5.0"/>
+                    </properties>
+                  </component>
+                  <component id="da829" class="javax.swing.JTextField" binding="perc_TXT">
+                    <constraints>
+                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <text value="0.30"/>
+                    </properties>
+                  </component>
+                  <component id="d95bb" class="javax.swing.JTextField" binding="detvar_TXT">
+                    <constraints>
+                      <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <text value="2.0"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
             </children>
           </tabbedpane>
-          <grid id="6474f" layout-manager="BorderLayout" hgap="0" vgap="0">
-            <constraints border-constraint="West"/>
-            <properties/>
-            <border type="none"/>
-            <children/>
-          </grid>
-          <component id="527d5" class="javax.swing.JButton" binding="preview_BTN">
-            <constraints border-constraint="South"/>
+          <grid id="dcd7a" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints border-constraint="Center"/>
             <properties>
-              <text value="Preview"/>
+              <enabled value="true"/>
             </properties>
-          </component>
+            <border type="none"/>
+            <children>
+              <component id="f0e09" class="javax.swing.JCheckBox" binding="preview_CHBX">
+                <constraints border-constraint="Center"/>
+                <properties>
+                  <horizontalAlignment value="0"/>
+                  <selected value="false"/>
+                  <text value="preview"/>
+                </properties>
+              </component>
+              <grid id="acc30" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints border-constraint="North"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="a660e" class="javax.swing.JTextField" binding="logTextField" default-binding="true">
+                    <constraints border-constraint="Center"/>
+                    <properties>
+                      <background color="-6110010"/>
+                      <columns value="0"/>
+                      <editable value="false"/>
+                      <enabled value="true"/>
+                      <foreground color="-15000805"/>
+                      <horizontalAlignment value="2"/>
+                      <minimumSize width="100" height="2"/>
+                      <opaque value="false"/>
+                      <preferredSize width="37" height="100"/>
+                      <text value="Log:"/>
+                    </properties>
+                  </component>
+                  <grid id="ce9db" layout-manager="BorderLayout" hgap="0" vgap="0">
+                    <constraints border-constraint="North"/>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="94361" class="javax.swing.JButton" binding="brwmdl_BTN">
+                        <constraints border-constraint="West"/>
+                        <properties>
+                          <text value="Load Classifier model..."/>
+                        </properties>
+                      </component>
+                      <component id="81a7d" class="javax.swing.JTextField" binding="calssipath_LBL">
+                        <constraints border-constraint="Center"/>
+                        <properties>
+                          <background color="-4473925"/>
+                          <editable value="false"/>
+                          <foreground color="-9276814"/>
+                          <text value=""/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                </children>
+              </grid>
+            </children>
+          </grid>
         </children>
       </grid>
+      <component id="a3264" class="javax.swing.JLabel" binding="previewBox">
+        <constraints>
+          <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value=" "/>
+        </properties>
+      </component>
+      <component id="527d5" class="javax.swing.JButton" binding="run_BTN">
+        <constraints>
+          <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="run"/>
+        </properties>
+      </component>
+      <component id="e3a81" class="javax.swing.JRadioButton" binding="onlySegmentRadioButton" default-binding="true">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <selected value="true"/>
+          <text value="Only Segment"/>
+        </properties>
+      </component>
+      <component id="ecdd8" class="javax.swing.JRadioButton" binding="segmentAnalyzeRadioButton" default-binding="true">
+        <constraints>
+          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Segment + Analyze"/>
+        </properties>
+      </component>
     </children>
   </grid>
+  <buttonGroups>
+    <group name="runMode">
+      <member id="e3a81"/>
+      <member id="ecdd8"/>
+    </group>
+  </buttonGroups>
 </form>

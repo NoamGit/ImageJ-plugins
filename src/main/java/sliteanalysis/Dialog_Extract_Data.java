@@ -327,8 +327,9 @@ public class Dialog_Extract_Data extends JDialog {
         while(itr_in.hasNext() && itr_out.hasNext()) {
 
             out = itr_out.next();
+            roi_file = new File(out + "\\RoiSet_source_fix.zip");
 //            roi_file = FileUtils.getFile(out + "\\RoiSet_Source.zip");
-            roi_file = FileUtils.getFile(out + "\\RoiSet_source_fix.zip");
+//            roi_file = FileUtils.getFile(out + "\\RoiSet_source_fix.zip");
             boolean new_flag = !stringContainsItemFromList(out, new String[]{"old"});
             // onOk
             input_file = new File(itr_in.next()); // defining input
@@ -393,7 +394,8 @@ public class Dialog_Extract_Data extends JDialog {
             while (!queue.isEmpty()) {
                 file_iter = (File) queue.element();
                 String name_itr = (String) iter_names.next();
-                roi_file = FileUtils.getFile(out + "\\RoiSet_"+name_itr.substring(0,name_itr.length()-4)+".zip");
+                roi_file = new File(out + "\\RoiSet_"+name_itr.substring(0,name_itr.length()-4)+".zip");
+//                roi_file(out + "\\RoiSet_"+name_itr.substring(0,name_itr.length()-4)+".zip");
 //                IJ.log(file_iter.getName());
 //                IJ.log("Processes Artifact " + file_iter.getName());
                 System.out.println("Processes Artifact " + file_iter.getName());

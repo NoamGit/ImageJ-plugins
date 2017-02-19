@@ -31,6 +31,7 @@ public class AAP_Constants {
     //Segmentation Constants
     
         // User Parameters
+        public static ImagePlus cBCK_IMP = null; // image to filter the segmented cell according to it's bounds
         public static final double cBL_NOISE_PREC = 0.3;
         public static final double cLPF_THRES = 0.002;
         public static final int cOBJECTIVE = 20; // ussually using 20X

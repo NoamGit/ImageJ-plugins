@@ -10,6 +10,7 @@ import ij.blob.ManyBlobs;
 import ij.gui.Overlay;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
+import ij.io.OpenDialog;
 import ij.io.RoiEncoder;
 import ij.plugin.*;
 import ij.plugin.filter.MaximumFinder;
@@ -52,7 +53,7 @@ public class AApSegmetator {
     private int FM_OUT = 1; // IN_TOLERANCE
     private int CM_MAX = 16;
     private int CM_MIN = 3;
-    private double ENLARGEROI = 2;
+    private double ENLARGEROI = 1;
 
     // Parameters -  Threshold
     private String THRESH_METHOD = "Mean"; // Midgray
@@ -79,7 +80,7 @@ public class AApSegmetator {
 
     /*-------------------------------------- Methods --------------------------------------*/
 
-    AApSegmetator(ImagePlus t_imp){
+    public AApSegmetator(ImagePlus t_imp){
         loadPrefs();
         this.imp = t_imp;
     }
@@ -111,7 +112,7 @@ public class AApSegmetator {
         // Validate data type (Stacks)
         File f1 = new File(this.CLASSIFPATH);
         if(!f1.exists()){
-            this.CLASSIFPATH = "C:\\Users\\noambox\\Documents\\NielFiji-repo\\Fiji"; // load noambox version
+            this.CLASSIFPATH = System.getProperty("user.dir")+"\\Documents\\NielFiji-repo\\Fiji"; // load
             File f2 = new File(this.CLASSIFPATH);
             if(!f2.exists())
             {
@@ -125,6 +126,7 @@ public class AApSegmetator {
 
         // Get Average image for further Segmentation
         ImagePlus avr_img = getAverageIm(this.imp);
+        this.imp.show();
         WekaSegmentation segmentator = new WekaSegmentation( avr_img );
         segmentator.loadClassifier(this.CLASSIFPATH + this.CLASSI);
         ImagePlus imp_prob = segmentator.applyClassifier(avr_img, 0, true); // get probabilities image
@@ -293,6 +295,48 @@ public class AApSegmetator {
 //          return filterCirc;
     }
 
+    public ArrayList<PolygonRoi> SegmentForgroundCellsCWT(ImagePlus _bkg_imp) {
+        ArrayList<PolygonRoi> cells = SegmentCellsCWT();
+        if(_bkg_imp.getProcessor() != null){
+            return FilterROIsByBackground(cells, _bkg_imp);
+        }
+        else{
+            return cells;
+        }
+    }
+
+    public ArrayList<PolygonRoi> SegmentForgroundCellsML(OpenDialog _mdl_path, ImagePlus _bkg_imp) {
+        CLASSIFPATH = _mdl_path.getDirectory();
+        CLASSI = _mdl_path.getFileName();
+        ArrayList<PolygonRoi> cells = SegmentCellsML();
+        if(_bkg_imp != null){
+            return FilterROIsByBackground(cells, _bkg_imp);
+        }
+        else{
+            return cells;
+        }
+    }
+
+    /**
+     * filters the input roi array according to a backgriound image
+     * @param rois input ROIS
+     * @param _bkg_imp binary background image
+     * @return
+     */
+    public static  ArrayList<PolygonRoi> FilterROIsByBackground(ArrayList<PolygonRoi> rois, ImagePlus _bkg_imp){
+        for(int i = rois.size()-1 ; i > -1; i--){
+            //filter rois in background
+            if(_bkg_imp.getProcessor() != null) {
+                double[] roi_center = rois.get(i).getContourCentroid();
+                if (_bkg_imp.getProcessor().getPixel((int)roi_center[0],(int)roi_center[1]) != 0) {
+                    rois.remove(i);
+                    continue;
+                }
+            }
+        }
+        return rois;
+    }
+
     /* Get Average image for processing */
     public static ImagePlus getAverageIm(ImagePlus imp){
         ZProjector stackimp = new ZProjector(imp);
@@ -301,6 +345,11 @@ public class AApSegmetator {
         ImagePlus avr_img = stackimp.getProjection();
         return avr_img;
     }
+    public void setFmTolerance(double n){FM_TOL = n;}
+    public void setCMWMax(int n){CM_MAX = n;}
+    public void setCMWMin(int n){CM_MIN = n;}
+
+    public void setEnlargeRoi(int n){ENLARGEROI = n;}
 
     /* Main function for debugging */
     public static void main(final String... args) throws FileNotFoundException {
@@ -317,7 +366,8 @@ public class AApSegmetator {
 //            path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\"; //HOME
 //        }
 
-        ImagePlus imp = IJ.openImage(path + "\\noam\\ca_av_1.tif"); // DEBUG
+//        ImagePlus imp = IJ.openImage(path + "\\noam\\ca_av_1.tif"); // DEBUG
+        ImagePlus imp = IJ.openImage(path + "\\noam\\ca_av_1.tif");
 //        ImagePlus imp = IJ.openImage(path + "av1.tif"); // DEBUG
 
         AApSegmetator aap_seg = new AApSegmetator(imp);

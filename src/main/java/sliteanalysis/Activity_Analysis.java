@@ -449,23 +449,9 @@ public class Activity_Analysis implements PlugInFilter {
 
     /** Tests the plugin. */
     public static void main(final String... args) {
-        String path;
-        ImagePlus imp;
-        try {
-//            path = "C:\\Users\\Noam\\Dropbox\\# graduate studies m.sc\\# SLITE\\ij - plugin data\\"; // LAB
-//            imp = IJ.openImage(path + "FLASH_20msON_20Hz_SLITE_1.tif");
-
-            path = "D:\\# Projects (Noam)\\# SLITE\\# DATA\\301115Retina - DATA\\Loc 3\\post\\";
-            imp = IJ.openImage(path + "OFLASH_20msON_10sec_10Hz_SLITE_test.tif"); // DEBUG
-
-            if(imp == null){
-                throw new FileNotFoundException("Your not in Lab....");
-            }
-        }
-        catch(FileNotFoundException error){
-            path = "C:\\Users\\noambox\\Dropbox\\# Graduate studies M.Sc\\# SLITE\\ij - plugin data\\"; //HOME
-            imp = IJ.openImage(path + "FLASH_20msON_20Hz_SLITE_1.tif"); // DEBUG
-        }
+        String path = System.getProperty("user.dir") + "\\data";
+        System.out.print(path + '\n');
+        ImagePlus imp = IJ.openImage(path + "\\noam\\ca_mov_1.tif"); // DEBUB
 
 
         Activity_Analysis acta = new Activity_Analysis();

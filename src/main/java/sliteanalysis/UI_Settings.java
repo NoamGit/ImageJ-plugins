@@ -6,6 +6,8 @@ import ij.gui.Roi;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
@@ -233,6 +235,7 @@ public class UI_Settings {
     }
 
     protected static JComponent makeSegPanel(String text) {
+
         double FM_TOL = Prefs.get("sliteanalysis.cFM_TOL", AAP_Constants.cFM_TOL);
         double CM_MAX = (int) Prefs.get("sliteanalysis.cCM_MAX",AAP_Constants.cCM_MAX);
         double ENLARGEROI = (int) Prefs.get("sliteanalysis.cENLARGEROI",AAP_Constants.cENLARGEROI);
